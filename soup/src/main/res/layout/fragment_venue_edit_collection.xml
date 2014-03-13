@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pagerWrapper"
+    android:orientation="vertical"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:background="@color/now_background">
+    <com.viewpagerindicator.TitlePageIndicator
+        android:id="@+id/titles"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:background="@color/gray_dark"
+        android:padding="5dip"
+        android:textColor="@color/white"
+        xmlns:pager="http://schemas.android.com/apk/res-auto"
+        pager:strokeWidth="4dp"
+        pager:lineWidth="30dp"
+        pager:footerColor="@color/foursquare_green"
+        pager:footerLineHeight="1dp"
+        pager:footerIndicatorHeight="3dp"
+        pager:footerIndicatorStyle="underline"
+        pager:selectedBold="true"
+        pager:unselectedColor="@color/foursquare_green"
+        pager:selectedColor="@color/foursquare_green" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="1"/>
+    <!-- This title strip will display the currently visible page title, as well as the page titles for adjacent pages. -->
+    <!--<android.support.v4.view.PagerTitleStrip-->
+    <!--android:id="@+id/pager_title_strip"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:paddingBottom="4dp"-->
+    <!--android:paddingTop="4dp"-->
+    <!--android:textColor="@color/foursquare_gray"-->
+    <!--android:background="@color/foursquare_orange"-->
+    <!--android:layout_gravity="top"/>-->
+    <!--</android.support.v4.view.ViewPager>-->
+</LinearLayout>

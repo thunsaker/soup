@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp">
+        <LinearLayout
+                android:id="@+id/linearLayoutVenueEditHoursAddTitleWrapper"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/layout_selector_blue"
+                android:textColor="@drawable/day_toggle_holo_light_text_colors" >
+
+            <TextView
+                    android:id="@+id/textViewVenueEditHoursAddTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:drawablePadding="10dp"
+                    android:drawableLeft="@drawable/category_add"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:text="@string/edit_venue_hours_add" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

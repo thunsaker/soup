@@ -1,0 +1,187 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayoutVenueCategoriesWrapperOuter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:background="@color/now_background">
+    <LinearLayout 
+        android:id="@+id/linearLayoutProgressBarWrapper"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:gravity="top|center_horizontal"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/now_border_flat_bottom"
+        android:visibility="visible">
+	    <ProgressBar
+	        android:id="@+id/progressBarLoadingCategories"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:indeterminate="true" />
+    </LinearLayout>
+	<LinearLayout
+	    android:id="@+id/linearLayoutVenueCategoriesWrapper"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:paddingTop="5dp"
+	    android:paddingLeft="5dp"
+	    android:paddingRight="5dp"
+	    android:paddingBottom="0dp"
+	    android:background="@drawable/now_border_flat_bottom"
+	    android:orientation="vertical"
+	    tools:context=".VenueEditCategoriesActivity"
+	    android:visibility="gone" >
+		<LinearLayout 
+		    android:id="@+id/linearLayoutCategoryWrapper1"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="10dp"
+		    android:orientation="horizontal"
+		    android:background="@drawable/border_bottom_gray"
+		    android:visibility="gone">
+   		    <ToggleButton
+		        android:id="@+id/toggleButtonPrimary1"
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_gravity="center"
+		        android:background="@drawable/toggle_primary_category_star"
+		        android:text=""
+		        android:textOff=""
+		        android:textOn="" />	    
+		    <ImageView 
+		        android:id="@+id/imageViewCategoryIcon1"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:src="@drawable/generic_category_icon"
+		        android:contentDescription="@string/image_description_category_icon" />
+		    <TextView 
+		        android:id="@+id/textViewCategoryName1"
+		        android:layout_width="0dp"
+		        android:layout_height="match_parent"
+		        android:layout_weight="0.4"
+		        android:paddingLeft="10dp"
+		        android:paddingRight="10dp"
+		        android:gravity="center_vertical"
+		        android:textColor="@color/body_text"
+		        android:text="@string/image_description_category_icon" />
+		    
+		    <ImageButton
+		        android:id="@+id/imageViewCategoryDelete1"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:layout_gravity="center"
+		        android:background="@drawable/trash_can_button"
+		        android:contentDescription="@string/image_description_delete_category" />
+		</LinearLayout>
+		<LinearLayout 
+		    android:id="@+id/linearLayoutCategoryWrapper2"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="10dp"
+		    android:orientation="horizontal"
+		    android:background="@drawable/border_bottom_gray"
+		    android:visibility="gone">
+   		    <ToggleButton
+		        android:id="@+id/toggleButtonPrimary2"
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_gravity="center"
+		        android:background="@drawable/toggle_primary_category_star"
+		        android:text=""
+		        android:textOff=""
+		        android:textOn="" />	    
+		    <ImageView 
+		        android:id="@+id/imageViewCategoryIcon2"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:src="@drawable/generic_category_icon"
+		        android:contentDescription="@string/image_description_category_icon" />
+		    
+		    <TextView 
+		        android:id="@+id/textViewCategoryName2"
+		        android:layout_width="0dp"
+		        android:layout_height="match_parent"
+		        android:layout_weight="0.4"
+		        android:paddingLeft="10dp"
+		        android:paddingRight="10dp"
+		        android:gravity="center_vertical"
+		        android:textColor="@color/body_text"
+		        android:text="@string/image_description_category_icon" />
+		    
+		    <ImageButton
+		        android:id="@+id/imageViewCategoryDelete2"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:layout_gravity="center"
+		        android:background="@drawable/trash_can_button"
+		        android:contentDescription="@string/image_description_delete_category" />
+		</LinearLayout>
+		<LinearLayout 
+		    android:id="@+id/linearLayoutCategoryWrapper3"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="10dp"
+		    android:orientation="horizontal"
+		    android:visibility="gone">
+   		    <ToggleButton
+		        android:id="@+id/toggleButtonPrimary3"
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_gravity="center"
+		        android:background="@drawable/toggle_primary_category_star"
+		        android:text=""
+		        android:textOff=""
+		        android:textOn="" />	    
+		    <ImageView 
+		        android:id="@+id/imageViewCategoryIcon3"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:src="@drawable/generic_category_icon"
+		        android:contentDescription="@string/image_description_category_icon" />
+		    
+		    <TextView 
+		        android:id="@+id/textViewCategoryName3"
+		        android:layout_width="0dp"
+		        android:layout_height="match_parent"
+		        android:layout_weight="0.4"
+		        android:paddingLeft="10dp"
+		        android:paddingRight="10dp"
+		        android:gravity="center_vertical"
+		        android:textColor="@color/body_text"
+		        android:text="@string/image_description_category_icon" />
+		    
+		    <ImageButton
+		        android:id="@+id/imageViewCategoryDelete3"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:layout_gravity="center"
+		        android:background="@drawable/trash_can_button"
+		        android:contentDescription="@string/image_description_delete_category" />
+		</LinearLayout>
+		<TextView 
+	        android:id="@+id/textViewCategoryAddTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingTop="10dp"
+		    android:paddingRight="30dp"
+		    android:paddingLeft="30dp"
+		    android:paddingBottom="10dp"
+		    android:layout_marginTop="10dp"
+	        android:drawableLeft="@drawable/category_add"
+	        android:drawablePadding="10dp"
+	        android:clickable="true"
+	        android:layout_gravity="center"
+	        android:gravity="center_vertical"
+	        android:background="@drawable/layout_selector_orange"
+	        android:text="@string/edit_category_add"
+	        android:textColor="@color/body_text"
+	        android:onClick="ShowAddCategory" />
+	</LinearLayout>
+</LinearLayout>

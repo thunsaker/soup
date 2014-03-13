@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_activity_welcome">Bem-vindo</string>
+    <string name="title_venue_detail">Detalhes</string>
+    <string name="title_activity_foursquare_authorization">Foursquare Autorização</string>
+    <string name="title_activity_venue_search_result">Resultados da Pesquisa</string>
+    <string name="title_activity_venue_edit">Editar</string>
+    <string name="title_activity_venue_edit_categories">Editar Categorias</string>
+    <string name="title_activity_venue_add_category">Adicione uma Categoria</string>
+    <string name="title_activity_venue_search">Pesquisa um Local</string>
+    <string name="title_activity_location_select">Escolha um Local</string>
+    <string name="title_activity_history">Histórico</string>
+    <string name="title_venue_detail_receiver">Editar em Soup</string>
+
+    <string name="drawer_open">Opened</string>
+    <string name="drawer_close">Closed</string>
+    <string name="drawer_section_default">Section</string>
+    <string name="drawer_item_default">Item</string>
+
+    <string name="drawer_titles_venues">Lugares</string>
+    <string name="drawer_titles_history">Histórico</string>
+    <string name="drawer_titles_lists">Listas</string>
+    <string name="drawer_titles_profile">Meu Perfil</string>
+    <string name="drawer_titles_about">Sobre</string>
+    <string name="drawer_titles_logout">Log Off (Sair)</string>
+
+    <string name="title_fragment_edit_info">Informações</string>
+    <string name="title_fragment_edit_location">Localização</string>
+    <string name="title_fragment_edit_hours">Horas</string>
+
+    <string name="app_about_title">Sobre Soup</string>
+    <string name="about_message">Soup é um aplicativo superusuário para os superusuários de foursquare! Use este aplicativo para editar locales, e marcá-los como fechado/mal localizado/etc. e tentar fazer Foursquare um lugar melhor para todos.</string>
+    <string name="about_developer">Desenvolvido por Thomas Hunsaker</string>
+    <string name="about_other_apps">Olhe meus outros aplicativos no Google Play!</string>
+    <string name="about_follow_me">Seguir no Google+</string>
+    <string name="welcome_title">Bem-vindo!</string>
+    <string name="welcome_description">Soup é um aplicativo para superusuários do Foursquare (Foursquare Superusers) para gerenciamento e edição de locales quando longe de um computador.</string>
+
+    <string name="dialog_please_wait">Espere por favor&#8230;</string>
+    <string name="dialog_loading">Carregamento&#8230;</string>
+    <string name="dialog_other_apps">Outros Aplicativos&#8230;</string>
+    <string name="location_wait">Atualizando lista de locales.</string>
+    <string name="auth_cancelled">Autorização cancelada.</string>
+    <string name="auth_failed">Autorização falhou. :(</string>
+    <string name="dialog_logout_confirmation">Tem certeza de que deseja fazer logoff?</string>
+
+    <string name="action_refresh">Atualizando</string>
+    <string name="action_about">Sobre</string>
+    <string name="action_logout">Log Off (Sair)</string>
+    <string name="action_login">Log In (Entre)</string>
+    <string name="action_learn_more">Saiba Mais</string>
+    <string name="action_search">Pesquisa</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_revert">Reverter Edições</string>
+    <string name="action_foursquare">Abrir em foursquare</string>
+    <string name="action_category_add">Adicione uma Categoria</string>
+    <string name="action_settings">Configurações</string>
+    <string name="action_select_location">Escolha Localização</string>
+    <string name="action_history">Meu Histórico Foursquare</string>
+    <string name="action_lists">Minhas Listas Foursquare</string>
+    <string name="action_today">Hoje</string>
+
+    <string name="image_description_category_icon">Ícone da Categoria Genérica</string>
+    <string name="image_description_category_add">Ícone para Adicionar Categoria</string>
+    <string name="image_description_soup">Uma Tigela de Sopa</string>
+    <string name="image_description_powered_by_foursquare">Desenvolvido por Foursquare</string>
+    <string name="image_description_at_sign">Arroba no Twitter o nome da conta</string>
+    <string name="image_description_delete_category">Ícone para Remover Categoria</string>
+    <string name="image_description_search_my_location">Pesquisar nas proximidades da minha localização atual</string>
+    <string name="image_description_search_pick_location">Escolhe uma Localização</string>
+    <string name="image_description_search">Ícone de Pesquisa</string>
+    <string name="image_description_search_instructional_overlay">Instruções para Pesquisa</string>
+    <string name="image_description_alert">Alerta!</string>
+    <string name="image_description_history_preview">Pré-visualização de Check-in Histórico</string>
+    <string name="image_description_lists_preview">Pré-visualização das Listas de Foursquare</string>
+    <string name="image_description_foursquare_list">List Icon</string>
+    <string name="image_description_private">Private</string>
+    <string name="image_description_foursquare_profile">Foursquare Profile Picture</string>
+    <string name="image_description_list_completed">Completed Item</string>
+    <string name="image_description_list_following">Followed List</string>
+    <string name="image_description_list_photo">List Photo</string>
+
+    <string name="search_hint">Nome do lugar</string>
+    <string name="search_location_label">fechar</string>
+    <string name="search_location_hint">Localização (opcional)</string>
+    <string name="search_location_hint_my_location">A minha localização</string>
+    <string name="search_location_my_location">A minha localização</string>
+    <string name="search_error_no_query">Por favor, indique algo para procurar</string>
+    <string name="search_error_no_results">Não há resultados para esta pesquisa, tente outro.</string>
+    <string name="search_location_hint_blank">Deixe em branco para pesquisar usando GPS.</string>
+    <string name="search_overlay_pick_location">Escolha um local no mapa</string>
+    <string name="search_overlay_add_location">Adicionar uma pesquisa local</string>
+    <string name="search_duplicate_original">Marcar como originais</string>
+    <string name="search_duplicate_original_condensed">Original</string>
+    <string name="search_duplicate_duplicate">Marcar como Duplicado</string>
+    <string name="search_duplicate_duplicate_condensed">Duplicado</string>
+
+    <string name="edit_venue_name_title">Nome</string>
+    <string name="edit_venue_name_hint">Bacta Tank</string>
+    <string name="edit_venue_address_title">Endereço</string>
+    <string name="edit_venue_cross_street_title">Encruzilhada</string>
+    <string name="edit_venue_city_title">Cidade</string>
+    <string name="edit_venue_city_hint">São Gonçalo</string>
+    <string name="edit_venue_state_title">Estado</string>
+    <string name="edit_venue_state_hint">Rio de Janeiro</string>
+    <string name="edit_venue_zip_title">CEP</string>
+    <string name="edit_venue_phone_title">Telefone</string>
+    <string name="edit_venue_lat_lng_title">Lat/Long</string>
+    <string name="edit_venue_twitter_title">Twitter</string>
+    <string name="edit_venue_twitter_hint">Nome de Usuário</string>
+    <string name="edit_venue_url_title">Site</string>
+    <string name="edit_venue_description_title">Descrição</string>
+    <string name="edit_venue_description_hint">Breve descrição do lugar.</string>
+    <string name="edit_venue_reverted_changes">Reverter Mudanças</string>
+    <string name="edit_venue_success">Sucesso! Editou o lugar!</string>
+    <string name="edit_venue_success_propose">Sucesso! Proposta edições foram enviados!</string>
+    <string name="edit_venue_fail">Edite falhou. :( Por favor, tente novamente.</string>
+    <string name="edit_venue_fail_unauthorized">Não Autorizado: Você não tem permissão para fazer edições para este local.</string>
+    <string name="edit_venue_fail_unauthorized_description">Não Autorizado: Você não tem permissão para editar a descrição do local.</string>
+    <string name="edit_category_add">Adicione uma Categoria</string>
+    <string name="edit_category_add_error">Erro ao adicionar a categoria. Por favor, tente novamente.</string>
+    <string name="edit_category_add_already_added">Categoria "%s" já foi adicionado.</string>
+    <string name="edit_category_reverting_changes">Reverter Mudanças da Categoria</string>
+    <string name="edit_category_no_categories">Deve selecionar pelo menos uma categoria.</string>
+    <string name="edit_category_add_optional">Não Sub-Subcategoria</string>
+
+    <string-array name="venue_details_flag_venue_categories">
+        <item>Mal Posicionada</item>
+        <!-- 0 - FLAG_TYPE_MISLOCATED -->
+        <item>Não existe</item>
+        <!-- 1 - FLAG_TYPE_DOESNT_EXIST -->
+        <item>Fechado</item>
+        <!-- 2 - FLAG_TYPE_CLOSED -->
+        <item>Impróprio</item>
+        <!-- 3 - FLAG_TYPE_INAPPROPRIATE -->
+        <item>Evento Terminou</item>
+        <!-- 4 - FLAG_TYPE_EVENT_OVER -->
+    </string-array>
+
+    <string name="venue_details_dialog_flag_venue">Marcar Local</string>
+    <string name="venue_details_dialog_flag_duplicate_title">Confirmar Duplicado</string>
+    <string name="venue_details_dialog_flag_duplicate_message">Tem certeza que você deseja marcar&lt;br />&lt;br />&lt;b>%1$s&lt;/b>&lt;br />&lt;br />como duplicado de&lt;br />&lt;br />&lt;b>%2$s&lt;/b>?</string>
+
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="dialog_no">Não</string>
+    <string name="dialog_yes">Sim</string>
+
+    <string name="venue_details_dialog_flag_message">Escolha o tipo de erro</string>
+    <string name="flag_venue_success">Sucesso! Você marcou o lugar como %s</string>
+    <string name="flag_venue_fail">Falhou a marca o lugar. :( Por favor, tente novamente.</string>
+
+    <string name="venue_details_edit_button">Editar</string>
+    <string name="venue_details_edit_categories_button">Categorias</string>
+    <string name="venue_details_flag_button">Marcar</string>
+    <string name="venue_details_duplicate_button">Marcar como Duplicado</string>
+    <string name="venue_detail_marked_as_duplicate">Marcar como Duplicado</string>
+    <string name="venue_detail_marked_as_original">Marcado como originais, relatou local selecionado como duplicado.</string>
+
+    <string name="validation_failed">Não pode enviar edições. Por favor, corrigir o(s) erro(s) e tente novamente.</string>
+    <string name="venue_list_no_results">Não há locais próximos. \nVocê gostaria de pesquisar?</string>
+    <string name="venue_list_search_no_results">Nenhum lugar foi encontrado.</string>
+
+    <string name="alert_gps_disabled">GPS está desativado. \nNem todas as funções estão disponíveis neste momento.</string>
+    <string name="alert_still_loading">Ainda carregando, por favor aguarde.</string>
+    <string name="alert_no_internet">Não internet!</string>
+    <string name="alert_current_location_unknown">Localização atual é desconhecida.</string>
+    <string name="alert_error_loading_details">Problema de carregamento de dados local</string>
+    <string name="alert_receiver_not_valid">No URL foursquare encontrado</string>
+    <string name="alert_no_list_items">Não há itens na lista.</string>
+
+    <string name="enable_gps">Ativar GPS</string>
+    <string name="or">ou</string>
+
+    <string name="history_title_today">Hoje</string>
+    <string name="history_title_last_week">Semana Passada</string>
+    <string name="history_title_last_month">Mês Passado</string>
+    <string name="history_section_title_today">HOJE</string>
+    <string name="history_section_title_yesterday">ONTEM</string>
+    <string name="history_section_no_history">Não check-ins Disponível</string>
+
+    <string name="pro_upsell_preview_text">Soup Pro leva a sua experiência de superusuário para o próximo nível! \ N \ n Se livrar dos anúncios, ter acesso ao seu histórico de check-in Foursquare e suas listas do Foursquare!</string>
+    <string name="pro_upsell_button">Vá Pro!</string>
+
+    <string name="edit_venue_time_name_hint">Name Segment (brunch, lunch, etc)</string>
+    <string name="edit_venue_hours_delete">Delete</string>
+    <string name="edit_venue_hours_edit">Edit</string>
+    <string name="edit_venue_hours_save">Save</string>
+    <string name="edit_venue_hours_add">Add Hours</string>
+    <string name="edit_venue_hours_cancel">Cancel</string>
+    <string name="edit_venue_hours_open">Open</string>
+    <string name="edit_venue_hours_close">Close</string>
+    <string name="edit_venue_hours_24_hours">Aberto 24 Horas</string>
+
+    <string name="day_of_week_sunday_short_styled">dom</string>
+    <string name="day_of_week_monday_short_styled">seg</string>
+    <string name="day_of_week_tuesday_short_styled">ter</string>
+    <string name="day_of_week_wednesday_short_styled">qua</string>
+    <string name="day_of_week_thursday_short_styled">qui</string>
+    <string name="day_of_week_friday_short_styled">sex</string>
+    <string name="day_of_week_saturday_short_styled">sab</string>
+
+    <string name="day_of_week_sunday_short">1</string>
+    <string name="day_of_week_monday_short">2</string>
+    <string name="day_of_week_tuesday_short">3</string>
+    <string name="day_of_week_wednesday_short">4</string>
+    <string name="day_of_week_thursday_short">5</string>
+    <string name="day_of_week_friday_short">6</string>
+    <string name="day_of_week_saturday_short">7</string>
+
+    <string name="title_activity_venue_edit_hours_add">Edite Horas</string>
+    <string name="edit_venue_revert_changes_dialog">Tem a certeza que pretende reverter todas as edições deste lugar?</string>
+    <string name="edit_venue_delete_hours_dialog">Are you sure you want to delete these hours?</string>
+    <string name="alert_error_loading_venues">Error loading venues</string>
+    <string name="search_category_filter">Type to filter</string>
+
+    <string name="profile_name">Foursquare User</string>
+    <string name="profile_superuser_level">Superuser Level</string>
+    <string name="profile_superuser_level_1">Level 1</string>
+    <string name="profile_superuser_level_2">Level 2</string>
+    <string name="profile_superuser_level_3">Level 3</string>
+
+    <string name="lists_title">Listas</string>
+    <string name="lists_todo">Meus Itens a Fazer</string>
+    <string name="lists_item_count">%s lugares</string>
+    <string name="lists_title_header_creator">Criado por %s</string>
+    <string name="lists_title_created">Minhas Listas</string>
+    <string name="lists_title_following">Listas que salvei</string>
+
+    <string name="venue_list_search_footer">Ainda à procura? Faça uma busca!</string>
+    <string name="dialog_checkin_confirmation">Check-in to %s?</string>
+
+    <string name="notification_checkin_title">Soup Quick Check-In</string>
+    <string name="notification_checkin_pending">Checking you in&#8230;</string>
+    <string name="notification_checkin_complete">Checked into %s!</string>
+    <string name="notification_checkin_fail">Check-in failed. :(</string>
+    <string name="notification_checkin_foursquare">Open in 4sq</string>
+    <string name="notification_checkin_retry">Retry</string>
+
+    <string name="prefs_soup_title">Settings</string>
+    <string name="prefs_soup_title_summary">Soup settings</string>
+    <string name="prefs_soup_category_title_general">General</string>
+    <string name="prefs_soup_title_connect">Foursquare</string>
+    <string name="prefs_soup_title_connected">Connected</string>
+    <string name="prefs_soup_distance_units_title">Distance Units</string>
+    <string name="prefs_soup_distance_units_summary">Metric</string>
+    <string name="prefs_soup_distance_units_default">Metric</string>
+    <string name="prefs_soup_title_push">Push Notifications (Pro)</string>
+    <string name="prefs_soup_title_push_summary_on">Soup will notify you when venues you have checked into, need som Superuser love.</string>
+    <string name="prefs_soup_title_push_summary_off">Push notifications to your device, when venues need more information?</string>
+    <string name="prefs_soup_about_version">Build Version</string>
+    <string name="prefs_soup_about_rate_title">Rate Soup</string>
+    <string name="prefs_soup_category_title_about">About</string>
+    <string name="prefs_soup_about_rate_summary">Rate and comment in the Play Store.</string>
+</resources>

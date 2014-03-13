@@ -1,0 +1,103 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" 
+    android:id="@+id/linearLayoutVenueListWrapperOuter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/now_background">
+    
+	<RelativeLayout
+	    android:id="@+id/relativeLayoutVenueListWrapper"
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="0.9"
+	    android:background="@color/now_background" 
+	    android:visibility="visible">
+
+		<fragment
+		    android:id="@+id/fragmentVenueList"
+		    android:name="com.thunsaker.soup.ui.VenueListFragment"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_marginLeft="5dp"
+		    android:layout_marginRight="5dp"
+		    android:choiceMode="singleChoice"
+		    android:listSelector="@drawable/layout_selector_green"
+		    tools:context=".VenueListActivity"
+		    tools:layout="@android:layout/list_content" />
+	
+		<!-- <RelativeLayout 
+		    android:id="@+id/relativeLayoutVenueListEmpty"
+		    android:layout_height="match_parent"
+		    android:layout_width="match_parent"
+		    android:visibility="gone">
+			
+		    <RelativeLayout 
+		        android:id="@+id/relativeLayoutVenueListButtonSearchWrapper"
+		        android:layout_height="wrap_content"
+		        android:layout_width="wrap_content"
+		        android:background="@drawable/layout_selector_orange"
+		        android:layout_centerInParent="true">
+				<TextView 
+			        android:id="@+id/textViewVenueListSearchText"
+			        android:layout_height="wrap_content"
+			        android:layout_width="fill_parent"
+			        android:gravity="center_horizontal"
+			        android:textSize="25sp"
+			        android:text="@string/venue_list_no_results" />
+			    <ImageView
+			        android:id="@+id/imageButtonVenueListSearch"
+			        android:layout_height="wrap_content"
+			        android:layout_width="250dp"
+			        android:layout_centerInParent="true"
+			        android:background="@null"
+			        android:src="@drawable/ic_search_grande_gray"
+			        android:layout_below="@id/textViewVenueListSearchText"
+			        android:contentDescription="@string/image_description_search" />
+		    </RelativeLayout>
+	 	</RelativeLayout> -->
+	</RelativeLayout>
+	
+	<FrameLayout
+	    android:id="@+id/frameLayoutNoGPS"
+	    android:layout_width="fill_parent"
+	    android:layout_height="match_parent"
+	    android:layout_weight="0.9"
+	    android:background="@color/now_background" >
+
+	    <LinearLayout
+	        android:id="@+id/linearLayoutVenueListButtons"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:orientation="vertical" >
+	        <Button
+				android:id="@+id/buttonVenueListSearch"
+		        android:layout_height="wrap_content"
+		        android:layout_width="250dp"
+		        android:drawableTop="@drawable/ic_search_grande_gray_light"
+		        android:text="@string/action_search"
+		        android:background="@drawable/layout_selector_orange"
+		        android:textSize="24sp"
+		        android:contentDescription="@string/image_description_search" />
+	        <TextView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textSize="24sp"
+	            android:layout_marginTop="10dp"
+	            android:layout_marginBottom="20dp"
+	            android:text="@string/or" />
+	        <Button 
+	            android:id="@+id/buttonVenueListEnableGPS"
+	            android:layout_width="250dp"
+	            android:layout_height="wrap_content"
+	            android:text="@string/enable_gps" 
+	            android:textSize="24sp" />
+	    </LinearLayout>
+	</FrameLayout>
+
+	<include
+	    layout="@layout/admob_banner"
+    	android:layout_height="0dp"
+		android:layout_weight="0.1" />
+</LinearLayout>

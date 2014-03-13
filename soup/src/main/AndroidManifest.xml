@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.thunsaker.soup" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Map Stuff -->
+    <permission
+        android:name="com.thunsaker.soup.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.thunsaker.soup.permission.MAPS_RECEIVE" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <!--<permission-->
+        <!--android:name="com.thunsaker.soup.permission.C2D_MESSAGE"-->
+        <!--android:protectionLevel="signature" />-->
+
+    <!--<uses-permission android:name="com.thunsaker.soup.permission.C2D_MESSAGE" />-->
+    <!--<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />-->
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
+    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
+    <!--<uses-permission android:name="android.permission.USE_CREDENTIALS" />-->
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Soup_green" >
+        <activity
+            android:name="com.thunsaker.soup.ui.WelcomeActivity"
+            android:label="@string/title_activity_welcome"
+            android:uiOptions="splitActionBarWhenNarrow" />
+        <activity
+            android:name="com.thunsaker.soup.ui.FoursquareAuthorizationActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/title_activity_foursquare_authorization" />
+        <activity
+            android:name="com.foursquare.android.nativeoauth.TokenExchangeActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name="com.thunsaker.soup.ui.MainActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.thunsaker.soup.ui.VenueDetailActivity"
+            android:label="@string/title_venue_detail"
+            android:launchMode="singleTop"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.thunsaker.soup.VenueListActivity" />
+        </activity>
+
+        <activity
+            android:name="com.thunsaker.soup.ui.VenueDetailActivityReceiver"
+            android:label="@string/title_venue_detail_receiver" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.SEND" />
+
+                <data android:mimeType="text/*" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.thunsaker.soup.ui.VenueSearchActivity"
+            android:configChanges="orientation|keyboard"
+            android:label="@string/title_activity_venue_search"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".VenueSearchActivity" />
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.thunsaker.soup.VenueListActivity" />
+        </activity>
+
+        <activity
+            android:name="com.thunsaker.soup.ui.VenueEditCategoriesActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/title_activity_venue_edit_categories"
+            android:launchMode="singleTop" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.thunsaker.soup.VenueDetailActivity" />
+        </activity>
+
+        <activity
+            android:name="com.thunsaker.soup.ui.VenueAddCategoryActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/title_activity_venue_add_category"
+            android:launchMode="singleTop" >
+        </activity>
+
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+
+        <activity
+            android:name="com.thunsaker.soup.ui.LocationSelectActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/title_activity_location_select"
+            android:launchMode="singleTop"
+            android:uiOptions="splitActionBarWhenNarrow" />
+        <activity
+            android:name="com.thunsaker.soup.ui.HistoryActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/title_activity_history"
+            android:launchMode="singleTop" />
+        <activity
+            android:name="com.thunsaker.soup.ui.VenueEditTabsActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/title_activity_venue_edit"
+            android:launchMode="singleTop" />
+        <activity
+            android:name="com.thunsaker.soup.ui.VenueEditHoursAddActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/title_activity_venue_edit_hours_add"
+            android:launchMode="singleTop" />
+        <activity
+            android:name="com.thunsaker.soup.ui.ListActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/lists_title"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name="com.thunsaker.soup.ui.settings.SettingsActivity" />
+
+        <activity
+            android:name="com.thunsaker.soup.ui.settings.SettingsLegacyActivity" />
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/google_maps_api_key" />
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="@string/crashlytics_key" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+    </application>
+</manifest>

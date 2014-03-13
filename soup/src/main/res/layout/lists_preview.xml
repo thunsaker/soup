@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayoutListsUpsellWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:id="@+id/linearLayoutListsUpsell"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="@dimen/activity_vertical_margin"
+	    android:layout_marginBottom="@dimen/activity_vertical_margin"
+	    android:layout_marginRight="@dimen/activity_horizontal_margin"
+	    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+	    android:background="@drawable/now_border_gray_border"
+	    android:orientation="vertical" >
+	    
+	    <TextView
+     		android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="10dp"
+	        android:text="@string/pro_upsell_preview_text" />
+	        
+    </LinearLayout>
+    
+	<ImageView 
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal|center"
+	    android:src="@drawable/lists_preview_gs3_short"
+	    android:scaleType="fitCenter"
+	    android:contentDescription="@string/image_description_lists_preview" />
+</LinearLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/map_fragment_venue_edit_location"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+	android:name="com.google.android.gms.maps.SupportMapFragment"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingPrefix"
+	xmlns:map="http://schemas.android.com/apk/res-auto"
+	map:cameraZoom="14"
+	map:mapType="normal"
+	map:uiCompass="false"
+	map:uiScrollGestures="false"
+	map:uiRotateGestures="false"
+	map:uiTiltGestures="false"
+	map:uiZoomControls="false"
+	map:uiZoomGestures="true" />

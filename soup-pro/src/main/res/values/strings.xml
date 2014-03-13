@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Soup Pro</string>
+    <string name="action_settings">Settings</string>
+    <string name="thanks">Thanks for purchasing Soup Pro!</string>
+	<string name="download_soup">Soup has not been found on your device. Please install Soup to start making foursquare a better place!!</string>
+	<string name="just_key">Soup Pro is not an application, but a key for Soup.\n\nOpen Soup to get started!</string>
+	<string name="get_soup">Install Soup!</string>
+	<string name="open_soup">Open Soup!</string>
+	<string name="image_description_soup">A Bowl of Soup</string>
+	<string name="hide_soup">Hide Soup Pro Icon</string>
+	<string name="hide_soup_confim">This cannot be undone without uninstalling/reinstalling the App through the Play Store.\n\nAre you sure you want to hide the Soup Pro icon?</string>
+</resources>

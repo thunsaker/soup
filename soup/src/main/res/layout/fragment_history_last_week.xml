@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayoutHistoryLastWeekWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:scrollbarStyle="outsideOverlay"
+    android:background="@color/now_background" >
+
+    <!--<com.twotoasters.jazzylistview.JazzyListView-->
+            <!--android:id="@+id/listViewHistoryLastWeek"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:divider="@null"-->
+            <!--android:listSelector="@drawable/layout_selector_green"-->
+            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+            <!--app:effect="flip"-->
+            <!--app:only_animate_new_items="false"-->
+            <!--app:only_animate_fling="false"-->
+            <!--app:max_velocity="0" />-->
+
+	<ListView
+	    android:id="@+id/listViewHistoryLastWeek"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+    	android:fastScrollEnabled="true"
+	    android:orientation="vertical"
+	    android:paddingTop="5dp"
+	    android:divider="@null" />
+	
+    <TextView
+		android:id="@+id/textViewHistorySectionLastWeekEmpty"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:padding="10dp"
+		android:layout_margin="10dp"
+		android:background="@drawable/now_border_outline"
+		android:text="@string/history_section_no_history"
+		android:textIsSelectable="false"
+		android:visibility="gone" />
+</LinearLayout>

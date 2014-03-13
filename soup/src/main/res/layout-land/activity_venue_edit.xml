@@ -1,0 +1,258 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollViewVenueEditWrapper"
+    android:paddingTop="5dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingBottom="0dp"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginBottom="0dp"
+    android:background="@drawable/now_border_flat_bottom"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent">
+
+	<LinearLayout
+	    android:id="@+id/linearLayoutVenueEditWrapper" 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="@dimen/activity_vertical_margin"
+	    android:paddingLeft="@dimen/activity_horizontal_margin"
+	    android:paddingRight="@dimen/activity_horizontal_margin"
+	    android:paddingTop="@dimen/activity_vertical_margin"
+	    android:orientation="vertical"
+	    tools:context=".Venue" >
+	
+	    <TextView
+	        android:id="@+id/textViewEditVenueName"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/edit_venue_name_title" />
+	    <EditText 
+	        android:id="@+id/editTextEditVenueName"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:inputType="textCapWords"
+	        android:hint="@string/edit_venue_name_hint" />
+	    
+	    <TextView
+	        android:id="@+id/textViewEditVenueAddress"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/edit_venue_address_title" />
+	    <EditText 
+	        android:id="@+id/editTextEditVenueAddress"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:inputType="textCapWords"
+			android:hint="@string/edit_venue_address_hint" />
+	    
+	    <TextView
+	        android:id="@+id/textViewEditVenueCrossStreet"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/edit_venue_cross_street_title" />
+	    <EditText 
+	        android:id="@+id/editTextEditVenueCrossStreet"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:inputType="textCapWords" 
+	        android:hint="@string/edit_venue_cross_street_hint" />
+	    
+	    <TextView
+	        android:id="@+id/textViewEditVenueCity"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/edit_venue_city_title" />
+	    <EditText 
+	        android:id="@+id/editTextEditVenueCity"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:inputType="textCapWords" 
+	        android:hint="@string/edit_venue_city_hint"/>
+	    
+	    <LinearLayout
+	        android:id="@+id/linearLayoutStateZipLabels"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+		    <TextView
+		        android:id="@+id/textViewEditVenueState"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:text="@string/edit_venue_state_title" />	    
+		    <TextView
+		        android:id="@+id/textViewEditVenueZip"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:gravity="left"
+		        android:text="@string/edit_venue_zip_title" />
+	    </LinearLayout>
+	    <LinearLayout
+	        android:id="@+id/linearLayoutStateZipEditTexts"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+		   	<EditText 
+		        android:id="@+id/editTextEditVenueState"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:inputType="textCapWords" 
+		        android:hint="@string/edit_venue_state_hint"/>
+		    <EditText 
+		        android:id="@+id/editTextEditVenueZip"
+				android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:inputType="textNoSuggestions" 
+		        android:hint="@string/edit_venue_zip_hint"/>
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	        android:id="@+id/linearLayoutPhoneTwitterTitleWrapper"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+		    <TextView
+		        android:id="@+id/textViewEditVenuePhone"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:text="@string/edit_venue_phone_title" />
+
+		    <TextView
+		        android:id="@+id/textViewEditVenueTwitter"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:text="@string/edit_venue_twitter_title" />
+
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	        android:id="@+id/linearLayoutPhoneTwitterEditTextWrapper"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+	    
+		    <EditText 
+		        android:id="@+id/editTextEditVenuePhone"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:inputType="phone" 
+		        android:hint="@string/edit_venue_phone_hint"/>
+	
+		    <LinearLayout
+		        android:id="@+id/linearLayoutTwitterWrapper"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:orientation="horizontal" >
+	
+		        <ImageView
+		            android:id="@+id/imageViewAtSign"
+		            android:layout_width="36dp"
+		            android:layout_height="36dp"
+		            android:paddingTop="5dp"
+		            android:paddingBottom="5dp"
+		            android:contentDescription="@string/image_description_at_sign"
+		            android:scaleType="fitCenter"
+		            android:src="@drawable/at_sign_holo_light" />
+	
+		        <EditText
+		            android:id="@+id/editTextEditVenueTwitter"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:hint="@string/edit_venue_twitter_hint"
+		            android:inputType="textNoSuggestions" />
+		    </LinearLayout>
+	    </LinearLayout>
+	    
+	    <TextView
+	        android:id="@+id/textViewEditVenueLatLng"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/edit_venue_lat_lng_title" />
+	    
+	    <LinearLayout
+	        android:id="@+id/linearLayoutLatLngWrapper"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+	    
+		    <EditText 
+		        android:id="@+id/editTextEditVenueLatLng"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.9"
+		        android:inputType="number" 
+		        android:hint="@string/edit_venue_lat_lng_hint" />
+			<ImageButton 
+		        android:id="@+id/imageButtonEditVenueLocationPick"
+		        android:layout_height="wrap_content"
+		        android:layout_width="0dp"
+		        android:layout_weight="0.1"
+		        android:src="@drawable/map_marker_button"
+		        android:background="@null"
+		        android:contentDescription="@string/image_description_search_pick_location" />
+	    </LinearLayout>
+	    
+	   	<TextView
+	        android:id="@+id/textViewEditVenueUrl"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/edit_venue_url_title" />
+	    <EditText 
+	        android:id="@+id/editTextEditVenueUrl"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:inputType="textUri" 
+	        android:hint="@string/edit_venue_url_hint"/>
+	  	<RelativeLayout
+	        android:id="@+id/relativeLayoutDescriptionTitleWrapper"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+		    <TextView
+		        android:id="@+id/textViewEditVenueDescription"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/edit_venue_description_title" />
+		    <TextView
+		        android:id="@+id/textViewEditVenueDescriptionCount"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentBottom="true"
+		        android:layout_alignParentRight="true"
+		        android:layout_toRightOf="@id/textViewEditVenueDescription"
+		        android:text="@string/count_zero"
+		        android:gravity="right"
+		        android:textIsSelectable="false" />
+
+	    </RelativeLayout>
+	    <LinearLayout 
+	        android:id="@+id/linearLayoutProgressBarLoadingDescriptionWrapper"
+	        android:layout_height="fill_parent"
+	        android:layout_width="fill_parent"
+	        android:gravity="top|center_horizontal"
+	        android:visibility="gone">
+		    <ProgressBar
+		        android:id="@+id/progressBarLoadingDescription"
+		        android:layout_width="wrap_content" 
+		        android:layout_height="wrap_content"
+		        android:indeterminate="true" />
+	    </LinearLayout>
+	    <EditText 
+	        android:id="@+id/editTextEditVenueDescription"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
+	        android:minLines="2"
+	        android:hint="@string/edit_venue_description_hint"/>
+	</LinearLayout>
+</ScrollView>

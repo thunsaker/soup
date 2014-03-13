@@ -1,0 +1,37 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:soup="http://schemas.android.com/apk/res-auto" >	
+	<item
+        android:id="@+id/action_edit"
+        android:orderInCategory="100"
+        soup:showAsAction="always|withText"
+        android:icon="@drawable/ic_action_edit_holo_dark"
+        android:title="@string/venue_details_edit_button"/>
+	
+	<item
+        android:id="@+id/action_categories"
+        android:orderInCategory="101"
+        soup:showAsAction="always"
+        android:icon="@drawable/ic_action_categories_holo_dark"
+        android:title="@string/venue_details_edit_categories_button"/>
+		
+	<item
+        android:id="@+id/action_flag"
+        android:orderInCategory="102"
+        soup:showAsAction="always"
+        android:icon="@drawable/ic_action_flag_holo_dark"
+        android:title="@string/venue_details_dialog_flag_venue"/>
+			
+	<item
+        android:id="@+id/action_duplicate"
+        android:orderInCategory="103"
+        soup:showAsAction="always"
+        android:icon="@drawable/ic_action_duplicate_holo_dark"
+        android:title="@string/venue_details_duplicate_button"/>
+	
+	<item
+        android:id="@+id/action_foursquare"
+        android:orderInCategory="104"
+        soup:showAsAction="always"
+        android:icon="@drawable/ic_action_foursquare_holo_dark"
+        android:title="@string/action_foursquare"/>	
+</menu>

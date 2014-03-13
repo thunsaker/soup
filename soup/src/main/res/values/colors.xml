@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#ff000000</color>
+    <color name="black_transparent">#aa000000</color>
+    <color name="black_super_transparent">#55000000</color>
+    
+    <color name="white">#ffffffff</color>
+    <color name="white_transparent">#aaffffff</color>
+    
+    <color name="orange_light">#ffffbb33</color>
+    
+    <color name="foursquare_orange">#ffff7900</color>
+    <color name="foursquare_orange_transparent">#aaff7900</color>
+    <color name="foursquare_green">#ff8FD400</color>
+    <color name="foursquare_green_transparent">#aa8FD400</color>
+    <color name="foursquare_blue">#ff0cbadf</color>
+    <color name="foursquare_blue_transparent">#aa0cbadf</color>
+    <color name="foursquare_yellow">#ffffcb00</color>
+    <color name="foursquare_yellow_transparent">#aaffcb00</color>
+    <color name="foursquare_gray">#ffd1d4d3</color>
+
+    <color name="error_text">#ffcc0000</color>
+    <color name="error_background">#aaff4444</color>
+    
+    <color name="now_background">#ffe5e5e5</color>
+    
+    <color name="body_text">#ff222222</color>
+    <color name="header_text">#ff444444</color>
+    <color name="gray_dark">#ff2E2E2E</color>
+</resources>

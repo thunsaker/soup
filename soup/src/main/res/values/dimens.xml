@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="list_venue_item_title">14dp</dimen>
+    <dimen name="activity_horizontal_margin">5dp</dimen>
+    <dimen name="activity_horizontal_margin_adjusted">5dp</dimen>
+    <dimen name="activity_vertical_margin">5dp</dimen>
+    <dimen name="activity_vertical_margin_overlay_actionbar">60dp</dimen>
+    <dimen name="list_item_inner_margin">5dp</dimen>
+    <dimen name="navigation_drawer_top_margin">0dp</dimen>
+
+    <dimen name="nexus_frame_margin_top">69dp</dimen>
+    <dimen name="nexus_frame_margin_side">49dp</dimen>
+
+    <dimen name="drawer_item_font">20sp</dimen>
+    <dimen name="drawer_min_height">50dp</dimen>
+
+    <dimen name="list_header_size">200dp</dimen>
+</resources>

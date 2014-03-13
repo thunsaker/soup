@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+    <header 
+        android:fragment="com.thunsaker.soup.ui.SettingsFragment"
+        android:title="@string/prefs_soup_category_title_general"
+        android:summary="@string/prefs_soup_title_summary" >
+        <extra android:name="isPro" android:value="false" />
+	</header>
+</preference-headers>
+<!--     <header 
+        android:fragment="com.example.prefs.SettingsActivity$SettingsFragmentTwo"
+        android:title="@string/prefs_category_two"
+        android:summary="@string/prefs_summ_category_two" >
+        key/value pairs can be included as arguments for the fragment.
+        <extra android:name="someKey" android:value="someHeaderValue" />
+    </header> -->
+<!-- </preference-headers> -->
+<!--
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" 	
+android:title="@string/prefs_soup_title"
+    android:summary="@string/prefs_soup_title_summary">
+    <PreferenceCategory
+	    android:title="@string/prefs_soup_category_title_general">
+		<CheckBoxPreference 
+		    android:title="@string/prefs_soup_title_connect"
+		    android:key="@string/prefs_soup_connected"
+		    android:defaultValue="false"
+	    	android:summaryOn="@string/prefs_soup_title_connected" />
+		
+		<ListPreference
+		    android:title="@string/prefs_soup_title_distance_units"
+		    android:summary="@string/prefs_soup_title_distance_units_summary"
+		    android:key="@string/prefs_soup_distance_units"
+		    android:defaultValue="@string/prefs_soup_title_distance_units_default"
+		    android:entries="@array/prefs_soup_title_distance_units_entries"
+		    android:dialogTitle="@string/prefs_soup_title_distance_units"
+		    android:entryValues="@array/prefs_soup_title_distance_units_entryValues" />
+		
+		<CheckBoxPreference 
+		    android:title="@string/prefs_soup_title_push"
+		    android:summaryOff="@string/prefs_soup_title_push_summary_off" 
+		    android:key="@string/prefs_soup_push"
+		    android:defaultValue="true" />
+		
+	</PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/prefs_bitly_category_title_beta">
+        <CheckBoxPreference
+                android:title="@string/prefs_bitly_title_shorten_feelings"
+                android:summaryOff="@string/prefs_bitly_title_shorten_feelings_summary_off"
+                android:key="@string/prefs_bitly_beta_shorten_feelings"
+                android:defaultValue="false" />
+    </PreferenceCategory>
+	<PreferenceCategory
+	    android:title="@string/prefs_soup_category_title_about">
+	    <Preference 
+	        android:title="@string/prefs_soup_about_version"
+	        android:summary="@string/app_version" />
+	    <Preference 
+	        android:title="@string/prefs_soup_about_rate_title"
+	        android:key="@string/prefs_soup_about_rate"
+	        android:summary="@string/prefs_soup_about_rate_summary" />
+	</PreferenceCategory>
+</PreferenceScreen> -->

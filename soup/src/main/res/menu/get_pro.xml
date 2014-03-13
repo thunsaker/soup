@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:soup="http://schemas.android.com/apk/res-auto" >
+	<item android:id="@+id/action_go_pro"
+        android:title="@string/pro_upsell_button"
+        android:orderInCategory="103"
+        soup:showAsAction="never" />
+</menu>

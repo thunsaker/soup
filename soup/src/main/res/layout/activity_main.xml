@@ -1,0 +1,49 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutVenueListWrapperOuter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/content_frame"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent" />
+
+        <LinearLayout
+            android:id="@+id/adViewLayoutWrapper"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:gravity="center_horizontal|bottom"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_dark" />
+        <!--<com.google.android.gms.ads.AdView-->
+            <!--xmlns:ads="http://schemas.android.com/apk/res-auto"-->
+            <!--android:id="@+id/adView"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--ads:adSize="BANNER"-->
+            <!--ads:adUnitId="@string/admob_id"-->
+            <!--android:layout_gravity="center_horizontal|bottom"-->
+            <!--android:gravity="center_horizontal|bottom"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/gray_dark" />-->
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/left_drawer"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white"
+        android:choiceMode="singleChoice"
+        android:divider="@color/foursquare_green_transparent"
+        android:dividerHeight="0.5dp" />
+
+</android.support.v4.widget.DrawerLayout>

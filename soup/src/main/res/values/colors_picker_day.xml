@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="day_picker_text">#ff222222</color>
+    <color name="day_picker_text_checked">#ffffffff</color>
+
+    <color name="holo_blue_light">#ff33b5e5</color>
+    <color name="day_picker_circle">#ff0099cc</color>
+</resources>

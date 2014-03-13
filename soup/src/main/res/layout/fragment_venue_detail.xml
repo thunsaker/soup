@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayoutVenueWrapperOuter"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/now_background"
+    android:baselineAligned="false"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        layout="@layout/fragment_map" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutVenueDetailsWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin_overlay_actionbar"
+        tools:context=".VenueDetailFragment" >
+
+        <LinearLayout
+            android:id="@+id/linearLayoutVenueWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/now_border_gray_border_2"
+            android:baselineAligned="false"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:id="@+id/linearLayoutVenueWrapperInner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutAddressWrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:background="@null"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/textViewVenueName"
+                        style="?android:attr/textAppearanceLarge"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/textViewVenueAddress"
+                        style="?android:attr/textAppearanceLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/textViewVenueAddressLine2"
+                        style="?android:attr/textAppearanceLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/textViewVenueCrossStreet"
+                        style="?android:attr/textAppearanceLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutCategoriesWrapper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/imageViewVenueCategoryTertiary"
+                        android:layout_width="32dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="3dp"
+                        android:contentDescription="@string/image_description_category_icon"
+                        android:scaleType="fitEnd"
+                        android:src="@drawable/foursquare_generic_category_icon"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/imageViewVenueCategorySecondary"
+                        android:layout_width="32dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginRight="3dp"
+                        android:contentDescription="@string/image_description_category_icon"
+                        android:scaleType="fitEnd"
+                        android:src="@drawable/foursquare_generic_category_icon"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/imageViewVenueCategoryPrimary"
+                        android:layout_width="44dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
+                        android:contentDescription="@string/image_description_category_icon"
+                        android:scaleType="fitStart"
+                        android:src="@drawable/foursquare_generic_category_icon" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBarVenueDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:indeterminate="true"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/linearLayoutVenueDescriptionBackground"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/border_top_gray"
+                android:paddingTop="5dp"
+                android:visibility="gone" >
+
+                <TextView
+                    android:id="@+id/textViewVenueDescription"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layout_selector_green"
+                    android:ellipsize="end"
+                    android:gravity="left"
+                    android:maxLines="3"
+                    android:textIsSelectable="false" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!--
+     	<include 
+	    layout="@layout/activity_venue_detail_actions"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true" />
+    -->
+
+</RelativeLayout>

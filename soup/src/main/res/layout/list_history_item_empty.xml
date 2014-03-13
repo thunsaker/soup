@@ -1,0 +1,16 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+    	android:background="@color/now_background" >
+	<TextView
+		android:id="@+id/textViewHistorySectionYesterdayNoItems"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="10dp"
+		android:padding="10dp"
+		android:layout_marginLeft="@dimen/activity_horizontal_margin"
+		android:layout_marginRight="@dimen/activity_horizontal_margin"
+		android:background="@drawable/now_border_outline"
+		android:text="@string/history_section_no_history"
+		android:textIsSelectable="false" />
+</RelativeLayout>

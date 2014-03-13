@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativeLayoutEditVenueHoursWrapper"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/now_background">
+    <LinearLayout
+            android:id="@+id/linearLayoutEditVenueHoursTimeWrapper"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ListView
+                android:id="@+id/listViewEditVenueHours"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:divider="@null"
+                android:listSelector="@drawable/layout_selector_green"
+                android:layout_gravity="center" />
+    </LinearLayout>
+    <!--<FrameLayout-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent">-->
+        <!--<ImageView-->
+                <!--android:id="@+id/imageViewEditVenueHoursOpenSign"-->
+                <!--android:layout_height="150dp"-->
+                <!--android:layout_width="150dp"-->
+                <!--android:src="@drawable/sign_open_blue_small_fade"-->
+                <!--android:contentDescription="@string/edit_venue_hours_open"-->
+                <!--android:gravity="center_horizontal|center_vertical"-->
+                <!--android:layout_gravity="center_horizontal|center_vertical" />-->
+    <!--</FrameLayout>-->
+</RelativeLayout>

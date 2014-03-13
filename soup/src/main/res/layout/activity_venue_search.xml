@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".VenueSearchActivity"
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout 
+	    android:id="@+id/linearLayoutVenueSearchWrapperOuter"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" 
+	    android:background="@drawable/border_bottom_gray"
+	    android:orientation="vertical" >
+		<LinearLayout 
+		    android:id="@+id/linearLayoutVenueSearchWrapperInner"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:paddingTop="5dp"
+			android:paddingRight="@dimen/activity_horizontal_margin"
+			android:paddingLeft="@dimen/activity_horizontal_margin"
+			android:layout_marginLeft="2dp"
+		    android:orientation="horizontal"
+		    android:baselineAligned="false">
+			
+			<TextView
+			    android:id="@+id/textViewSearchVenueLocation"
+			    android:layout_width="wrap_content"
+			    android:layout_height="40dp"
+			    android:layout_marginTop="2dp"
+			    android:layout_marginLeft="5dp"
+			    android:layout_marginRight="5dp"
+			    android:gravity="center_vertical"
+			    android:text="@string/search_location_label" />
+			
+			<!-- <com.actionbarsherlock.widget.SearchView
+		        android:id="@+id/searchViewSearchLocation"
+			    android:layout_width="0dp"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="0.6"
+			    android:hint="@string/search_location_hint"
+			    android:inputType="text|textPostalAddress"
+			    android:singleLine="true" /> -->
+			
+			<EditText
+			    android:id="@+id/editTextSearchVenueLocation"
+			    android:layout_width="0dp"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="0.6"
+			    android:hint="@string/search_location_hint"
+			    android:inputType="text|textPostalAddress"
+			    android:imeOptions="actionSearch"
+			    android:selectAllOnFocus="true"
+			    android:singleLine="true" />
+			
+		    <ImageButton 
+		        android:id="@+id/imageButtonSearchVenueLocationPick"
+		        android:layout_height="40dp"
+		        android:layout_width="40dp"
+		        android:layout_marginLeft="5dp"
+		        android:src="@drawable/map_marker_button"
+		        android:background="@null"
+		        android:contentDescription="@string/image_description_search_pick_location" />
+		</LinearLayout>				    
+		<!-- 	<ImageButton 
+				android:id="@+id/imageButtonSearchVenueLocationMyLocation"
+				android:layout_height="40dp"
+				android:layout_width="40dp"
+				android:layout_marginLeft="5dp"
+				android:src="@drawable/ic_location_my_location"
+				android:background="@drawable/layout_selector_orange"
+				android:contentDescription="@string/image_description_search_my_location" /> -->
+		<TextView
+		    android:id="@+id/textViewSearchVenueLocationNote"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:paddingBottom="7dp"
+		    android:gravity="center"
+		    android:textSize="12sp"
+		    android:text="@string/search_location_hint_blank" />
+	</LinearLayout>
+
+	<fragment 
+        android:id="@+id/fragmentVenueListSearchResults"
+        android:name="com.thunsaker.soup.ui.VenueListFragment"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/linearLayoutVenueSearchWrapperOuter"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true" />
+
+	<ImageView
+	    android:id="@+id/imageViewSearchOverlayPickLocation"
+	    android:layout_width="70dp"
+	    android:layout_height="200dp"
+	    android:layout_alignParentRight="true"
+	    android:layout_below="@id/linearLayoutVenueSearchWrapperOuter"
+	    android:layout_marginTop="-20dp"
+	    android:scaleType="fitStart"
+	    android:visibility="gone"
+	    android:src="@drawable/right_arrow_up_from_left_long"
+	    android:contentDescription="@string/image_description_search_pick_location" />
+	
+	<TextView
+	    android:id="@+id/textViewSearchOverlayPickLocation"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/imageViewSearchOverlayPickLocation"
+	    android:layout_alignParentRight="true"
+	    android:layout_marginRight="80dp"
+	    android:text="@string/search_overlay_pick_location"
+	    android:visibility="gone"
+	    android:textSize="20sp" />
+	
+	<ImageView
+	    android:id="@+id/imageViewSearchOverlayTypeLocation"
+	    android:layout_width="100dp"
+	    android:layout_height="150dp"
+	    android:layout_alignParentLeft="true"
+	    android:layout_below="@id/linearLayoutVenueSearchWrapperOuter"
+	    android:layout_marginLeft="35dp"
+	    android:layout_marginTop="-20dp"
+	    android:scaleType="fitStart"
+	    android:visibility="gone"
+	    android:src="@drawable/left_arrow_up_from_right"
+	    android:contentDescription="@string/image_description_search_my_location" />
+
+	<TextView
+	    android:id="@+id/textViewSearchOverlayTypeLocation"
+	    android:layout_width="170dp"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/imageViewSearchOverlayTypeLocation"
+	    android:layout_marginLeft="140dp"
+	    android:layout_marginTop="-40dp"
+	    android:visibility="gone"
+	    android:text="@string/search_overlay_add_location"
+	    android:textSize="20sp" />
+    
+    <FrameLayout 
+	    android:id="@+id/frameLayoutSearchInstructionalOverlay"
+	    android:background="@color/black_super_transparent"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:visibility="gone"
+	    android:layout_alignParentTop="true" />
+</RelativeLayout>

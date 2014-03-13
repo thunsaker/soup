@@ -1,0 +1,70 @@
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/now_background">
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="@dimen/activity_vertical_margin"
+	    android:paddingLeft="@dimen/activity_horizontal_margin"
+	    android:paddingRight="@dimen/activity_horizontal_margin"
+	    android:paddingTop="@dimen/activity_vertical_margin"
+	    tools:context=".MainActivity"
+	    android:orientation="vertical">
+	    
+	    <TextView
+	        android:id="@+id/textViewThanks"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:textSize="24sp"
+	        android:text="@string/thanks" />
+	    
+	    <LinearLayout
+	        android:id="@+id/linearLayoutNoSoup"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+		    
+	        <ImageButton
+	            android:id="@+id/imageButtonSoupBowl"
+		        android:layout_width="0dp"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="0.5"
+		        android:layout_gravity="center"
+		        android:src="@drawable/bowl"
+		        android:background="@drawable/layout_selector"
+		        android:contentDescription="@string/image_description_soup" />
+	        
+	        <TextView
+		        android:id="@+id/textViewSoupInstruction"
+		        android:layout_width="0dp"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="0.5"
+		        android:gravity="center"
+		        android:textSize="16sp"
+		        android:text="@string/download_soup" />
+		</LinearLayout>
+		
+	    <LinearLayout
+	        android:id="@+id/linearLayoutNoSoupButtons"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+		    <Button
+		        android:id="@+id/buttonGetSoup"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:text="@string/get_soup" />
+		    
+		    <Button
+		        android:id="@+id/buttonHideSoup"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.5"
+		        android:text="@string/hide_soup" />
+	    </LinearLayout>
+	</LinearLayout>
+</ScrollView>

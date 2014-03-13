@@ -1,0 +1,13 @@
+<resources>
+
+    <!--
+    Layout alias to replace the single-pane version of the layout with a
+    two-pane version on Large screens.
+
+    For more on layout aliases, see:
+    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
+    -->
+    <!-- TODO: Remove comments once I'm ready for the tablet interface. -->
+	<!-- <item name="activity_venue_single" type="layout">@layout/activity_venue_twopane</item> -->
+
+</resources>

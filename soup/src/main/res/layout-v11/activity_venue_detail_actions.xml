@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/linearLayoutVenueEditActions"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:layout_alignParentBottom="true"
+	android:background="@color/now_background"
+	android:orientation="vertical" >
+ 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        style="?android:attr/buttonBarStyle" >
+
+     <Button
+         android:id="@+id/buttonEditVenueDetails"
+         android:layout_width="0dp"
+         android:layout_height="match_parent"
+         android:layout_weight=".33"
+         android:gravity="center_vertical|center_horizontal"
+         style="?android:attr/buttonBarButtonStyle"
+         android:text="@string/venue_details_edit_button" />
+
+     <Button 
+         android:id="@+id/buttonEditCategories"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_weight=".34"
+         android:gravity="center_vertical|center_horizontal"
+         style="?android:attr/buttonBarButtonStyle"
+         android:layout_marginLeft="2dp"
+         android:layout_marginRight="2dp"
+         android:text="@string/venue_details_edit_categories_button" />
+     
+     <Button
+         android:id="@+id/buttonFlagVenue"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_weight=".33"
+         android:gravity="center_vertical|center_horizontal"
+         style="?android:attr/buttonBarButtonStyle"
+         android:text="@string/venue_details_flag_button" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        style="?android:attr/buttonBarStyle"
+        android:visibility="gone" >
+     
+     <Button
+         android:id="@+id/buttonMarkAsDuplicate"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center_vertical|center_horizontal"
+         style="?android:attr/buttonBarButtonStyle"
+         android:text="@string/venue_details_duplicate_button" />
+    </LinearLayout>
+</LinearLayout>

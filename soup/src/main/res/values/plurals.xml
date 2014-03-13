@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="venue_count">
+        <item quantity="one">%s venue</item>
+        <item quantity="other">%s venues</item>
+    </plurals>
+</resources>

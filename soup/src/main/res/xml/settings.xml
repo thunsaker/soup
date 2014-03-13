@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:summary="@string/prefs_soup_title_summary"
+    android:title="@string/prefs_soup_title" >
+
+    <PreferenceCategory android:title="@string/prefs_soup_category_title_general" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/prefs_soup_connected"
+            android:summaryOn="@string/prefs_soup_title_connected"
+            android:title="@string/prefs_soup_title_connect" />
+
+<!--         
+		<ListPreference
+            android:defaultValue="@string/prefs_soup_title_distance_units_default"
+            android:dialogTitle="@string/prefs_soup_title_distance_units"
+            android:entries="@array/prefs_soup_title_distance_units_entries"
+            android:entryValues="@array/prefs_soup_title_distance_units_entryValues"
+            android:key="@string/prefs_soup_distance_units"
+            android:summary="@string/prefs_soup_title_distance_units_summary"
+            android:title="@string/prefs_soup_title_distance_units" />
+-->
+    </PreferenceCategory>
+<!-- 
+    <PreferenceCategory android:title="@string/prefs_bitly_category_title_beta" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/prefs_bitly_beta_shorten_feelings"
+            android:summaryOff="@string/prefs_bitly_title_shorten_feelings_summary_off"
+            android:title="@string/prefs_bitly_title_shorten_feelings" />
+    </PreferenceCategory> 
+-->
+    <PreferenceCategory android:title="@string/prefs_soup_category_title_about" >
+        <Preference
+            android:summary="@string/app_version"
+            android:title="@string/prefs_soup_about_version" />
+        <Preference
+            android:key="@string/prefs_soup_about_rate"
+            android:summary="@string/prefs_soup_about_rate_summary"
+            android:title="@string/prefs_soup_about_rate_title" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

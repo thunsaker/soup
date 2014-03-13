@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Soup</string>
+	<string name="app_name_pro">Soup Pro</string>
+    <string name="app_name_dev">Soup Dev</string>
+    <string name="app_version">2.0.3</string>
+    <string name="app_version_long">Soup v.2.0.3</string>
+
+    <string name="prefs_foursquare_connected">soup_foursquare_connected</string>
+    <string name="prefs_foursquare_token">soup_foursquare_token</string>
+    <string name="prefs_foursquare_apikey">soup_foursquare_apikey</string>
+    <string name="prefs_foursquare_categories">soup_foursquare_categories</string>
+    <string name="prefs_foursquare_user_id">soup_foursquare_user_id</string>
+    <string name="prefs_foursquare_superuser_level">soup_foursquare_superuser_level</string>
+    <string name="prefs_foursquare_search_overlay">soup_foursquare_shown_search_overlay</string>
+
+    <string name="foursquare">Foursquare</string>
+    <string name="welcome_learn_more_url">http://support.foursquare.com/entries/422534-Becoming-a-superuser-SU</string>
+
+	<string name="edit_venue_address_hint">1234 N Endor Ave</string>
+    <string name="edit_venue_cross_street_hint">btw Yavin 5 Ave &#38; Tatooine</string>
+    <string name="edit_venue_zip_hint">94946</string>
+	<string name="edit_venue_phone_hint">415&#8211;867&#8211;5309</string>
+    <string name="edit_venue_lat_lng_hint">0.00,0.00</string>
+    <string name="edit_venue_url_hint">http://venuesite.com</string>
+
+    <string name="count_zero">0</string>
+
+    <string name="prefs_soup_connected">soup_connected</string>
+    <string name="prefs_soup_distance_units">soup_distance_units</string>
+    <string name="prefs_soup_push">soup_connected</string>
+    <string name="prefs_soup_about_rate">soup_connected</string>
+    <string name="prefs_soup_nav_drawer">soup_show_nav</string>
+</resources>

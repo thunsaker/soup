@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/linearLayoutVenueCategoriesWrapperOuter"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingBottom="0dp"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              android:orientation="vertical"
+              android:background="@color/now_background">
+    <!--<SearchView-->
+            <!--android:id="@+id/searchViewCategoryFilter"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:queryHint="@string/search_category_filter"-->
+            <!--android:iconifiedByDefault="false"-->
+            <!--android:layout_marginBottom="@dimen/activity_vertical_margin" />-->
+    <RelativeLayout
+            android:id="@+id/relativeLayoutCategoriesWrapper"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:paddingTop="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="0dp"
+            android:background="@drawable/now_border_flat_bottom"
+            android:orientation="horizontal">
+        <include android:id="@+id/progressForAddCategory"
+                 layout="@layout/progress_spinner"
+                 android:visibility="gone" />
+        <ListView
+                android:id="@+id/listViewPrimaryCategories"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_alignParentLeft="true"
+                android:visibility="gone" />
+        <FrameLayout
+                android:id="@+id/frameLayoutPrimaryOverlay"
+                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:background="@drawable/white_fade_overlay_separator"
+                android:layout_alignParentLeft="true"
+                android:visibility="gone" />
+        <ListView
+                android:id="@+id/listViewSecondaryCategories"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="150dp"
+                android:layout_alignParentLeft="true"
+                android:background="@color/white"
+                android:alpha="0"
+                android:visibility="gone" />
+        <FrameLayout
+                android:id="@+id/frameLayoutSecondaryOverlay"
+                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:layout_marginLeft="150dp"
+                android:background="@drawable/white_fade_overlay_separator"
+                android:layout_alignParentLeft="true"
+                android:visibility="gone" />
+        <ListView
+                android:id="@+id/listViewTertiaryCategories"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="300dp"
+                android:layout_alignParentLeft="true"
+                android:background="@color/white"
+                android:alpha="0"
+                android:visibility="gone" />
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayoutListItemWrapper"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+	android:paddingRight="@dimen/activity_horizontal_margin"
+	android:background="@color/now_background" >
+	<RelativeLayout
+	    android:id="@+id/relativeLayoutListItemWrapperInner"  
+	   	android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/now_border_selector">
+		<LinearLayout 
+		    android:id="@+id/linearLayoutListItemTitleWrapper"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_marginRight="40dp"
+			android:padding="12dp"
+			android:orientation="vertical" >
+			<LinearLayout
+			    android:id="@+id/linearLayoutListItemTitleWrapperInner" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginRight="40dp"
+				android:orientation="horizontal" >
+				<ImageView
+				    android:id="@+id/imageViewListItemIsPrivate"
+				    android:layout_width="15dp"
+				    android:layout_height="15dp"
+				    android:layout_marginTop="5dp"
+				    android:layout_marginRight="5dp"
+				    android:scaleType="fitCenter"
+				    android:contentDescription="@string/image_description_private"
+				    android:src="@drawable/ic_lock_icon"
+				    android:visibility="gone" />
+			
+			    <TextView
+			        android:id="@+id/textViewListItemName"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:textColor="@color/body_text"
+			        android:textSize="20sp" />
+		    </LinearLayout>
+		    
+			<TextView
+			    android:id="@+id/textViewListItemAddress"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textColor="@color/body_text" />
+		</LinearLayout>
+		
+		<ImageView 
+		    android:id="@+id/imageViewListItemAlert"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_alignParentBottom="true"
+		    android:paddingBottom="12dp"
+		    android:paddingRight="12dp"
+		    android:src="@drawable/ic_alert_orange"
+		    android:scaleType="fitCenter"
+		    android:contentDescription="@string/image_description_alert"
+		    android:visibility="gone" />
+	</RelativeLayout>
+	<ImageView
+		    android:id="@+id/imageViewListItemDone"
+		    android:layout_width="40dp"
+		    android:layout_height="40dp"
+		    android:layout_alignParentTop="true"
+		    android:layout_alignParentRight="true"
+		    android:scaleType="fitCenter"
+		    android:contentDescription="@string/image_description_list_completed"
+		    android:src="@drawable/list_done_affordance_blue"
+		    android:visibility="gone" />
+</RelativeLayout>
