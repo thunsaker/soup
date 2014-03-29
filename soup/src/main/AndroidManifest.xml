@@ -160,7 +160,7 @@
 
         <meta-data
             android:name="com.crashlytics.ApiKey"
-            android:value="" />
+            android:value="@string/crashlytics_key" />
 
         <meta-data
             android:name="com.google.android.gms.version"
