@@ -59,8 +59,8 @@ public class MainActivity extends ActionBarActivity implements
 			"com.thunsaker.soup.ui.HistoryActivity", // History
 			"com.thunsaker.soup.ui.ListsFragment", // Lists
 			"com.thunsaker.soup.ui.AboutFragment", // About
-//			"com.thunsaker.soup.ui.SettingsActivity", // Settings
 			"com.thunsaker.soup.ui.WelcomeActivity" }; // Log Out
+    //			"com.thunsaker.soup.ui.SettingsActivity" }; // Settings
 
 	private final static Uri soupProUri = Uri
 			.parse("market://details?id=com.thunsaker.soup.pro");
@@ -489,12 +489,12 @@ public class MainActivity extends ActionBarActivity implements
 		FragmentManager fragmentManager = getSupportFragmentManager();
 
 		switch (position) {
-		case 5: // Log out
+		case 4: // Log out
 			DialogFragment confirmationDialog = new LogOutDialogFragment();
 			confirmationDialog.show(getSupportFragmentManager(),
 					LOGOUT_CONFIRMATION_DIALOG);
 			break;
-		case 4: // Settings
+		case 5: // Settings
 			Intent settingsIntent;
 			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD)
 				settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
