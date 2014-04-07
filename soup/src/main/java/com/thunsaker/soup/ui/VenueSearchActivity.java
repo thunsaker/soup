@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
@@ -30,11 +31,16 @@ import com.thunsaker.soup.R;
 import com.thunsaker.soup.classes.foursquare.CompactVenue;
 import com.thunsaker.soup.ui.MainActivity.CheckinDialogFragment;
 
+import javax.inject.Inject;
+
 /*
  * Created by @thunsaker
  */
 public class VenueSearchActivity extends ActionBarActivity implements
 	VenueListFragment.Callbacks {
+
+    @Inject
+    LocationManager mLocationManager;
 
 	private boolean useLogo = true;
 	private boolean showHomeUp = true;
@@ -235,7 +241,7 @@ public class VenueSearchActivity extends ActionBarActivity implements
 				// TODO: Add GPS Validation here, if they paste that
 				VenueListFragment.searchQueryLocation = searchLocation;
 				mySearchIntent.putExtra(FoursquareHelper.SEARCH_LOCATION, searchLocation);
-				MainActivity.mLocationManager = null;
+				mLocationManager = null;
 			} else {
 
             }

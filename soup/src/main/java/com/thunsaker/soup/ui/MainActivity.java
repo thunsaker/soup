@@ -3,6 +3,7 @@ package com.thunsaker.soup.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
@@ -44,11 +45,20 @@ import com.thunsaker.soup.util.Util;
 import com.thunsaker.soup.util.foursquare.CheckinEndpoint;
 import com.thunsaker.soup.util.foursquare.UserEndpoint;
 
+import javax.inject.Inject;
+
 /*
  * Created by @thunsaker
  */
 public class MainActivity extends ActionBarActivity implements
 		VenueListFragment.Callbacks, ListsFragment.Callbacks {
+
+    @Inject
+    LocationManager mLocationManager;
+
+    @Inject
+    Application app;
+
 	private String[] mDrawerItems;
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -68,7 +78,6 @@ public class MainActivity extends ActionBarActivity implements
 	public static boolean isFoursquareConnected = false;
 	static FoursquareClient mFoursquareClient;
 
-	public static LocationManager mLocationManager;
 	public static LatLng currentLocation;
 
 	private AdView adView;
@@ -460,7 +469,7 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onPause() {
-        MainActivity.mLocationManager = null;
+        mLocationManager = null;
 
         if (adView != null) {
             adView.pause();
