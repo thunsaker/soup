@@ -33,6 +33,8 @@ import com.thunsaker.soup.util.foursquare.VenueEndpoint;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.DefaultHeaderTransformer;
@@ -44,6 +46,9 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
  */
 public class VenueListFragment extends ListFragment
         implements OnRefreshListener {
+
+    @Inject
+    LocationManager mLocationManager;
 
     public static VenueListAdapter currentVenueListAdapter;
     public static List<CompactVenue> currentVenueList;
@@ -332,8 +337,8 @@ public class VenueListFragment extends ListFragment
 	private void enableLocationSettings() {
         getActivity().setProgressBarVisibility(false);
 
-		if(MainActivity.mLocationManager != null)
-			MainActivity.mLocationManager.removeUpdates(mLocationListener);
+		if(mLocationManager != null)
+			mLocationManager.removeUpdates(mLocationListener);
 
         Toast.makeText(getActivity(), R.string.alert_gps_disabled, Toast.LENGTH_SHORT).show();
 
@@ -350,7 +355,7 @@ public class VenueListFragment extends ListFragment
     		if(!isSearching)
     			RefreshVenueList(VenueListFragment.this);
             else if(isSearching && (searchQueryLocation != null || searchQueryLocation != "")) {
-            	MainActivity.mLocationManager = null;
+            	mLocationManager = null;
             }
         }
 
@@ -421,8 +426,8 @@ public class VenueListFragment extends ListFragment
 	@Override
 	public void onStop() {
 	    super.onStop();
-	    if(MainActivity.mLocationManager != null)
-	    	MainActivity.mLocationManager.removeUpdates(mLocationListener);
+	    if(mLocationManager != null)
+	    	mLocationManager.removeUpdates(mLocationListener);
 	}
 
 	@Override
@@ -437,27 +442,27 @@ public class VenueListFragment extends ListFragment
 				LocationProvider provider = null;
 				Boolean hasLocationProvider = false;
 
-				MainActivity.mLocationManager =
+				mLocationManager =
 				        (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 				// Use network provider first
 				LocationProvider networkProvider =
-						MainActivity.mLocationManager.getProvider(
+						mLocationManager.getProvider(
                                 LocationManager.NETWORK_PROVIDER);
 
 				Location lastKnown =
-						MainActivity.mLocationManager.getLastKnownLocation(
+						mLocationManager.getLastKnownLocation(
                                 LocationManager.PASSIVE_PROVIDER);
 				double lat = lastKnown.getLatitude();
 				double lon = lastKnown.getLongitude();
 				MainActivity.currentLocation = new LatLng(lat, lon);
 
 				final boolean networkEnabled =
-                        MainActivity.mLocationManager.isProviderEnabled(networkProvider.getName());
+                        mLocationManager.isProviderEnabled(networkProvider.getName());
 				LocationProvider gpsProvider =
-						MainActivity.mLocationManager.getProvider(
+						mLocationManager.getProvider(
                                 LocationManager.NETWORK_PROVIDER);
 				final boolean gpsEnabled =
-                        MainActivity.mLocationManager.isProviderEnabled(gpsProvider.getName());
+                        mLocationManager.isProviderEnabled(gpsProvider.getName());
 				if (gpsEnabled) {
 					provider = gpsProvider;
 					hasLocationProvider = true;
@@ -470,7 +475,7 @@ public class VenueListFragment extends ListFragment
 
 				if(hasLocationProvider) {
                     // Update every 5 minutes or ~1 mile
-					MainActivity.mLocationManager.requestLocationUpdates(
+					mLocationManager.requestLocationUpdates(
                             provider.getName(), 300000, 1709, mLocationListener);
 					if(MainActivity.currentLocation != null)
 						RefreshVenueList(VenueListFragment.this);

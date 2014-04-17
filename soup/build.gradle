@@ -93,4 +93,7 @@ dependencies {
     compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abc:+'
     compile 'com.crashlytics.android:crashlytics:1.+'
 
+//    compile 'com.squareup:otto:1.3.4'
+    compile 'com.squareup.dagger:dagger-compiler:1.2.0'
+    compile 'com.squareup.dagger:dagger:1.2.0'
 }
