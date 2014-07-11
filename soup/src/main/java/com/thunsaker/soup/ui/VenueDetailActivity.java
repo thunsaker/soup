@@ -6,16 +6,16 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.Window;
 
 import com.thunsaker.soup.R;
+import com.thunsaker.soup.app.BaseSoupActivity;
 
 /*
  * Created by @thunsaker
  */
-public class VenueDetailActivity extends ActionBarActivity {
+public class VenueDetailActivity extends BaseSoupActivity {
 	public static boolean wasEdited;
 
     private boolean useLogo = false;
@@ -107,7 +107,7 @@ public class VenueDetailActivity extends ActionBarActivity {
 				finish();
 				break;
 			default:
-				NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
+
 				break;
 			}
 

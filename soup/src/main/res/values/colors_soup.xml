@@ -1,22 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- File created by the Android Action Bar Style Generator
-
-     Copyright (C) 2011 The Android Open Source Project
-     Copyright (C) 2012 readyState Software Ltd
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-  
-          http://www.apache.org/licenses/LICENSE-2.0
-  
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
-
 <resources>
-    <color name="pressed_soup">#CC8FD400</color>
+    <!--New Colors-->
+    <!--http://paletton.com/#uid=72X0u0kC6F-k+JrqUGAFQsaI0l+-->
+    <color name="soup_green">#ff00d04e</color>
+    <color name="soup_green_translucent">#5500d04e</color>
+    <color name="soup_green_translucent_pressed">#aa00d04e</color>
+
+    <color name="soup_green_light">#ff21d263</color>
+    <color name="soup_green_light_translucent">#5521d263</color>
+    <color name="soup_green_light_translucent_pressed">#aa21d263</color>
+
+    <color name="soup_green_dark">#ff00a33d</color>
+    <color name="soup_green_dark_translucent">#5500a33d</color>
+    <color name="soup_green_dark_translucent_pressed">#aa00a33d</color>
+
+    <color name="soup_blue">#ff068cbf</color>
+    <color name="soup_blue_translucent">#55068cbf</color>
+    <color name="soup_blue_translucent_pressed">#aa068cbf</color>
+
+    <color name="soup_blue_light">#ff2697c2</color>
+    <color name="soup_blue_light_translucent">#552697c2</color>
+    <color name="soup_blue_light_translucent_pressed">#aa2697c2</color>
+
+    <color name="soup_blue_dark">#ff04678d</color>
+    <color name="soup_blue_dark_translucent">#5504678d</color>
+    <color name="soup_blue_dark_translucent_pressed">#aa04678d</color>
+
+    <color name="soup_green_secondary">#ff88f000</color>
+    <color name="soup_green_secondary_translucent">#5588f000</color>
+    <color name="soup_green_secondary_translucent_pressed">#aa88f000</color>
+
+    <color name="soup_green_secondary_light">#ff99f126</color>
+    <color name="soup_green_secondary_light_translucent">#5599f126</color>
+    <color name="soup_green_secondary_light_translucent_pressed">#aa99f126</color>
+
+    <color name="soup_green_secondary_dark">#ff74cd00</color>
+    <color name="soup_green_secondary_dark_translucent">#5574cd00</color>
+    <color name="soup_green_secondary_dark_translucent_pressed">#aa74cd00</color>
+
+    <color name="soup_red">#ffff2c00</color>
+    <color name="soup_red_translucent">#55ff2c00</color>
+    <color name="soup_red_translucent_pressed">#aaff2c00</color>
+
+    <color name="soup_red_light">#ffff4e29</color>
+    <color name="soup_red_light_translucent">#55ff4e29</color>
+    <color name="soup_red_light_translucent_pressed">#aaff4e29</color>
+
+    <color name="soup_red_dark">#ffe02700</color>
+    <color name="soup_red_dark_translucent">#55e02700</color>
+    <color name="soup_red_dark_translucent_pressed">#aae02700</color>
 </resources>

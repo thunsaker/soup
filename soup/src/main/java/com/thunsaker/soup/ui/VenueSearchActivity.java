@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -25,26 +24,35 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.thunsaker.soup.FoursquareHelper;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.foursquare.CompactVenue;
+import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.events.VenueSearchEvent;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.ui.MainActivity.CheckinDialogFragment;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
+
 /*
  * Created by @thunsaker
  */
-public class VenueSearchActivity extends ActionBarActivity implements
+public class VenueSearchActivity extends BaseSoupActivity implements
 	VenueListFragment.Callbacks {
+
+    @Inject @ForApplication
+    Context mContext;
 
     @Inject
     LocationManager mLocationManager;
 
-	private boolean useLogo = true;
-	private boolean showHomeUp = true;
-//	private boolean mTwoPane;
+    @Inject
+    EventBus mBus;
+
 	private boolean enableDuplicateMenu;
 
 	public static String SELECTED_DUPLICATE_VENUE = "SELECTED_DUPLICATE_VENUE";
@@ -74,9 +82,7 @@ public class VenueSearchActivity extends ActionBarActivity implements
 
 		setContentView(R.layout.activity_venue_search);
 
-		ab = getSupportActionBar();
-
-		SetupActionBar();
+		ab = SetupActionBar();
 
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		mEditTextLocation = (EditText) findViewById(R.id.editTextSearchVenueLocation);
@@ -101,8 +107,10 @@ public class VenueSearchActivity extends ActionBarActivity implements
 
 		SetupSearchViews();
 		SetupLocationSearchButtons();
-		ShowInstructionalOverlay(PreferencesHelper.getShownSearchOverlay(getApplicationContext()));
-		setProgressBarVisibility(false);
+		ShowInstructionalOverlay(PreferencesHelper.getShownSearchOverlay(mContext));
+		setSupportProgressBarVisibility(false);
+
+        ButterKnife.inject(this);
 	}
 
 	@Override
@@ -119,13 +127,14 @@ public class VenueSearchActivity extends ActionBarActivity implements
 		if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			String location =
-                    intent.hasExtra(FoursquareHelper.SEARCH_LOCATION)
-                            ? intent.getStringExtra(FoursquareHelper.SEARCH_LOCATION)
+                    intent.hasExtra(FoursquarePrefs.SEARCH_LOCATION)
+                            ? intent.getStringExtra(FoursquarePrefs.SEARCH_LOCATION)
                             : "";
+            String duplicateVenueId = intent.hasExtra(FoursquarePrefs.SEARCH_DUPLICATE_VENUE_ID)
+                    ? intent.getStringExtra(FoursquarePrefs.SEARCH_DUPLICATE_VENUE_ID)
+                    : "";
 
-            VenueListFragment.isDuplicateSearching = intent.hasExtra(FoursquareHelper.SEARCH_DUPLICATE) && intent.getBooleanExtra(FoursquareHelper.SEARCH_DUPLICATE, false);
-			VenueListFragment.searchQuery = query;
-			VenueListFragment.searchQueryLocation = location.length() > 0 ? location : "";
+            mBus.post(new VenueSearchEvent(query, location, duplicateVenueId));
 		}
 	}
 
@@ -163,15 +172,19 @@ public class VenueSearchActivity extends ActionBarActivity implements
 		}
 	}
 
-	private void SetupActionBar() {
+	private ActionBar SetupActionBar() {
+        ActionBar ab = getSupportActionBar();
 		ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 		ab.setCustomView(R.layout.search_layout_actionbar);
 		ab.setDisplayShowCustomEnabled(true);
-		ab.setDisplayShowHomeEnabled(showHomeUp);
-		ab.setDisplayUseLogoEnabled(useLogo);
-		ab.setDisplayHomeAsUpEnabled(showHomeUp);
-		setProgressBarVisibility(true);
-		setProgressBarIndeterminate(true);
+		ab.setDisplayShowHomeEnabled(true);
+        ab.setDisplayUseLogoEnabled(true);
+		ab.setDisplayHomeAsUpEnabled(true);
+//        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent))); // Set the background color
+        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
+		setSupportProgressBarVisibility(true);
+		setSupportProgressBarIndeterminate(true);
+        return ab;
 	}
 
 	private void SetupSearchViews() {
@@ -240,7 +253,7 @@ public class VenueSearchActivity extends ActionBarActivity implements
 				// We have a search location, lets see if it is a gps
 				// TODO: Add GPS Validation here, if they paste that
 				VenueListFragment.searchQueryLocation = searchLocation;
-				mySearchIntent.putExtra(FoursquareHelper.SEARCH_LOCATION, searchLocation);
+				mySearchIntent.putExtra(FoursquarePrefs.SEARCH_LOCATION, searchLocation);
 				mLocationManager = null;
 			} else {
 
@@ -249,7 +262,7 @@ public class VenueSearchActivity extends ActionBarActivity implements
 			if(VenueListFragment.searchQuery != null
                     && VenueListFragment.searchQuery.length() > 0) {
 				if(VenueListFragment.isDuplicateSearching) {
-					mySearchIntent.putExtra(FoursquareHelper.SEARCH_DUPLICATE, true);
+					mySearchIntent.putExtra(FoursquarePrefs.SEARCH_DUPLICATE, true);
 					mySearchIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
 				}
 
@@ -267,14 +280,18 @@ public class VenueSearchActivity extends ActionBarActivity implements
 		pickLocationImageButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent pickLocationIntent =
-                        new Intent(getApplicationContext(), LocationSelectActivity.class);
-				startActivityForResult(pickLocationIntent, LocationSelectActivity.PICK_LOCATION);
+                OpenLocationPicker();
 			}
 		});
 	}
 
-	@Override
+    private void OpenLocationPicker() {
+        Intent pickLocationIntent =
+            new Intent(getApplicationContext(), LocationSelectActivity.class);
+            startActivityForResult(pickLocationIntent, LocationSelectActivity.PICK_LOCATION);
+    }
+
+    @Override
 	public void onItemSelected(String compactVenueJson) {
 		if(VenueListFragment.isDuplicateSearching) {
 			enableDuplicateMenu = true;

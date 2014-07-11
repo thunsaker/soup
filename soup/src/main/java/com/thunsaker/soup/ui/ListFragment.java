@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,25 +22,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.foursquare.CompactVenue;
-import com.thunsaker.soup.classes.foursquare.FoursquareList;
-import com.thunsaker.soup.classes.foursquare.FoursquareListItem;
+import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.api.model.FoursquareList;
+import com.thunsaker.soup.data.api.model.FoursquareListItem;
 import com.thunsaker.soup.util.Util;
 import com.thunsaker.soup.util.foursquare.ListEndpoint;
 
 import java.util.List;
 
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.library.DefaultHeaderTransformer;
-import uk.co.senab.actionbarpulltorefresh.library.Options;
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /*
  * Created by @thunsaker
  */
 public class ListFragment extends android.support.v4.app.ListFragment implements
-        OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener {
 
 	public static final String ARG_ITEM_JSON_STRING = "item_json_string";
 
@@ -52,15 +50,20 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
-    public static PullToRefreshLayout mPullToRefreshLayout;
-
 	public static ImageView mImageViewHeaderPhoto;
 	public static ImageView mImageViewTemp;
 
 	public static ImageView mImageViewHeaderProfile;
 	public static TextView mTextViewHeaderCreator;
 
-	public interface Callbacks {
+    @InjectView(R.id.swipeLayoutVenueListContainer) SwipeRefreshLayout mSwipeViewVenueListContainer;
+
+    @Override
+    public void onRefresh() {
+        RefreshList(this);
+    }
+
+    public interface Callbacks {
 		public void onItemSelected(String listJson);
 	}
 
@@ -133,22 +136,10 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 
 		RefreshList(this);
 
-        ViewGroup viewGroup = (ViewGroup) view;
-        mPullToRefreshLayout = new PullToRefreshLayout(viewGroup.getContext());
+        ButterKnife.inject(this, view);
 
-        ActionBarPullToRefresh.from(getActivity())
-                .insertLayoutInto(viewGroup)
-                .theseChildrenArePullable(getListView(), getListView().getEmptyView())
-                .listener(this)
-                .options(Options.create()
-                        .scrollDistance(0.40f)
-                        .build())
-                .setup(mPullToRefreshLayout);
-
-        DefaultHeaderTransformer transformer = (DefaultHeaderTransformer) mPullToRefreshLayout.getHeaderTransformer();
-        transformer.setProgressBarColor(getResources().getColor(R.color.foursquare_green));
-
-        mPullToRefreshLayout.setRefreshing(true);
+        mSwipeViewVenueListContainer.setOnRefreshListener(this);
+        mSwipeViewVenueListContainer.setColorScheme(R.color.foursquare_green, R.color.foursquare_orange, R.color.foursquare_green, R.color.foursquare_blue);
 	}
 
 	public static void RefreshList(ListFragment theCaller) {
@@ -303,11 +294,9 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 				final FoursquareListItem listItem = items.get(position);
 				final CompactVenue venue = listItem.getVenue();
 				if (venue != null) {
-					final String myVenueName = venue.getName() != null ? venue
-							.getName() : "";
-					final String myVenueAddress = venue.getLocation()
-							.getAddress() != null ? venue.getLocation()
-							.getAddress() : "";
+					final String myVenueName = venue.name != null ? venue.name : "";
+					final String myVenueAddress = venue.location.address != null
+                            ? venue.location.address : "";
 
 					final TextView nameTextView = (TextView) v
 							.findViewById(R.id.textViewListItemName);
@@ -320,7 +309,7 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 						addressTextView.setText(myVenueAddress);
 
 					ImageView doneImageView = (ImageView) v.findViewById(R.id.imageViewListItemDone);
-					if (venue.getBeenHere())
+					if (venue.beenHere)
 						doneImageView.setVisibility(View.VISIBLE);
 					else
 						doneImageView.setVisibility(View.GONE);
@@ -328,7 +317,7 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 					/*
 					 * final ImageView primaryCategoryImageView =
 					 * (ImageView)v.findViewById(R.id.imageViewVenueCategory);
-					 * List<Category> myCategories = venue.getCategories();
+					 * List<Category> myCategories = venuecategories;
 					 * if(myCategories != null) { Category primaryCategory =
 					 * myCategories.get(0) != null ? myCategories.get(0) : null;
 					 * if(primaryCategoryImageView != null && primaryCategory !=
@@ -353,12 +342,5 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 			}
 			return v;
 		}
-	}
-
-	@Override
-	public void onRefreshStarted(View view) {
-		ListFragment.isRefreshing = true;
-		RefreshList(ListFragment.this);
-		getActivity().setProgressBarVisibility(true);
 	}
 }

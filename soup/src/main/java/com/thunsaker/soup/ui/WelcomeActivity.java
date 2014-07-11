@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.foursquare.android.nativeoauth.FoursquareOAuth;
 import com.foursquare.android.nativeoauth.model.AccessTokenResponse;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
-import com.thunsaker.soup.AuthHelper;
+import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 

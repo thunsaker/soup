@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 	public static final String SOUP_PACKAGE_NAME = "com.thunsaker.soup";
+    public static final String SOUP_PACKAGE_NAME_DEBUG = "com.thunsaker.soup.debug";
 	public static final String SOUP_PRO_PACKAGE_NAME = "com.thunsaker.soup.pro";
+    public static final String SOUP_PRO_PACKAGE_NAME_DEBUG = "com.thunsaker.soup.pro.debug";
 	public static final String SOUP_PRO_LAUNCHER_ACTIVITY = "com.thunsaker.soup.pro.MainActivity";
 
 	public static final String DIALOG_HIDE_SOUP_CONFIRM = "HIDE_SOUP";
@@ -35,7 +37,11 @@ public class MainActivity extends FragmentActivity {
 	        Button mLaunchSoupButton = (Button) findViewById(R.id.buttonGetSoup);
 	        Button mHideSoupButton = (Button) findViewById(R.id.buttonHideSoup);
 
-	        if(manager.checkSignatures(SOUP_PACKAGE_NAME, SOUP_PRO_PACKAGE_NAME) == PackageManager.SIGNATURE_MATCH) {
+            if(BuildConfig.DEBUG && manager.checkSignatures(SOUP_PACKAGE_NAME_DEBUG, SOUP_PRO_PACKAGE_NAME_DEBUG) == PackageManager.SIGNATURE_MATCH) {
+                ((TextView) findViewById(R.id.textViewSoupInstruction)).setText(R.string.just_key);
+                mLaunchSoupButton.setText(R.string.open_soup);
+                isInstalled = true;
+            } else if(manager.checkSignatures(SOUP_PACKAGE_NAME, SOUP_PRO_PACKAGE_NAME) == PackageManager.SIGNATURE_MATCH) {
 	        	((TextView) findViewById(R.id.textViewSoupInstruction)).setText(R.string.just_key);
 	        	mLaunchSoupButton.setText(R.string.open_soup);
 	        	isInstalled = true;
@@ -56,7 +62,7 @@ public class MainActivity extends FragmentActivity {
 
 	public void openSoup() {
 		if(isInstalled) {
-			startActivity(new Intent(getPackageManager().getLaunchIntentForPackage(SOUP_PACKAGE_NAME)));
+			startActivity(new Intent(getPackageManager().getLaunchIntentForPackage(BuildConfig.DEBUG ? SOUP_PACKAGE_NAME_DEBUG : SOUP_PACKAGE_NAME)));
 		} else {
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.thunsaker.soup")));
 		}

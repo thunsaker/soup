@@ -4,13 +4,13 @@
     tools:context=".VenueSearchActivity"
     android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<LinearLayout 
+	<LinearLayout
 	    android:id="@+id/linearLayoutVenueSearchWrapperOuter"
 	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content" 
+	    android:layout_height="wrap_content"
 	    android:background="@drawable/border_bottom_gray"
-	    android:orientation="vertical" >
-		<LinearLayout 
+	    android:orientation="vertical">
+		<LinearLayout
 		    android:id="@+id/linearLayoutVenueSearchWrapperInner"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
 			android:layout_marginLeft="2dp"
 		    android:orientation="horizontal"
 		    android:baselineAligned="false">
-			
+
 			<TextView
 			    android:id="@+id/textViewSearchVenueLocation"
 			    android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
 			    android:layout_marginRight="5dp"
 			    android:gravity="center_vertical"
 			    android:text="@string/search_location_label" />
-			
+
 			<!-- <com.actionbarsherlock.widget.SearchView
 		        android:id="@+id/searchViewSearchLocation"
 			    android:layout_width="0dp"
@@ -39,7 +39,7 @@
 			    android:hint="@string/search_location_hint"
 			    android:inputType="text|textPostalAddress"
 			    android:singleLine="true" /> -->
-			
+
 			<EditText
 			    android:id="@+id/editTextSearchVenueLocation"
 			    android:layout_width="0dp"
@@ -50,8 +50,8 @@
 			    android:imeOptions="actionSearch"
 			    android:selectAllOnFocus="true"
 			    android:singleLine="true" />
-			
-		    <ImageButton 
+
+		    <ImageButton
 		        android:id="@+id/imageButtonSearchVenueLocationPick"
 		        android:layout_height="40dp"
 		        android:layout_width="40dp"
@@ -59,8 +59,8 @@
 		        android:src="@drawable/map_marker_button"
 		        android:background="@null"
 		        android:contentDescription="@string/image_description_search_pick_location" />
-		</LinearLayout>				    
-		<!-- 	<ImageButton 
+		</LinearLayout>
+		<!-- 	<ImageButton
 				android:id="@+id/imageButtonSearchVenueLocationMyLocation"
 				android:layout_height="40dp"
 				android:layout_width="40dp"
@@ -78,7 +78,7 @@
 		    android:text="@string/search_location_hint_blank" />
 	</LinearLayout>
 
-	<fragment 
+	<fragment
         android:id="@+id/fragmentVenueListSearchResults"
         android:name="com.thunsaker.soup.ui.VenueListFragment"
         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
 	    android:visibility="gone"
 	    android:src="@drawable/right_arrow_up_from_left_long"
 	    android:contentDescription="@string/image_description_search_pick_location" />
-	
+
 	<TextView
 	    android:id="@+id/textViewSearchOverlayPickLocation"
 	    android:layout_width="wrap_content"
@@ -109,7 +109,7 @@
 	    android:text="@string/search_overlay_pick_location"
 	    android:visibility="gone"
 	    android:textSize="20sp" />
-	
+
 	<ImageView
 	    android:id="@+id/imageViewSearchOverlayTypeLocation"
 	    android:layout_width="100dp"
@@ -133,8 +133,8 @@
 	    android:visibility="gone"
 	    android:text="@string/search_overlay_add_location"
 	    android:textSize="20sp" />
-    
-    <FrameLayout 
+
+    <FrameLayout
 	    android:id="@+id/frameLayoutSearchInstructionalOverlay"
 	    android:background="@color/black_super_transparent"
 	    android:layout_width="fill_parent"

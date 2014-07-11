@@ -21,10 +21,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.FoursquareHelper;
-import com.thunsaker.soup.util.foursquare.VenueEndpoint;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
-/**
+/*
  * Created by thunsaker on 7/19/13.
  */
 public class VenueEditLocationFragment extends Fragment {
@@ -96,24 +96,24 @@ public class VenueEditLocationFragment extends Fragment {
             String latLng = "";
 
             if(VenueEditTabsActivity.originalVenue != null) {
-                address = VenueEditTabsActivity.originalVenue.getLocation().getAddress();
-                crossStreet = VenueEditTabsActivity.originalVenue.getLocation().getCrossStreet();
-                city = VenueEditTabsActivity.originalVenue.getLocation().getCity();
-                state = VenueEditTabsActivity.originalVenue.getLocation().getState();
-                zip = VenueEditTabsActivity.originalVenue.getLocation().getPostalCode();
-                latLng = VenueEditTabsActivity.originalVenue.getLocation().getLatLngString();
+                address = VenueEditTabsActivity.originalVenue.location.address;
+                crossStreet = VenueEditTabsActivity.originalVenue.location.crossStreet;
+                city = VenueEditTabsActivity.originalVenue.location.city;
+                state = VenueEditTabsActivity.originalVenue.location.state;
+                zip = VenueEditTabsActivity.originalVenue.location.postalCode;
+                latLng = VenueEditTabsActivity.originalVenue.location.getLatLngString();
             } else {
                 getActivity().setProgressBarVisibility(true);
-                new VenueEndpoint.GetVenue(getActivity().getApplicationContext(),
-                        VenueEditTabsActivity.venueToEdit.getId(), this.getActivity(),
-                        FoursquareHelper.CALLER_SOURCE_EDIT_VENUE).execute();
+                new FoursquareTasks.GetVenue(getActivity().getApplicationContext(),
+                        VenueEditTabsActivity.venueToEdit.id, this.getActivity(),
+                        FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
 
-                address = VenueEditTabsActivity.venueToEdit.getLocation().getAddress();
-                crossStreet = VenueEditTabsActivity.venueToEdit.getLocation().getCrossStreet();
-                city = VenueEditTabsActivity.venueToEdit.getLocation().getCity();
-                state = VenueEditTabsActivity.venueToEdit.getLocation().getState();
-                zip = VenueEditTabsActivity.venueToEdit.getLocation().getPostalCode();
-                latLng = VenueEditTabsActivity.venueToEdit.getLocation().getLatLngString();
+                address = VenueEditTabsActivity.venueToEdit.location.address;
+                crossStreet = VenueEditTabsActivity.venueToEdit.location.crossStreet;
+                city = VenueEditTabsActivity.venueToEdit.location.city;
+                state = VenueEditTabsActivity.venueToEdit.location.state;
+                zip = VenueEditTabsActivity.venueToEdit.location.postalCode;
+                latLng = VenueEditTabsActivity.venueToEdit.location.getLatLngString();
             }
 
             mAddressEditText.setText(address);
@@ -141,8 +141,8 @@ public class VenueEditLocationFragment extends Fragment {
                             new Intent(
                                     getActivity().getApplicationContext(),
                                     LocationSelectActivity.class);
-                    double myLat = VenueEditTabsActivity.originalVenue.getLocation().getLatitude();
-                    double myLng = VenueEditTabsActivity.originalVenue.getLocation().getLongitude();
+                    double myLat = VenueEditTabsActivity.originalVenue.location.latitude;
+                    double myLng = VenueEditTabsActivity.originalVenue.location.longitude;
                     pickLocationIntent.putExtra(
                             LocationSelectActivity.ORIGINAL_LOCATION_EXTRA,
                             new double[]{myLat,myLng});
@@ -160,7 +160,7 @@ public class VenueEditLocationFragment extends Fragment {
                 mLinearLayoutLocationSuperuserSection.setVisibility(View.VISIBLE);
             }
 
-            SetupMap(VenueEditTabsActivity.venueToEdit.getLocation().getLatLng());
+            SetupMap(VenueEditTabsActivity.venueToEdit.location.getLatLng());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -260,7 +260,7 @@ public class VenueEditLocationFragment extends Fragment {
                     mLatLngEditText.setText(myPickedLocation);
 
                     LatLng originalLatLng =
-                            VenueEditTabsActivity.originalVenue.getLocation().getLatLng();
+                            VenueEditTabsActivity.originalVenue.location.getLatLng();
                     if(mMap != null && myLatLng != null) {
                         mMap.clear();
                         mMap.addMarker(new MarkerOptions()

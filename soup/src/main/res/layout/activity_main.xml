@@ -1,7 +1,7 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/relativeLayoutVenueListWrapperOuter"
@@ -22,17 +22,6 @@
             android:orientation="vertical"
             android:layout_alignParentBottom="true"
             android:background="@color/gray_dark" />
-        <!--<com.google.android.gms.ads.AdView-->
-            <!--xmlns:ads="http://schemas.android.com/apk/res-auto"-->
-            <!--android:id="@+id/adView"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--ads:adSize="BANNER"-->
-            <!--ads:adUnitId="@string/admob_id"-->
-            <!--android:layout_gravity="center_horizontal|bottom"-->
-            <!--android:gravity="center_horizontal|bottom"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:background="@color/gray_dark" />-->
 
     </RelativeLayout>
 
@@ -44,6 +33,7 @@
         android:background="@color/white"
         android:choiceMode="singleChoice"
         android:divider="@color/foursquare_green_transparent"
-        android:dividerHeight="0.5dp" />
+        android:dividerHeight="0.5dp"
+        android:fitsSystemWindows="true" />
 
 </android.support.v4.widget.DrawerLayout>

@@ -15,7 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.foursquare.TimeFrame;
+import com.thunsaker.soup.data.api.model.TimeFrame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,12 +48,12 @@ public class VenueEditHoursFragment extends Fragment {
             currentVenueListHours = new ArrayList<TimeFrame>();
 
         if(VenueEditTabsActivity.originalVenue != null
-                && VenueEditTabsActivity.originalVenue.getVenueHours() != null
-                && VenueEditTabsActivity.originalVenue.getVenueHours().getTimeFrames() != null
-                && VenueEditTabsActivity.originalVenue.getVenueHours().getTimeFrames().size() > 0
+                && VenueEditTabsActivity.originalVenue.venueHours != null
+                && VenueEditTabsActivity.originalVenue.venueHours.getTimeFrames() != null
+                && VenueEditTabsActivity.originalVenue.venueHours.getTimeFrames().size() > 0
                 && currentVenueListHours.size() == 0) {
             currentVenueListHours.addAll(
-                    VenueEditTabsActivity.originalVenue.getVenueHours().getTimeFrames());
+                    VenueEditTabsActivity.originalVenue.venueHours.getTimeFrames());
         }
 
         currentVenueHoursListAdapter = new VenueHoursListAdapter(
@@ -111,12 +111,12 @@ public class VenueEditHoursFragment extends Fragment {
                         (Button) v.findViewById(R.id.buttonVenueEditTimeFrameDeleteCancel);
 
                 final TimeFrame time = items.get(pos);
-                
+
                 final TextView daysTextView =
                         (TextView)v.findViewById(R.id.textViewVenueEditHoursDays);
                 final TextView timeTextView =
                         (TextView)v.findViewById(R.id.textViewVenueEditHoursTime);
-        		
+
                 if (time != null && !time.getOpenTimesString().equals("")) {
                     final String myTimeDays = time.getDaysString() != null
                             ? time.getDaysString()
@@ -124,7 +124,7 @@ public class VenueEditHoursFragment extends Fragment {
                     final String myTimeHours = time.getOpenTimesString() != null
                             ? time.getOpenTimesString()
                             : "";
-                            
+
                     daysTextView.setText(myTimeDays);
                     timeTextView.setText(myTimeHours);
 

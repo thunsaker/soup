@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,9 +21,10 @@ import android.widget.TextView;
 
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.foursquare.Category;
-import com.thunsaker.soup.classes.foursquare.FoursquareImage;
-import com.thunsaker.soup.util.foursquare.VenueEndpoint;
+import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.data.api.model.Category;
+import com.thunsaker.soup.data.api.model.FoursquareImage;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
 import java.util.Calendar;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
 /*
  * Created by @thunsaker
  */
-public class VenueAddCategoryActivity extends ActionBarActivity {
+public class VenueAddCategoryActivity extends BaseSoupActivity {
 	private boolean useLogo = true;
 	private boolean showHomeUp = true;
 
@@ -74,7 +74,7 @@ public class VenueAddCategoryActivity extends ActionBarActivity {
 
 		Calendar cal = Calendar.getInstance();
 		if(FoursquareCategoriesMaster == null || (FoursquareCategoriesMaster != null && Math.abs(FoursquareCategoriesMasterDate - cal.get(Calendar.SECOND)) >= 3600))
-			new VenueEndpoint.GetCategories(getApplicationContext(), this).execute();
+			new FoursquareTasks.GetCategories(getApplicationContext(), this).execute();
 
 		myPrimaryCategoryListAdapter = new CategoryListAdapter(getApplicationContext(), R.layout.list_category_item, FoursquareCategoriesMaster, 1);
 
@@ -131,8 +131,8 @@ public class VenueAddCategoryActivity extends ActionBarActivity {
 
 				final LinearLayout myLinearLayout = (LinearLayout) v.findViewById(R.id.linearLayoutCategoryItemWrapper);
 				ImageView myImageView = (ImageView) myLinearLayout.getChildAt(0);
-				UrlImageViewHelper.setUrlDrawable(myImageView, myCategory.getIcon().getFoursquareLegacyImageUrl(FoursquareImage.SIZE_MEDIANO), R.drawable.foursquare_generic_category_icon);
-				((TextView) myLinearLayout.getChildAt(1)).setText(myCategory.getName().toString());
+				UrlImageViewHelper.setUrlDrawable(myImageView, myCategory.icon.getFoursquareLegacyImageUrl(FoursquareImage.SIZE_MEDIANO), R.drawable.foursquare_generic_category_icon);
+				((TextView) myLinearLayout.getChildAt(1)).setText(myCategory.name);
 
 				final LinearLayout myOptionalLinearLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.list_category_item_optional, null);
 
@@ -140,7 +140,7 @@ public class VenueAddCategoryActivity extends ActionBarActivity {
 					@SuppressLint("NewApi")
 					@Override
 					public void onClick(View v) {
-						if(tier < 3 && myCategory.getSubcategories() != null && myCategory.getSubcategories().size() > 0) {
+						if(tier < 3 && myCategory.subcategories != null && myCategory.subcategories.size() > 0) {
 							if(tier == 1) {
 								mSecondaryListView.setVisibility(View.VISIBLE);
 								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
@@ -169,7 +169,7 @@ public class VenueAddCategoryActivity extends ActionBarActivity {
 										mSecondaryListViewOverlay.setOnClickListener(null);
 									}
 								});
-								mySecondaryCategoryListAdapter = new CategoryListAdapter(getContext(), R.layout.list_category_item, myCategory.getSubcategories(), 2);
+								mySecondaryCategoryListAdapter = new CategoryListAdapter(getContext(), R.layout.list_category_item, myCategory.subcategories, 2);
 								mSecondaryListView.setAdapter(mySecondaryCategoryListAdapter);
 								mySecondaryCategoryListAdapter.notifyDataSetChanged();
 							} else {
@@ -190,11 +190,11 @@ public class VenueAddCategoryActivity extends ActionBarActivity {
 										mSecondaryListViewOverlay.setOnClickListener(null);
 									}
 								});
-								myTertiaryCategoryListAdapter = new CategoryListAdapter(getContext(), R.layout.list_category_item, myCategory.getSubcategories(), 3);
+								myTertiaryCategoryListAdapter = new CategoryListAdapter(getContext(), R.layout.list_category_item, myCategory.subcategories, 3);
 
 								ImageView myImageView = (ImageView) myOptionalLinearLayout.getChildAt(0);
-								UrlImageViewHelper.setUrlDrawable(myImageView, myCategory.getIcon().getFoursquareLegacyImageUrl(FoursquareImage.SIZE_MEDIANO), R.drawable.foursquare_generic_category_icon);
-								((TextView) myOptionalLinearLayout.getChildAt(1)).setText(myCategory.getName().toString());
+								UrlImageViewHelper.setUrlDrawable(myImageView, myCategory.icon.getFoursquareLegacyImageUrl(FoursquareImage.SIZE_MEDIANO), R.drawable.foursquare_generic_category_icon);
+								((TextView) myOptionalLinearLayout.getChildAt(1)).setText(myCategory.name.toString());
 								myOptionalLinearLayout.setOnClickListener(new OnClickListener() {
 									@Override
 									public void onClick(View v) {

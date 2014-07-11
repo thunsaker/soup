@@ -1,8 +1,8 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion "19.1"
 
     defaultConfig {
         minSdkVersion 9
@@ -10,14 +10,43 @@ android {
         versionCode 2
         versionName "1.1"
     }
+
+    signingConfigs {
+        debugSigning {
+            storeFile file(DEBUG_STORE_FILE)
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+
+        releaseSigning {
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword System.console() != null ? new String(System.console().readPassword("\nStore password: ")) : ""
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword System.console() != null ? new String(System.console().readPassword("\nKey password: ")) : ""
+        }
+    }
+
     buildTypes {
+        debug {
+            zipAlign true
+            debuggable true
+            runProguard false
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            signingConfig signingConfigs.debugSigning
+        }
+
         release {
+            zipAlign true
+            debuggable false
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.releaseSigning
         }
     }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:+'
+    compile 'com.android.support:support-v4:19.+'
 }

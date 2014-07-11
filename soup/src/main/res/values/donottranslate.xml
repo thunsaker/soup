@@ -3,8 +3,8 @@
 	<string name="app_name">Soup</string>
 	<string name="app_name_pro">Soup Pro</string>
     <string name="app_name_dev">Soup Dev</string>
-    <string name="app_version">2.0.3.1</string>
-    <string name="app_version_long">Soup v.2.0.3.1</string>
+    <string name="app_version">2.0.4</string>
+    <string name="app_version_long">Soup v.2.0.4</string>
 
     <string name="prefs_foursquare_connected">soup_foursquare_connected</string>
     <string name="prefs_foursquare_token">soup_foursquare_token</string>
