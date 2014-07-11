@@ -23,7 +23,7 @@ public class PreferencesHelper {
         prefsEditor.putBoolean(
                 context.getString(R.string.prefs_foursquare_connected),
                 newValue);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     public static String getFoursquareToken(Context context) {
@@ -38,7 +38,7 @@ public class PreferencesHelper {
         prefsEditor.putString(
                 context.getString(R.string.prefs_foursquare_token),
                 newValue);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     public static String getFoursquareApiKey(Context context) {
@@ -53,7 +53,7 @@ public class PreferencesHelper {
         prefsEditor.putString(
                 context.getString(R.string.prefs_foursquare_apikey),
                 newValue);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     public static String getFoursquareUserId(Context context) {
@@ -68,22 +68,22 @@ public class PreferencesHelper {
         prefsEditor.putString(
                 context.getString(R.string.prefs_foursquare_user_id),
                 newValue);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
-    public static String getFoursquareSuperuserLevel(Context context) {
+    public static int getFoursquareSuperuserLevel(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        return prefs.getString(
+        return prefs.getInt(
                 context.getString(R.string.prefs_foursquare_superuser_level),
-                null);
+                0);
     }
-    public static void setFoursquareSuperuserLevel(Context context, String newValue) {
+    public static void setFoursquareSuperuserLevel(Context context, int newValue) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         Editor prefsEditor = prefs.edit();
-        prefsEditor.putString(
+        prefsEditor.putInt(
                 context.getString(R.string.prefs_foursquare_superuser_level),
                 newValue);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     public static boolean getShownSearchOverlay(Context context) {
@@ -98,7 +98,7 @@ public class PreferencesHelper {
         prefsEditor.putBoolean(
                 context.getString(R.string.prefs_foursquare_search_overlay),
                 newValue);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     public static boolean getShownNavDrawer(Context context) {
@@ -113,6 +113,17 @@ public class PreferencesHelper {
         prefsEditor.putBoolean(
                 context.getString(R.string.prefs_soup_nav_drawer),
                 newValue);
+        prefsEditor.apply();
+    }
+
+    public static void migrateSuperUserPref(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        Editor prefsEditor = prefs.edit();
+        String superUserKey = context.getString(R.string.prefs_foursquare_superuser_level);
+        String previousValueString = prefs.getString(superUserKey, "-1");
+        int previousValueInt = !previousValueString.equals("") ? Integer.parseInt(previousValueString) : -1;
+        prefsEditor.remove(superUserKey);
+        prefsEditor.putInt(superUserKey, previousValueInt);
         prefsEditor.commit();
     }
 }

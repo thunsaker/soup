@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="list_venue_item_title">16dp</dimen>
-    
+
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_horizontal_margin_adjusted">14dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_vertical_margin_overlay_actionbar">71dp</dimen>
-    
+
 	<dimen name="nexus_frame_margin_top">100dp</dimen>
     <dimen name="nexus_frame_margin_side">108dp</dimen>
+
+    <dimen name="action_bar_height">56dp</dimen>
 </resources>

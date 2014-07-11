@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.Html;
@@ -31,26 +31,39 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
-import com.thunsaker.soup.R;
-import com.thunsaker.soup.FoursquareHelper;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
-import com.thunsaker.soup.classes.foursquare.Category;
-import com.thunsaker.soup.classes.foursquare.CompactVenue;
-import com.thunsaker.soup.classes.foursquare.FoursquareImage;
-import com.thunsaker.soup.classes.foursquare.Venue;
-import com.thunsaker.soup.util.foursquare.VenueEndpoint;
+import com.thunsaker.soup.R;
+import com.thunsaker.soup.app.BaseSoupFragment;
+import com.thunsaker.soup.data.api.model.Category;
+import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.api.model.FoursquareImage;
+import com.thunsaker.soup.data.api.model.Venue;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
+import com.thunsaker.soup.services.foursquare.endpoints.VenueEndpoint;
 
 import java.util.List;
+
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 /*
  * Created by @thunsaker
  */
 /**
  * A fragment representing a single Venue detail screen. This fragment is either
- * contained in a {@link VenueListActivity} in two-pane mode (on tablets) or a
+ * contained in a {@link com.thunsaker.soup.ui.VenueListFragment} in two-pane mode (on tablets) or a
  * {@link com.thunsaker.soup.ui.VenueDetailActivity} on handsets.
  */
-public class VenueDetailFragment extends Fragment {
+public class VenueDetailFragment extends BaseSoupFragment {
+    @Inject @ForApplication
+    Context mContext;
+
+    @Inject
+    EventBus mBus;
+
 	public static final String ARG_ITEM_JSON_STRING = "item_json_string";
 	public static final String VENUE_EDIT_EXTRA = "compact_venue_original";
 	protected static final String FLAG_VENUE_DIALOG = "FLAG_VENUE_DIALOG";
@@ -91,9 +104,9 @@ public class VenueDetailFragment extends Fragment {
 			currentCompactVenue = null;
 			currentVenue = null;
 			getActivity().setProgressBarVisibility(true);
-			new VenueEndpoint.GetVenue(getActivity().getApplicationContext(),
+			new FoursquareTasks.GetVenue(mContext,
 					VenueDetailActivity.venueIdToLoad, getActivity(),
-					FoursquareHelper.CALLER_SOURCE_DETAILS).execute();
+					FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
 		} else if (getActivity().getIntent().hasExtra(
 				VenueDetailActivity.VENUE_URL_TO_LOAD_EXTRA)) {
 			currentCompactVenue = null;
@@ -101,17 +114,17 @@ public class VenueDetailFragment extends Fragment {
 			getActivity().setProgressBarVisibility(true);
 			String venueUrlLoad = getActivity().getIntent().getStringExtra(
 					VenueDetailActivity.VENUE_URL_TO_LOAD_EXTRA);
-			new VenueEndpoint.GetVenue(getActivity().getApplicationContext(),
+			new FoursquareTasks.GetVenue(mContext,
 					venueUrlLoad, getActivity(),
-					FoursquareHelper.CALLER_SOURCE_DETAILS_INTENT).execute();
+					FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT).execute();
 		} else if (getArguments().containsKey(ARG_ITEM_JSON_STRING)) {
 			currentCompactVenue = CompactVenue
 					.GetCompactVenueFromJson(getArguments().getString(
 							ARG_ITEM_JSON_STRING));
 			getActivity().setProgressBarVisibility(true);
-			new VenueEndpoint.GetVenue(getActivity().getApplicationContext(),
-					currentCompactVenue.getId(), getActivity(),
-					FoursquareHelper.CALLER_SOURCE_DETAILS).execute();
+			new FoursquareTasks.GetVenue(mContext,
+					currentCompactVenue.id, getActivity(),
+					FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
 		}
 	}
 
@@ -134,32 +147,27 @@ public class VenueDetailFragment extends Fragment {
 			TextView nameTextView = (TextView) rootView.findViewById(R.id.textViewVenueName);
 
 			if (currentVenue != null) {
-				nameTextView.setText(currentVenue.getName());
+				nameTextView.setText(currentVenue.name);
 				((TextView) rootView.findViewById(R.id.textViewVenueAddress))
-						.setText(currentVenue.getLocation().getAddress());
+						.setText(currentVenue.location.address);
 				((TextView) rootView
 						.findViewById(R.id.textViewVenueAddressLine2))
-						.setText(currentVenue.getLocation()
-								.getCityStatePostalCode());
+						.setText(currentVenue.location.getCityStatePostalCode());
 				((TextView) rootView
 						.findViewById(R.id.textViewVenueCrossStreet))
-						.setText(currentVenue.getLocation().getCrossStreet());
-				myCategories = currentVenue.getCategories() != null ? currentVenue
-						.getCategories() : null;
+						.setText(currentVenue.location.crossStreet);
+				myCategories = currentVenue.categories != null ? currentVenue.categories : null;
 			} else {
-				nameTextView.setText(currentCompactVenue.getName());
+				nameTextView.setText(currentCompactVenue.name);
 				((TextView) rootView.findViewById(R.id.textViewVenueAddress))
-						.setText(currentCompactVenue.getLocation().getAddress());
+						.setText(currentCompactVenue.location.address);
 				((TextView) rootView
 						.findViewById(R.id.textViewVenueAddressLine2))
-						.setText(currentCompactVenue.getLocation()
-								.getCityStatePostalCode());
+						.setText(currentCompactVenue.location.getCityStatePostalCode());
 				((TextView) rootView
 						.findViewById(R.id.textViewVenueCrossStreet))
-						.setText(currentCompactVenue.getLocation()
-								.getCrossStreet());
-				myCategories = currentCompactVenue.getCategories() != null ? currentCompactVenue
-						.getCategories() : null;
+						.setText(currentCompactVenue.location.crossStreet);
+				myCategories = currentCompactVenue.categories != null ? currentCompactVenue.categories : null;
 			}
 
 			nameTextView.setVisibility(View.GONE);
@@ -176,11 +184,11 @@ public class VenueDetailFragment extends Fragment {
 			if (myCategories != null) {
 				primaryImageUrl = myCategories.get(0) != null ? myCategories
 						.get(0)
-						.getIcon()
+						.icon
 						.getFoursquareLegacyImageUrl(
 								FoursquareImage.SIZE_MEDIANO) : "";
 
-				if (primaryImageUrl != "")
+				if (!primaryImageUrl.equals(""))
 					UrlImageViewHelper.setUrlDrawable(primaryCategoryImageView,
 							primaryImageUrl,
 							R.drawable.foursquare_generic_category_icon);
@@ -194,12 +202,12 @@ public class VenueDetailFragment extends Fragment {
 				tertiaryCategoryImageView.setVisibility(View.GONE);
 			}
 			String venueName = "";
-			if (currentVenue != null && currentVenue.getName() != "")
-				venueName = currentVenue.getName();
+			if (currentVenue != null && !currentVenue.name.equals(""))
+				venueName = currentVenue.name;
 			else if (currentCompactVenue != null
-					&& currentCompactVenue.getName() != "")
-				venueName = currentCompactVenue.getName();
-			if (venueName != "")
+					&& !currentCompactVenue.name.equals(""))
+				venueName = currentCompactVenue.name;
+			if (!venueName.equals(""))
 				theActivity.setTitle(venueName);
 
 			// SetupButtons(rootView, theActivity);
@@ -221,11 +229,11 @@ public class VenueDetailFragment extends Fragment {
 				}
 			}
 
-			if (currentVenue != null && currentVenue.getLocation() != null
-					&& currentVenue.getLocation().getLatLng() != null)
-				setUpMap(currentVenue.getLocation().getLatLng(), theActivity);
+			if (currentVenue != null && currentVenue.location != null
+					&& currentVenue.location.getLatLng() != null)
+				setUpMap(currentVenue.location.getLatLng(), theActivity);
 			else
-				setUpMap(currentCompactVenue.getLocation().getLatLng(),
+				setUpMap(currentCompactVenue.location.getLatLng(),
 						theActivity);
 
 			VenueDetailActivity.wasEdited = false;
@@ -254,13 +262,13 @@ public class VenueDetailFragment extends Fragment {
 		case R.id.action_foursquare:
 			String canonicalUrl = "";
 			if (currentCompactVenue != null
-					&& currentCompactVenue.getCanonicalUrl() != null
-					&& currentCompactVenue.getCanonicalUrl().length() > 0)
-				canonicalUrl = currentCompactVenue.getCanonicalUrl();
+					&& currentCompactVenue.canonicalUrl != null
+					&& currentCompactVenue.canonicalUrl.length() > 0)
+				canonicalUrl = currentCompactVenue.canonicalUrl;
 			else if (currentVenue != null
-					&& currentVenue.getCanonicalUrl() != ""
-					&& currentVenue.getCanonicalUrl().length() > 0)
-				canonicalUrl = currentVenue.getCanonicalUrl();
+					&& !currentVenue.canonicalUrl.equals("")
+					&& currentVenue.canonicalUrl.length() > 0)
+				canonicalUrl = currentVenue.canonicalUrl;
 
 			if (canonicalUrl != null && canonicalUrl.length() > 0)
 				startActivity(new Intent(Intent.ACTION_VIEW,
@@ -275,13 +283,11 @@ public class VenueDetailFragment extends Fragment {
 						Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.action_edit:
-			if (!PreferencesHelper.getFoursquareConnected(getActivity()
-					.getApplicationContext())) {
+			if (!PreferencesHelper.getFoursquareConnected(mContext)) {
 				showWelcomeActivity();
 			} else {
 				if (currentVenue != null) {
-					Intent editVenueIntent = new Intent(getActivity()
-							.getApplicationContext(),
+					Intent editVenueIntent = new Intent(mContext,
 							VenueEditTabsActivity.class);
 					editVenueIntent.putExtra(VENUE_EDIT_EXTRA, myItemToSend);
 					VenueEditTabsActivity.originalVenue = new Venue(
@@ -306,13 +312,11 @@ public class VenueDetailFragment extends Fragment {
 			}
 			break;
 		case R.id.action_categories:
-			if (!PreferencesHelper.getFoursquareConnected(getActivity()
-					.getApplicationContext())) {
+			if (!PreferencesHelper.getFoursquareConnected(mContext)) {
 				showWelcomeActivity();
 			} else {
 				if (currentVenue != null) {
-					Intent editVenueCategoriesIntent = new Intent(getActivity()
-							.getApplicationContext(),
+					Intent editVenueCategoriesIntent = new Intent(mContext,
 							VenueEditCategoriesActivity.class);
 					editVenueCategoriesIntent.putExtra(VENUE_EDIT_EXTRA,
 							myItemToSend);
@@ -327,8 +331,7 @@ public class VenueDetailFragment extends Fragment {
 			}
 			break;
 		case R.id.action_flag:
-			if (!PreferencesHelper.getFoursquareConnected(getActivity()
-					.getApplicationContext())) {
+			if (!PreferencesHelper.getFoursquareConnected(mContext)) {
 				showWelcomeActivity();
 			} else {
 				if (currentVenue != null) {
@@ -346,8 +349,7 @@ public class VenueDetailFragment extends Fragment {
 			}
 			break;
 		case R.id.action_duplicate:
-			if (!PreferencesHelper.getFoursquareConnected(getActivity()
-					.getApplicationContext())) {
+			if (!PreferencesHelper.getFoursquareConnected(mContext)) {
 				showWelcomeActivity();
 			} else {
 				if (currentVenue != null) {
@@ -373,37 +375,34 @@ public class VenueDetailFragment extends Fragment {
 		// currentCompactVenue.toString());
 		welcomeActivity.putExtra(
 				WelcomeActivity.EXTRA_VENUE_ID_BEFORE_AUTH,
-				currentVenue != null ? currentVenue.getId()
+				currentVenue != null ? currentVenue.id
 						: currentCompactVenue != null ? currentCompactVenue
-								.getId() : 0);
+								.id : 0);
 		getActivity().startActivity(welcomeActivity);
 		getActivity().finish();
 	}
 
 	private void OpenSearchDuplicateDialog() {
 		try {
-			Intent mySearchForDuplicateIntent = new Intent(getActivity()
-					.getApplicationContext(), VenueSearchActivity.class);
+			Intent mySearchForDuplicateIntent = new Intent(mContext, VenueSearchActivity.class);
 			mySearchForDuplicateIntent.setAction(Intent.ACTION_SEARCH);
-			String myVenueName = currentVenue != null ? currentVenue.getName()
-					: currentCompactVenue.getName();
-			VenueListFragment.searchQuery = myVenueName;
-			mySearchForDuplicateIntent.putExtra(SearchManager.QUERY,
-					myVenueName);
 
-			String myVenueLocation = currentVenue != null ? currentVenue
-					.getLocation().getLatLngString() : currentCompactVenue
-					.getLocation().getLatLngString();
+			String myVenueName = currentVenue != null ? currentVenue.name : currentCompactVenue.name;
+			VenueListFragment.searchQuery = myVenueName;
+			mySearchForDuplicateIntent.putExtra(SearchManager.QUERY, myVenueName);
+
+			String myVenueLocation =
+                    currentVenue != null
+                            ? currentVenue.location.getLatLngString()
+                            : currentCompactVenue.location.getLatLngString();
 			VenueListFragment.searchQueryLocation = myVenueLocation;
-			mySearchForDuplicateIntent.putExtra(
-					FoursquareHelper.SEARCH_LOCATION, myVenueLocation);
+			mySearchForDuplicateIntent.putExtra(FoursquarePrefs.SEARCH_LOCATION, myVenueLocation);
 
 			VenueListFragment.isDuplicateSearching = true;
-			mySearchForDuplicateIntent.putExtra(
-					FoursquareHelper.SEARCH_DUPLICATE, true);
+			mySearchForDuplicateIntent.putExtra(FoursquarePrefs.SEARCH_DUPLICATE, true);
+            mySearchForDuplicateIntent.putExtra(FoursquarePrefs.SEARCH_DUPLICATE_VENUE_ID, currentVenue != null ? currentVenue.id : currentCompactVenue.id);
 
-			startActivityForResult(mySearchForDuplicateIntent,
-					VenueDetailFragment.FLAG_DUPLICATE);
+			startActivityForResult(mySearchForDuplicateIntent,VenueDetailFragment.FLAG_DUPLICATE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -471,16 +470,15 @@ public class VenueDetailFragment extends Fragment {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									getActivity()
-											.setProgressBarVisibility(true);
+									getActivity().setProgressBarVisibility(true);
 
 									if (currentVenue != null) {
-										new VenueEndpoint.FlagVenue(getActivity(),
-												currentVenue.getId(),
+										new FoursquareTasks.FlagVenue(getActivity(),
+												currentVenue.id,
 												currentFlagItem, "", getActivity())
 												.execute();
 									} else if (VenueDetailActivity.venueIdToLoad.length() > 0) {
-										new VenueEndpoint.FlagVenue(getActivity(),
+										new FoursquareTasks.FlagVenue(getActivity(),
 												VenueDetailActivity.venueIdToLoad,
 												currentFlagItem, "", getActivity())
 												.execute();
@@ -520,20 +518,20 @@ public class VenueDetailFragment extends Fragment {
 			case 0: // VenueSearchActivity.DUPLICATE_VENUE
 				flagDuplicateMessage = String
 						.format(getString(R.string.venue_details_dialog_flag_duplicate_message),
-								duplicateResultVenue.getName(),
-								currentVenue.getName());
+								duplicateResultVenue.name,
+								currentVenue.name);
 				break;
 			case 1: // VenueSearchActivity.ORIGINAL_VENUE
 				if (currentVenue != null)
 					flagDuplicateMessage = String
 							.format(getString(R.string.venue_details_dialog_flag_duplicate_message),
-									currentVenue.getName(),
-									duplicateResultVenue.getName());
+									currentVenue.name,
+									duplicateResultVenue.name);
 				else
 					flagDuplicateMessage = String
 							.format(getString(R.string.venue_details_dialog_flag_duplicate_message),
-									currentCompactVenue.getName(),
-									duplicateResultVenue.getName());
+									currentCompactVenue.name,
+									duplicateResultVenue.name);
 				break;
 			}
 
@@ -544,13 +542,12 @@ public class VenueDetailFragment extends Fragment {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									getActivity()
-											.setProgressBarVisibility(true);
-									new VenueEndpoint.FlagVenue(
+									getActivity().setProgressBarVisibility(true);
+									new FoursquareTasks.FlagVenue(
 											getActivity()
 													.getApplicationContext(),
 											originalId,
-											FoursquareHelper.FlagType.DUPLICATE,
+											FoursquarePrefs.FlagType.DUPLICATE,
 											duplicateId, getActivity())
 											.execute();
 									ClearFlagDuplicateValues();
@@ -595,15 +592,13 @@ public class VenueDetailFragment extends Fragment {
 			showConfirmDialog = false;
 		} else {
 			if (currentCompactVenue != null) {
-				new VenueEndpoint.GetVenue(getActivity()
-						.getApplicationContext(), currentCompactVenue.getId(),
-						getActivity(), FoursquareHelper.CALLER_SOURCE_DETAILS)
+				new FoursquareTasks.GetVenue(mContext, currentCompactVenue.id,
+						getActivity(), FoursquarePrefs.CALLER_SOURCE_DETAILS)
 						.execute();
 			} else if (VenueDetailActivity.venueIdToLoad.length() > 0) {
-				new VenueEndpoint.GetVenue(getActivity()
-						.getApplicationContext(),
+				new FoursquareTasks.GetVenue(mContext,
 						VenueDetailActivity.venueIdToLoad, getActivity(),
-						FoursquareHelper.CALLER_SOURCE_DETAILS).execute();
+						FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
 			}
 		}
 
@@ -637,11 +632,10 @@ public class VenueDetailFragment extends Fragment {
 					resultData = data
 							.getStringExtra(VenueEditTabsActivity.EDIT_VENUE_RESULT);
 
-				if (resultData == FoursquareHelper.SUCCESS) {
-					new VenueEndpoint.GetVenue(getActivity()
-							.getApplicationContext(),
-							currentCompactVenue.getId(), getActivity(),
-							FoursquareHelper.CALLER_SOURCE_DETAILS).execute();
+				if (resultData.equals(FoursquarePrefs.SUCCESS)) {
+					new FoursquareTasks.GetVenue(mContext,
+							currentCompactVenue.id, getActivity(),
+							FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
 				}
 				/*
 				 * Crouton.makeText(getActivity(), canEdit ?
@@ -652,7 +646,7 @@ public class VenueDetailFragment extends Fragment {
 				 * Toast.makeText(getActivity().getApplicationContext(),
 				 * getString(R.string.edit_venue_success),
 				 * Toast.LENGTH_SHORT).show(); } else if(resultData ==
-				 * FoursquareHelper.FAIL_UNAUTHORIZED) {
+				 * FoursquarePrefs.FAIL_UNAUTHORIZED) {
 				 * Crouton.makeText(getActivity(),
 				 * getString(R.string.edit_venue_fail_unauthorized),
 				 * Style.ALERT).show();
@@ -692,13 +686,13 @@ public class VenueDetailFragment extends Fragment {
 
 					switch (duplicateResultType) {
 					case 0: // VenueSearchActivity.DUPLICATE_VENUE
-						originalId = currentCompactVenue.getId();
-						duplicateId = duplicateResultVenue.getId();
+						originalId = currentCompactVenue.id;
+						duplicateId = duplicateResultVenue.id;
 						break;
 
 					case 1: // VenueSearchActivity.ORIGINAL_VENUE
-						originalId = duplicateResultVenue.getId();
-						duplicateId = currentCompactVenue.getId();
+						originalId = duplicateResultVenue.id;
+						duplicateId = currentCompactVenue.id;
 						break;
 					}
 

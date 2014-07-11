@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android-ViewPagerIndicator/Android-ViewPagerIndicator.iml" filepath="$PROJECT_DIR$/Android-ViewPagerIndicator/Android-ViewPagerIndicator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Soup.iml" filepath="$PROJECT_DIR$/Soup.iml" />
+      <module fileurl="file://$PROJECT_DIR$/foursquareoauthlibrary/foursquareoauthlibrary.iml" filepath="$PROJECT_DIR$/foursquareoauthlibrary/foursquareoauthlibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/soup/soup.iml" filepath="$PROJECT_DIR$/soup/soup.iml" />
+      <module fileurl="file://$PROJECT_DIR$/soup-pro/soup-pro.iml" filepath="$PROJECT_DIR$/soup-pro/soup-pro.iml" />
+    </modules>
+  </component>
+</project>
+

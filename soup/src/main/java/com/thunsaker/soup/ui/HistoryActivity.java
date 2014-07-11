@@ -3,7 +3,6 @@ package com.thunsaker.soup.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,13 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.FoursquareHelper;
-import com.thunsaker.soup.FoursquareHelper.History;
 import com.thunsaker.soup.adapters.history.HistoryListItemArrayAdapter;
 import com.thunsaker.soup.adapters.history.HistoryListItemBase;
 import com.thunsaker.soup.adapters.history.HistoryListItemHeader;
-import com.thunsaker.soup.classes.foursquare.Checkin;
-import com.thunsaker.soup.util.foursquare.UserEndpoint;
+import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.data.api.model.Checkin;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.endpoints.UserEndpoint;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,9 +32,8 @@ import java.util.TimeZone;
 /*
  * Created by @thunsaker
  */
-public class HistoryActivity extends ActionBarActivity implements
+public class HistoryActivity extends BaseSoupActivity implements
 		ActionBar.OnNavigationListener {
-//    , PullToRefreshAttacher.OnRefreshListener
 
 	private boolean useLogo = true;
 	private boolean showHomeUp = true;
@@ -50,8 +48,6 @@ public class HistoryActivity extends ActionBarActivity implements
 	static SimpleDateFormat dateFormatWithYear;
 	static SimpleDateFormat dateFormatTime;
 	static SimpleDateFormat dateFormatDay;
-
-//    public static PullToRefreshAttacher mPullToRefreshHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +88,6 @@ public class HistoryActivity extends ActionBarActivity implements
 		dateFormatTime = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         // Day of Week
 		dateFormatDay = new SimpleDateFormat("EEEE", Locale.getDefault());
-
-//        PullToRefreshAttacher.Options refreshOptions = new PullToRefreshAttacher.Options();
-//        refreshOptions.headerLayout = R.layout.default_header;
-//        mPullToRefreshHelper = new PullToRefreshAttacher(this, refreshOptions);
-//        PullToRefreshAttacher.ViewDelegate delegate= new FrameLayoutViewDelegate();
-//
-//        mPullToRefreshHelper
-//                .setRefreshableView(findViewById(R.id.frameLayoutHistoryContainer), delegate, this);
 	}
 
 	@Override
@@ -133,15 +121,15 @@ public class HistoryActivity extends ActionBarActivity implements
 			return true;
 		case R.id.action_history_today:
 			switch (getSupportActionBar().getSelectedNavigationIndex()) {
-			case 1: // FoursquareHelper.History.View.LAST_WEEK
+			case 1: // FoursquarePrefs.History.View.LAST_WEEK
 				((ListView) findViewById(R.id.listViewHistoryLastWeek))
                         .setSelectionAfterHeaderView();
 				return true;
-			case 2: // FoursquareHelper.History.View.LAST_MONTH
+			case 2: // FoursquarePrefs.History.View.LAST_MONTH
 				((ListView) findViewById(R.id.listViewHistoryLastMonth))
                         .setSelectionAfterHeaderView();
 				return true;
-			default: // FoursquareHelper.History.View.TODAY
+			default: // FoursquarePrefs.History.View.TODAY
 				((ListView) findViewById(R.id.listViewHistoryToday))
                         .setSelectionAfterHeaderView();
 				return true;
@@ -166,33 +154,8 @@ public class HistoryActivity extends ActionBarActivity implements
 		fragment.setArguments(args);
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.frameLayoutHistoryContainer, fragment).commit();
-//        switch (position) {
-//            case 0:
-//                mPullToRefreshHelper.setRefreshableView(
-//                        fragment.getSherlockActivity().findViewById(R.id.listViewHistoryToday),
-//                        this);
-//                break;
-//            case 1:
-//                mPullToRefreshHelper.setRefreshableView(
-//                        fragment.getSherlockActivity().findViewById(R.id.listViewHistoryLastWeek),
-//                        this);
-//                break;
-//            case 2:
-//                ListView mListViewHistoryMonth =
-//                        (ListView) fragment.getSherlockActivity()
-//                                .findViewById(R.id.listViewHistoryLastMonth);
-//                mPullToRefreshHelper
-//                        .setRefreshableView(mListViewHistoryMonth, this);
-//                break;
-//        }
 		return true;
 	}
-
-//    @Override
-//    public void onRefreshStarted(View view) {
-//        RefreshData(getSupportActionBar().getSelectedNavigationIndex(), getLayoutInflater(),
-//                (ViewGroup)findViewById(R.id.frameLayoutHistoryContainer), HistoryActivity.this);
-//    }
 
     /**
 	 * A dummy fragment representing a section of the app, but that simply
@@ -213,15 +176,16 @@ public class HistoryActivity extends ActionBarActivity implements
 				Bundle savedInstanceState) {
 			return RefreshData(
                     getArguments().getInt(ARG_SECTION_NUMBER),
-                    inflater, container, (ActionBarActivity) getActivity());
+                    inflater, container, (BaseSoupActivity) getActivity());
 		}
 	}
 
 	// TODO: When/if I feel like getting fancy with the dropdown
 	// Refer to this: http://stackoverflow.com/questions/15193598/actionbar-spinner-customisation
 
+    @SuppressWarnings("all")
 	public static View RefreshData(int section, LayoutInflater inflater, ViewGroup container,
-                                   ActionBarActivity theActivity) {
+                                   BaseSoupActivity theActivity) {
 		try {
 			View rootView;
 
@@ -249,15 +213,15 @@ public class HistoryActivity extends ActionBarActivity implements
 				rootView = inflater.inflate(R.layout.fragment_history_last_week, container, false);
 				new UserEndpoint.GetCheckins(theActivity.getApplicationContext(),
 					theActivity, lastWeekUnixTime, todayActualUnixTime,
-					0, 0, FoursquareHelper.History.Sort.NEWEST,
-                        FoursquareHelper.History.View.LAST_WEEK).execute();
+					0, 0, FoursquarePrefs.History.Sort.NEWEST,
+                        FoursquarePrefs.History.View.LAST_WEEK).execute();
 				break;
 			case 2: // HISTORY_VIEW_LAST_MONTH
 				rootView = inflater.inflate(R.layout.fragment_history_last_month, container, false);
 				new UserEndpoint.GetCheckins(theActivity.getApplicationContext(),
 					theActivity, lastMonthUnixTime, todayActualUnixTime,
-					0, 0, FoursquareHelper.History.Sort.NEWEST,
-                        FoursquareHelper.History.View.LAST_MONTH).execute();
+					0, 0, FoursquarePrefs.History.Sort.NEWEST,
+                        FoursquarePrefs.History.View.LAST_MONTH).execute();
 				break;
 			default: // HISTORY_VIEW_TODAY
 				rootView = inflater.inflate(R.layout.fragment_history_today, container, false);
@@ -265,11 +229,10 @@ public class HistoryActivity extends ActionBarActivity implements
 				new UserEndpoint.GetCheckins(
                         theActivity.getApplicationContext(),
                         theActivity, yesterdayUnixTime, todayActualUnixTime,
-                        0, 0, FoursquareHelper.History.Sort.NEWEST,
-                        FoursquareHelper.History.View.TODAY).execute();
+                        0, 0, FoursquarePrefs.History.Sort.NEWEST,
+                        FoursquarePrefs.History.View.TODAY).execute();
 				break;
 			}
-//            mPullToRefreshHelper.setRefreshComplete();
 
 			return rootView;
 		} catch (Exception e) {
@@ -279,7 +242,8 @@ public class HistoryActivity extends ActionBarActivity implements
 	}
 
 	// Reference: http://stackoverflow.com/questions/13590627/android-listview-headers
-	public static void SetupHistoryView(ActionBarActivity theActivity) {
+    @SuppressWarnings("all")
+	public static void SetupHistoryView(BaseSoupActivity theActivity) {
 		LayoutInflater inflater = theActivity.getLayoutInflater();
 
 		LinearLayout rootView;
@@ -293,17 +257,17 @@ public class HistoryActivity extends ActionBarActivity implements
 		Calendar todayCal = Calendar.getInstance();
         ActionBar myActionBar = theActivity.getSupportActionBar();
 		switch (myActionBar.getSelectedNavigationIndex()) {
-		case 1: // FoursquareHelper.History.View.LAST_WEEK
+		case 1: // FoursquarePrefs.History.View.LAST_WEEK
 			rootView = (LinearLayout) theActivity
 					.findViewById(R.id.linearLayoutHistoryLastWeekWrapper);
 			listToLoad = new ArrayList<Checkin>(historyListLastWeek);
 			break;
-		case 2: // FoursquareHelper.History.View.LAST_MONTH
+		case 2: // FoursquarePrefs.History.View.LAST_MONTH
 			rootView = (LinearLayout) theActivity
 					.findViewById(R.id.linearLayoutHistoryLastMonthWrapper);
 			listToLoad = new ArrayList<Checkin>(historyListLastMonth);
 			break;
-		default: // FoursquareHelper.History.View.TODAY
+		default: // FoursquarePrefs.History.View.TODAY
 			rootView = (LinearLayout) theActivity
 					.findViewById(R.id.linearLayoutHistoryTodayWrapper);
 			listToLoad = new ArrayList<Checkin>(historyListToday);
@@ -317,7 +281,7 @@ public class HistoryActivity extends ActionBarActivity implements
 		boolean hasYesterday = false;
 
 		for (Checkin c : listToLoad) {
-			long timeInMillis = Long.parseLong(c.getCreatedDate()) * 1000;
+			long timeInMillis = Long.parseLong(c.createdDate) * 1000;
 			myCal.setTimeInMillis(timeInMillis);
 
 			if (myCal.get(Calendar.DAY_OF_MONTH) != myCalLast
@@ -326,7 +290,7 @@ public class HistoryActivity extends ActionBarActivity implements
 
 			if (!hasHeader) {
 				if (theActivity.getSupportActionBar()
-						.getSelectedNavigationIndex() == History.View.TODAY) {
+						.getSelectedNavigationIndex() == FoursquarePrefs.History.View.TODAY) {
 					if ((myCal.get(Calendar.DATE) == todayCal
 							.get(Calendar.DATE))
 							&& (myCal.get(Calendar.MONTH) == todayCal

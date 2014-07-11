@@ -22,14 +22,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.PreferencesHelper;
-import com.thunsaker.soup.classes.FoursquareClient;
+import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.data.FoursquareClient;
 import com.thunsaker.soup.util.QueryStringParser;
 import com.thunsaker.soup.util.Util;
 
 /*
  * Created by @thunsaker
  */
-public class FoursquareAuthorizationActivity extends ActionBarActivity {
+public class FoursquareAuthorizationActivity extends BaseSoupActivity {
 	final String TAG = "FoursquareAuthorizationActivity";
 
     public static final String ACCESS_URL = "https://foursquare.com/oauth2/access_token";
@@ -203,6 +204,6 @@ public class FoursquareAuthorizationActivity extends ActionBarActivity {
 		PreferencesHelper.setFoursquareToken(myContext, "");
 		PreferencesHelper.setFoursquareConnected(myContext, false);
 		PreferencesHelper.setFoursquareUserId(myContext, "");
-		PreferencesHelper.setFoursquareSuperuserLevel(myContext, "");
+		PreferencesHelper.setFoursquareSuperuserLevel(myContext, 0);
 	}
 }

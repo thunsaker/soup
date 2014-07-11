@@ -10,16 +10,28 @@ out/
 proguard/
 
 .gradle/
-.idea/
+
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
 
 local.properties
+
 com_crashlytics_export_strings.xml
+crashlytics.properties
+google_maps_api.xml
 
 foursquareoauthlibrary/
-betterpickers/
 Android-ViewPagerIndicator/
 
-soup/src/main/java/com/thunsaker/soup/AuthHelper.java
+AuthHelper.java
 soup/src/main/res/values/donotsave.xml
 soup/libs/**
 

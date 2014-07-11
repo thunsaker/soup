@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,29 +15,37 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
-import com.thunsaker.soup.FoursquareHelper;
+import com.squareup.picasso.Picasso;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.foursquare.FoursquareList;
-import com.thunsaker.soup.util.foursquare.UserEndpoint;
+import com.thunsaker.soup.app.BaseSoupFragment;
+import com.thunsaker.soup.data.api.model.FoursquareList;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.endpoints.UserEndpoint;
 
 import java.util.List;
 
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.library.DefaultHeaderTransformer;
-import uk.co.senab.actionbarpulltorefresh.library.Options;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /*
  * Created by @thunsaker
  */
-public class ListsFragment extends Fragment implements
-        OnRefreshListener {
+public class ListsFragment extends BaseSoupFragment implements
+        SwipeRefreshLayout.OnRefreshListener {
+
+    @Inject
+    @ForApplication
+    Context mContext;
+
+    @Inject
+    Picasso mPicasso;
 
 	public static FoursquareListAdapter currentListsListAdapter;
 
@@ -46,15 +54,18 @@ public class ListsFragment extends Fragment implements
 	private Callbacks mCallbacks = sDummyCallbacks;
 	public static int mActivatedPosition = ListView.INVALID_POSITION;
 
-	public static boolean isRefreshing = false;
-
-    public static PullToRefreshLayout mPullToRefreshLayout;
+    @InjectView(R.id.swipeLayoutListsContainer) SwipeRefreshLayout mSwipeViewListsContainer;
 
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
 	public static GridView mGridViewLists;
 
-	public interface Callbacks {
+    @Override
+    public void onRefresh() {
+        RefreshLists(this);
+    }
+
+    public interface Callbacks {
 		public void onItemSelected(String listJson);
 	}
 
@@ -97,19 +108,11 @@ public class ListsFragment extends Fragment implements
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-        mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.pullToRefreshLayoutLists);
-        ActionBarPullToRefresh.from(this.getActivity())
-                .allChildrenArePullable()
-                .listener(this)
-                .options(Options.create()
-                        .scrollDistance(0.40f)
-                        .build())
-                .setup(mPullToRefreshLayout);
-
-        DefaultHeaderTransformer transformer = (DefaultHeaderTransformer) mPullToRefreshLayout.getHeaderTransformer();
-        transformer.setProgressBarColor(getResources().getColor(R.color.foursquare_green));
-
-        mPullToRefreshLayout.setRefreshing(true);
+        ButterKnife.inject(this, view);
+        if(mSwipeViewListsContainer != null) {
+            mSwipeViewListsContainer.setOnRefreshListener(this);
+            mSwipeViewListsContainer.setColorScheme(R.color.foursquare_green, R.color.foursquare_orange, R.color.foursquare_green, R.color.foursquare_blue);
+        }
 	}
 
 	@Override
@@ -133,8 +136,9 @@ public class ListsFragment extends Fragment implements
 		mCallbacks = (Callbacks) activity;
 	}
 
-	public static void RefreshLists(ListsFragment theCaller) {
-		ListsFragment.isRefreshing = true;
+	public void RefreshLists(ListsFragment theCaller) {
+        if(mSwipeViewListsContainer != null)
+            mSwipeViewListsContainer.setRefreshing(true);
 		currentListsList = null;
 
 		if (currentListsListAdapter == null)
@@ -150,21 +154,13 @@ public class ListsFragment extends Fragment implements
 				.getActiveNetworkInfo();
 		if (activeNetworkInfo != null) {
 			theCaller.getActivity().setProgressBarVisibility(true);
-//            if(mPullToRefreshLayout != null)
-//                mPullToRefreshLayout.setRefreshing(true);
 
 			new UserEndpoint.GetLists(theCaller.getActivity()
 					.getApplicationContext(), theCaller,
 					theCaller.mGridViewLists,
-					FoursquareHelper.FOURSQUARE_LISTS_GROUP_CREATED).execute();
+					FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED).execute();
 		}
 	}
-
-	@Override
-    public void onRefreshStarted(View view) {
-		ListsFragment.isRefreshing = true;
-        RefreshLists(ListsFragment.this);
-    }
 
 	public class FoursquareListAdapter extends ArrayAdapter<FoursquareList> {
 		public List<FoursquareList> items;
@@ -197,6 +193,7 @@ public class ListsFragment extends Fragment implements
 					final Integer myVenueCount = list.getVenueCount();
 					final TextView countTextView = (TextView) v.findViewById(R.id.textViewListCount);
 					countTextView.setText(String.format(getResources().getQuantityString(R.plurals.venue_count, myVenueCount), myVenueCount));
+                    final LinearLayout textWrapper = (LinearLayout) v.findViewById(R.id.linearLayoutTextWrapper);
 
 					final ImageView myImageViewPhoto = (ImageView) v.findViewById(R.id.imageViewListPhoto);
 					if(position == 0) {
@@ -208,15 +205,43 @@ public class ListsFragment extends Fragment implements
 						final String myPhotoUrl = list.getPhoto() != null
 								? list.getPhoto().getFoursquareImageUrl() : "";
 
-						if (myPhotoUrl != "")
-							UrlImageViewHelper.setUrlDrawable(myImageViewPhoto,
-									myPhotoUrl,
-									R.drawable.list_placeholder_gray_dark_small);
-						else {
+						if (myPhotoUrl != "") {
+//                            UrlImageViewHelper.setUrlDrawable(myImageViewPhoto,
+//                                    myPhotoUrl,
+//                                    R.drawable.list_placeholder_gray_dark_small);
+
+                            mPicasso.load(myPhotoUrl)
+                                    .placeholder(mContext.getResources().getDrawable(R.drawable.list_placeholder_orange_small))
+                                    .error(mContext.getResources().getDrawable(R.drawable.list_placeholder_gray_dark_small))
+                                    .into(myImageViewPhoto);
+
+// TODO: Replace this with palette when the time comes.
+//                            mPicasso.load(myPhotoUrl).into(new Target() {
+//                                @Override
+//                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                                    Drawable faviconDrawable = new BitmapDrawable(mContext.getResources(), bitmap);
+//                                    myImageViewPhoto.setImageDrawable(faviconDrawable);
+//
+//                                    textWrapper.setBackgroundColor(Crayon.getAverageColor(bitmap, 170));
+//                                }
+//
+//                                @Override
+//                                public void onBitmapFailed(Drawable errorDrawable) {
+//                                    Drawable defaultFaviconDrawable = mContext.getResources().getDrawable(R.drawable.list_placeholder_gray_dark_small);
+//                                    myImageViewPhoto.setImageDrawable(defaultFaviconDrawable);
+//                                }
+//
+//                                @Override
+//                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+//                                    Drawable placeholderFaviconDrawable = mContext.getResources().getDrawable(R.drawable.list_placeholder_green_small);
+//                                    myImageViewPhoto.setImageDrawable(placeholderFaviconDrawable);
+//                                }
+//                            });
+                        } else {
 							myImageViewPhoto
 									.setImageDrawable(getResources()
-											.getDrawable(
-													R.drawable.list_placeholder_gray_dark_small));
+                                            .getDrawable(
+                                                    R.drawable.list_placeholder_gray_dark_small));
 						}
 					}
 
@@ -228,7 +253,7 @@ public class ListsFragment extends Fragment implements
 					}
 
 					final ImageView myImageViewListIsFollowed = (ImageView)v.findViewById(R.id.imageViewListIsFollowed);
-					if(list.getType().equals(FoursquareHelper.FOURSQUARE_LISTS_GROUP_FOLLOWED)) {
+					if(list.getType().equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED)) {
 						myImageViewListIsFollowed.setVisibility(View.VISIBLE);
 					} else {
 						myImageViewListIsFollowed.setVisibility(View.GONE);
@@ -238,7 +263,6 @@ public class ListsFragment extends Fragment implements
 					myViewOverlay.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							if (!ListsFragment.isRefreshing) {
 								Intent myListIntent = new Intent(getActivity()
 										.getApplicationContext(),
 										ListActivity.class);
@@ -246,11 +270,11 @@ public class ListsFragment extends Fragment implements
 										ListActivity.LIST_TO_LOAD_EXTRA,
 										myListId);
 								getActivity().startActivity(myListIntent);
-							} else {
-								Toast.makeText(getActivity(),
-										R.string.alert_still_loading,
-										Toast.LENGTH_SHORT).show();
-							}
+//							} else {
+//								Toast.makeText(getActivity(),
+//										R.string.alert_still_loading,
+//										Toast.LENGTH_SHORT).show();
+//							}
 						}
 					});
 				}

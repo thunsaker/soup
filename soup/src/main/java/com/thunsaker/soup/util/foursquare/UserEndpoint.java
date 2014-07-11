@@ -3,7 +3,6 @@ package com.thunsaker.soup.util.foursquare;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Debug;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.GridView;
 
@@ -11,12 +10,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.thunsaker.soup.AuthHelper;
-import com.thunsaker.soup.FoursquareHelper;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.foursquare.Checkin;
-import com.thunsaker.soup.classes.foursquare.FoursquareList;
+import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.data.api.model.Checkin;
+import com.thunsaker.soup.data.api.model.FoursquareList;
+import com.thunsaker.soup.services.AuthHelper;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.ui.HistoryActivity;
 import com.thunsaker.soup.ui.ListsFragment;
 import com.thunsaker.soup.util.Util;
@@ -58,7 +58,7 @@ public class UserEndpoint {
 											PreferencesHelper.setFoursquareUserId(myContext, userId);
 
 										Integer superuserLevel = jObjectUser.get("superuser") != null ? jObjectUser.get("superuser").getAsInt() : 0;
-										PreferencesHelper.setFoursquareSuperuserLevel(myContext, superuserLevel.toString());
+										PreferencesHelper.setFoursquareSuperuserLevel(myContext, superuserLevel);
 										return true;
 									} else {
 										Log.e("UserEndpoint", "Failed to parse the user json");
@@ -95,7 +95,7 @@ public class UserEndpoint {
 
 	public static class GetCheckins extends AsyncTask<Void, Integer, List<Checkin>> {
 		Context myContext;
-        ActionBarActivity myCaller;
+        BaseSoupActivity myCaller;
 
 		long myStartTimestamp;
 		long myEndTimestamp;
@@ -108,7 +108,7 @@ public class UserEndpoint {
 		String myClientId;
 		String myClientSecret;
 
-		public GetCheckins(Context theContext, ActionBarActivity theCaller, long theStartTimestamp, long theEndTimestamp, Integer theLimit, Integer theOffset, String theSortOrder, Integer theHistoryView) {
+		public GetCheckins(Context theContext, BaseSoupActivity theCaller, long theStartTimestamp, long theEndTimestamp, Integer theLimit, Integer theOffset, String theSortOrder, Integer theHistoryView) {
 			myContext = theContext;
 			myCaller = theCaller;
 
@@ -149,16 +149,16 @@ public class UserEndpoint {
 			try {
 				if(result != null) {
 					switch (myHistoryView) {
-					case 1: // FoursquareHelper.History.View.LAST_WEEK
+					case 1: // FoursquarePrefs.History.View.LAST_WEEK
 						HistoryActivity.historyListLastWeek = result;
 						HistoryActivity.SetupHistoryView(myCaller);
 						break;
-					case 2: // FoursquareHelper.History.View.LAST_MONTH
+					case 2: // FoursquarePrefs.History.View.LAST_MONTH
 						HistoryActivity.historyListLastMonth = result;
 						// TODO: Add the adapter
 						HistoryActivity.SetupHistoryView(myCaller);
 						break;
-					default: // FoursquareHelper.History.View.TODAY
+					default: // FoursquarePrefs.History.View.TODAY
 						HistoryActivity.historyListToday = result;
 						HistoryActivity.SetupHistoryView(myCaller);
 						break;
@@ -176,26 +176,26 @@ public class UserEndpoint {
 			String checkinsRequestUrl;
 			if(accessToken != null && accessToken.length() > 0) {
 				checkinsRequestUrl = String.format("%s%s?oauth_token=%s&beforeTimestamp=%s&afterTimestamp=%s&sort=%s&v=%s",
-					FoursquareHelper.FOURSQUARE_BASE_URL,
-					FoursquareHelper.FOURSQUARE_USER_ENDPOINT + FoursquareHelper.FOURSQUARE_USER_SELF_SUFFIX + FoursquareHelper.FOURSQUARE_USER_CHECKINS_SUFFIX,
+					FoursquarePrefs.FOURSQUARE_BASE_URL,
+					FoursquarePrefs.FOURSQUARE_USER_ENDPOINT + FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX + FoursquarePrefs.FOURSQUARE_USER_CHECKINS_SUFFIX,
 					accessToken,
 					endTimestamp,
 					startTimestamp,
 					sortOrder,
-					FoursquareHelper.CURRENT_API_DATE);
+					FoursquarePrefs.CURRENT_API_DATE);
 			} else {
 				checkinsRequestUrl = String.format("%s%s?client_id=%s&client_secret=%s&beforeTimestamp=%s&afterTimestamp=%s&sort=%s&v=%s",
-					FoursquareHelper.FOURSQUARE_BASE_URL,
-					FoursquareHelper.FOURSQUARE_USER_ENDPOINT + FoursquareHelper.FOURSQUARE_USER_SELF_SUFFIX + FoursquareHelper.FOURSQUARE_USER_CHECKINS_SUFFIX,
+					FoursquarePrefs.FOURSQUARE_BASE_URL,
+					FoursquarePrefs.FOURSQUARE_USER_ENDPOINT + FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX + FoursquarePrefs.FOURSQUARE_USER_CHECKINS_SUFFIX,
 					clientId,
 					clientSecret,
 					endTimestamp,
 					startTimestamp,
 					sortOrder,
-					FoursquareHelper.CURRENT_API_DATE);
+					FoursquarePrefs.CURRENT_API_DATE);
 			}
 
-			checkinsRequestUrl += String.format("&limit=%s", limit > 0 ? limit : FoursquareHelper.History.Limit.MAX);
+			checkinsRequestUrl += String.format("&limit=%s", limit > 0 ? limit : FoursquarePrefs.History.Limit.MAX);
 
 			if(offset > 0)
 				checkinsRequestUrl += String.format("&offset=%s", offset);
@@ -307,8 +307,6 @@ public class UserEndpoint {
 		protected void onPostExecute(List<FoursquareList> result) {
 			if(myCaller.isVisible()) {
 				myCaller.getActivity().setProgressBarVisibility(false);
-				ListsFragment.isRefreshing = false;
-				ListsFragment.mPullToRefreshLayout.setRefreshComplete();
 
 				try {
 					if(result != null) {
@@ -329,13 +327,13 @@ public class UserEndpoint {
 			if (accessToken != null && accessToken.length() > 0) {
 				listsRequestUrl = String
 						.format("%s%s?oauth_token=%s&group=%s&v=%s",
-								FoursquareHelper.FOURSQUARE_BASE_URL,
-								FoursquareHelper.FOURSQUARE_USER_ENDPOINT
-										+ FoursquareHelper.FOURSQUARE_USER_SELF_SUFFIX
-										+ FoursquareHelper.FOURSQUARE_USER_LISTS_SUFFIX,
+								FoursquarePrefs.FOURSQUARE_BASE_URL,
+								FoursquarePrefs.FOURSQUARE_USER_ENDPOINT
+										+ FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX
+										+ FoursquarePrefs.FOURSQUARE_USER_LISTS_SUFFIX,
 								accessToken,
 								listType,
-								FoursquareHelper.CURRENT_API_DATE);
+								FoursquarePrefs.CURRENT_API_DATE);
 			} else
 				return null;
 
@@ -374,7 +372,7 @@ public class UserEndpoint {
 				listsRequestUrl = String
 						.format("https://api.foursquare.com/v2/multi?oauth_token=%s&v=%s&requests=/users/self/lists?group=created,/users/self/lists?group=followed",
 								accessToken,
-								FoursquareHelper.CURRENT_API_DATE);
+								FoursquarePrefs.CURRENT_API_DATE);
 			} else
 				return null;
 
@@ -404,12 +402,12 @@ public class UserEndpoint {
 											myLists.addAll(
                                                     ParseListFromJson(
                                                             jArrayResponses.get(0).getAsJsonObject().getAsJsonObject(),
-                                                            FoursquareHelper.FOURSQUARE_LISTS_GROUP_CREATED));
+                                                            FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED));
 										if(jArrayResponses.get(1) != null)
 											myLists.addAll(
                                                     ParseListFromJson(
                                                             jArrayResponses.get(1).getAsJsonObject().getAsJsonObject(),
-                                                            FoursquareHelper.FOURSQUARE_LISTS_GROUP_FOLLOWED));
+                                                            FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED));
 										return myLists;
 									} else {
 										Log.e("UserEndpoint - GetLists",

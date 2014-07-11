@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
     <fragment
 	    android:id="@+id/fragmentList"
-	    android:name="com.thunsaker.soup.ui.ListFragment"
+	    android:name="com.thunsaker.soup.ui.FoursquareListFragment"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:choiceMode="singleChoice"
 	    android:listSelector="@drawable/layout_selector_green"
 	    tools:context=".ListActivity"
 	    tools:layout="@android:layout/list_content" />
-    
+
 </LinearLayout>

@@ -9,12 +9,12 @@ import android.view.View;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
-import com.thunsaker.soup.AuthHelper;
-import com.thunsaker.soup.FoursquareHelper;
 import com.thunsaker.soup.PreferencesHelper;
-import com.thunsaker.soup.classes.foursquare.FoursquareImage;
-import com.thunsaker.soup.classes.foursquare.FoursquareList;
 import com.thunsaker.soup.R;
+import com.thunsaker.soup.data.api.model.FoursquareImage;
+import com.thunsaker.soup.data.api.model.FoursquareList;
+import com.thunsaker.soup.services.AuthHelper;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.ui.ListFragment;
 import com.thunsaker.soup.util.Util;
 
@@ -67,8 +67,6 @@ public class ListEndpoint {
 			super.onPostExecute(result);
 			if (myCaller.isVisible()) {
 				myCaller.getActivity().setProgressBarVisibility(false);
-				ListFragment.isRefreshing = false;
-                ListFragment.mPullToRefreshLayout.setRefreshComplete();
 			} else
 				return;
 
@@ -107,7 +105,7 @@ public class ListEndpoint {
 											.getDrawable(
 													R.drawable.list_placeholder_orange));
 						}
-						if (!result.getType().equals(FoursquareHelper.FOURSQUARE_LISTS_GROUP_CREATED)) {
+						if (!result.getType().equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED)) {
 							if (result.getUser() != null) {
 								if (result.getUser().getPhoto() != null
 										&& result.getUser().getPhoto().getFoursquareImageUrl(FoursquareImage.SIZE_EXTRA_GRANDE) != null) {
@@ -186,9 +184,9 @@ public class ListEndpoint {
 			String listRequestUrl;
 			if (accessToken != null && accessToken.length() > 0) {
 				listRequestUrl = String.format("%s%s/%s?oauth_token=%s&v=%s",
-						FoursquareHelper.FOURSQUARE_BASE_URL,
-						FoursquareHelper.FOURSQUARE_LISTS_ENDPOINT, listId,
-						accessToken, FoursquareHelper.CURRENT_API_DATE);
+						FoursquarePrefs.FOURSQUARE_BASE_URL,
+						FoursquarePrefs.FOURSQUARE_LISTS_ENDPOINT, listId,
+						accessToken, FoursquarePrefs.CURRENT_API_DATE);
 			} else
 				return null;
 

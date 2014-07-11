@@ -34,66 +34,70 @@
                 android:layout_height="150dp"
                 android:background="@color/now_background"
                 android:scaleType="centerCrop"
-                android:src="@drawable/list_placeholder_green_small"
+                android:src="@drawable/list_placeholder_orange_small"
                 android:contentDescription="@string/image_description_list_photo" />
-
-            <TextView
-                android:id="@+id/textViewListName"
+            <LinearLayout
+                android:layout_alignParentBottom="true"
+                android:id="@+id/linearLayoutTextWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white_transparent"
-                android:ellipsize="end"
-                android:gravity="left"
-                android:maxLines="1"
-                android:paddingBottom="5dip"
-                android:paddingLeft="10dip"
-                android:paddingRight="25dip"
-                android:paddingTop="10dip"
-                android:text="@null"
-                android:textColor="@color/body_text"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/list_venue_item_title" />
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textViewListName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="left"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="25dip"
+                    android:paddingTop="10dip"
+                    android:text="@null"
+                    android:textColor="@color/body_text"
+                    android:textIsSelectable="false"
+                    android:textSize="@dimen/list_venue_item_title" />
 
-            <TextView
-                android:id="@+id/textViewListCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textViewListName"
-                android:background="@color/white_transparent"
-                android:gravity="left"
-                android:maxLines="1"
-                android:paddingBottom="10dip"
-                android:paddingLeft="10dip"
-                android:paddingRight="10dip"
-                android:text="@null"
-                android:textColor="@color/body_text"
-                android:textIsSelectable="false"
-                android:textSize="12sp" />
-
-            <ImageView
-                android:id="@+id/imageViewListIsPublic"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_alignRight="@id/textViewListName"
-                android:layout_below="@id/textViewListName"
-                android:layout_marginBottom="10dip"
-                android:layout_marginLeft="10dip"
-                android:layout_marginRight="10dip"
-                android:scaleType="fitCenter"
-                android:src="@drawable/lock_solid_dark_gray"
-                android:contentDescription="@string/image_description_private"
-                android:visibility="gone" />
+                <TextView
+                    android:id="@+id/textViewListCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:maxLines="1"
+                    android:paddingBottom="10dip"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="10dip"
+                    android:text="@null"
+                    android:textColor="@color/body_text"
+                    android:textIsSelectable="false"
+                    android:textSize="12sp" />
+            </LinearLayout>
         </RelativeLayout>
 
         <ImageView
             android:id="@+id/imageViewListIsFollowed"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="32dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
-            android:paddingRight="10dp"
-            android:scaleType="centerInside"
+            android:layout_marginRight="8dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/list_following_affordance_translucent"
             android:contentDescription="@string/image_description_list_following"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/imageViewListIsPublic"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginBottom="8dip"
+            android:layout_marginRight="8dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:src="@drawable/lock_solid_dark_gray"
+            android:contentDescription="@string/image_description_private"
             android:visibility="visible" />
 
         <Button
@@ -105,7 +109,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:background="@drawable/layout_selector_green"
-            android:text="@null" />
+            android:text="" />
     </RelativeLayout>
 
 </LinearLayout>

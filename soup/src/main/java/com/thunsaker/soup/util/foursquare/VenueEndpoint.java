@@ -17,14 +17,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.thunsaker.soup.AuthHelper;
-import com.thunsaker.soup.FoursquareHelper;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.foursquare.Category;
-import com.thunsaker.soup.classes.foursquare.CompactVenue;
-import com.thunsaker.soup.classes.foursquare.TimeFrame;
-import com.thunsaker.soup.classes.foursquare.Venue;
+import com.thunsaker.soup.data.api.model.Category;
+import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.api.model.TimeFrame;
+import com.thunsaker.soup.data.api.model.Venue;
+import com.thunsaker.soup.services.AuthHelper;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.ui.MainActivity;
 import com.thunsaker.soup.ui.VenueAddCategoryActivity;
 import com.thunsaker.soup.ui.VenueDetailActivity;
@@ -42,10 +42,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
+
 /*
  * Created by @thunsaker
  */
 public class VenueEndpoint {
+    @Inject
+    EventBus mBus;
+
+    public VenueEndpoint() {}
+
 	// DEBUG EMAIL
 	public static boolean SEND_DEBUG_EMAIL = false;
 
@@ -124,7 +133,7 @@ public class VenueEndpoint {
 								VenueListFragment.searchDuplicateResultsVenueList = new ArrayList<CompactVenue>();
 
 							for (CompactVenue c : result) {
-								String tempId = c.getId().trim();
+								String tempId = c.id.trim();
 								if (!tempId.equals(myDuplicateSearchId.trim()))
 									modifiedList.add(c);
 							}
@@ -203,18 +212,188 @@ public class VenueEndpoint {
 				e.printStackTrace();
 				if (myCaller != null && myCaller.isVisible()) {
 					myCaller.getActivity().setProgressBarVisibility(false);
-					VenueListFragment.mPullToRefreshLayout.setRefreshComplete();
+//					VenueListFragment.mPullToRefreshLayout.setRefreshComplete();
 				}
 				VenueListFragment.isRefreshing = false;
 			} finally {
 				if (myCaller != null && myCaller.isVisible()) {
 					myCaller.getActivity().setProgressBarVisibility(false);
-					VenueListFragment.mPullToRefreshLayout.setRefreshComplete();
+//					VenueListFragment.mPullToRefreshLayout.setRefreshComplete();
 				}
 				VenueListFragment.isRefreshing = false;
 			}
 		}
 	}
+
+    public class GetClosestVenuesLatLng extends
+            AsyncTask<Void, Integer, List<CompactVenue>> {
+        Context myContext;
+        LatLng myLatLng;
+        String mySearchQuery;
+        String mySearchQueryLocation;
+        String myAccessToken;
+        String myClientId;
+        String myClientSecret;
+        VenueListFragment myCaller;
+        String myDuplicateSearchId;
+
+        public GetClosestVenuesLatLng(Context theContext, VenueListFragment theCaller, String theSearchQuery,
+                                String theSearchQueryLocation, String theDuplicateSearchId, LatLng theLatLng) {
+            myContext = theContext;
+            myLatLng = theLatLng;
+            mySearchQuery = theSearchQuery;
+            mySearchQueryLocation = theSearchQueryLocation;
+            myCaller = theCaller;
+            myDuplicateSearchId = theDuplicateSearchId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            VenueListFragment.isRefreshing = true;
+            myCaller.getActivity().setProgressBarVisibility(true);
+        }
+
+        @Override
+        protected List<CompactVenue> doInBackground(Void... params) {
+            try {
+                if (VenueListFragment.isSearching && mySearchQuery.equals("")) {
+                    VenueListFragment.searchResultsVenueList = new ArrayList<CompactVenue>();
+                    return null;
+                }
+
+                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("")
+                        ? PreferencesHelper.getFoursquareToken(myContext) : "";
+                myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
+                myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
+
+                List<CompactVenue> nearbyVenues;
+                if (mySearchQueryLocation != null
+                        && mySearchQueryLocation.length() > 0) {
+                    nearbyVenues = VenueEndpoint.GetClosestVenuesWithLatLng(
+                            myLatLng, mySearchQuery, myAccessToken, myClientId,
+                            myClientSecret, myCaller, mySearchQueryLocation);
+                } else {
+                    nearbyVenues = VenueEndpoint.GetClosestVenuesWithLatLng(
+                            myLatLng, mySearchQuery, myAccessToken, myClientId,
+                            myClientSecret, myCaller, "");
+                }
+                return nearbyVenues != null ? nearbyVenues : null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<CompactVenue> result) {
+            super.onPostExecute(result);
+
+            List<CompactVenue> updatedList;
+
+            try {
+                if (result != null && myCaller.isVisible()) {
+                    // TODO: Re-implement the search options
+//                    if (!mySearchQuery.equals("")) {
+//                        if (VenueListFragment.isDuplicateSearching) {
+//                            List<CompactVenue> modifiedList = new ArrayList<CompactVenue>();
+//                            if (VenueListFragment.searchDuplicateResultsVenueList == null)
+//                                VenueListFragment.searchDuplicateResultsVenueList = new ArrayList<CompactVenue>();
+//
+//                            for (CompactVenue c : result) {
+//                                String tempId = c.getId().trim();
+//                                if (!tempId.equals(myDuplicateSearchId.trim()))
+//                                    modifiedList.add(c);
+//                            }
+//
+//                            VenueListFragment.searchDuplicateResultsVenueList = modifiedList;
+//
+//                            if (VenueListFragment.searchDuplicateResultsVenueListAdapter == null)
+//                                VenueListFragment.searchDuplicateResultsVenueListAdapter = myCaller.new VenueListAdapter(
+//                                        myContext, R.layout.list_venue_item,
+//                                        null);
+//
+//                            if (VenueListFragment.searchDuplicateResultsVenueListAdapter.items == null)
+//                                VenueListFragment.searchDuplicateResultsVenueListAdapter.items = new ArrayList<CompactVenue>();
+//
+//                            VenueListFragment.searchDuplicateResultsVenueListAdapter.items
+//                                    .addAll(modifiedList);
+//                            VenueListFragment.searchDuplicateResultsVenueListAdapter
+//                                    .notifyDataSetChanged();
+//
+//                            updatedList = VenueListFragment.searchDuplicateResultsVenueList;
+//                        } else {
+//                            if (VenueListFragment.searchResultsVenueList == null)
+//                                VenueListFragment.searchResultsVenueList = new ArrayList<CompactVenue>();
+//
+//                            VenueListFragment.searchResultsVenueList = result;
+//
+//                            if (VenueListFragment.searchResultsVenueListAdapter == null)
+//                                VenueListFragment.searchResultsVenueListAdapter = myCaller.new VenueListAdapter(
+//                                        myContext, R.layout.list_venue_item,
+//                                        null);
+//
+//                            if (VenueListFragment.searchResultsVenueListAdapter.items == null)
+//                                VenueListFragment.searchResultsVenueListAdapter.items = new ArrayList<CompactVenue>();
+//
+//                            VenueListFragment.searchResultsVenueListAdapter.items
+//                                    .addAll(result);
+//                            VenueListFragment.searchResultsVenueListAdapter
+//                                    .notifyDataSetChanged();
+//
+//                            updatedList = VenueListFragment.searchResultsVenueList;
+//                        }
+//                    } else {
+//                        if (VenueListFragment.currentVenueList == null)
+//                            VenueListFragment.currentVenueList = new ArrayList<CompactVenue>();
+//
+//                        VenueListFragment.currentVenueList = result;
+//
+//                        if (VenueListFragment.currentVenueListAdapter.items == null)
+//                            VenueListFragment.currentVenueListAdapter.items = new ArrayList<CompactVenue>();
+//
+//                        VenueListFragment.currentVenueListAdapter.items
+//                                .addAll(result);
+//                        VenueListFragment.currentVenueListAdapter
+//                                .notifyDataSetChanged();
+//
+//                        updatedList = VenueListFragment.currentVenueList;
+//                    }
+
+                    // TODO: Notify the bus, don't do all this crap here
+                    mBus.post(result);
+//                    if (updatedList != null) {
+//                        VenueListAdapter myAdapter = myCaller.new VenueListAdapter(
+//                                myContext, R.layout.list_venue_item,
+//                                updatedList);
+//                        myCaller.setListAdapter(myAdapter);
+//                    }
+                } else if (VenueListFragment.isSearching && mySearchQuery.equals("")) {
+                    VenueListFragment.searchResultsVenueListAdapter = myCaller.new VenueListAdapter(
+                            myContext, R.layout.list_venue_item,
+                            VenueListFragment.searchResultsVenueList);
+                    myCaller.setListAdapter(VenueListFragment.searchResultsVenueListAdapter);
+
+                    Toast.makeText(myContext, myContext.getString(R.string.alert_error_loading_venues), Toast.LENGTH_SHORT).show();
+                }
+
+                VenueListFragment.isRefreshing = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (myCaller != null && myCaller.isVisible()) {
+                    myCaller.getActivity().setProgressBarVisibility(false);
+//                    VenueListFragment.mPullToRefreshLayout.setRefreshComplete();
+                }
+                VenueListFragment.isRefreshing = false;
+            } finally {
+                if (myCaller != null && myCaller.isVisible()) {
+                    myCaller.getActivity().setProgressBarVisibility(false);
+//                    VenueListFragment.mPullToRefreshLayout.setRefreshComplete();
+                }
+                VenueListFragment.isRefreshing = false;
+            }
+        }
+    }
 
 	public static List<CompactVenue> GetClosestVenuesWithLatLng(
 			LatLng currentLatLng, String searchQuery, String accessToken,
@@ -226,16 +405,16 @@ public class VenueEndpoint {
 			String venueRequestUrl;
 			if (accessToken != null && accessToken.length() > 0) {
 				venueRequestUrl = String.format("%s%s?oauth_token=%s&v=%s",
-						FoursquareHelper.FOURSQUARE_BASE_URL,
-						FoursquareHelper.FOURSQUARE_VENUE_SEARCH_SUFFIX,
-						accessToken, FoursquareHelper.CURRENT_API_DATE);
+						FoursquarePrefs.FOURSQUARE_BASE_URL,
+						FoursquarePrefs.FOURSQUARE_VENUE_SEARCH_SUFFIX,
+						accessToken, FoursquarePrefs.CURRENT_API_DATE);
 			} else {
 				venueRequestUrl = String.format(
 						"%s%s?client_id=%s&client_secret=%s&v=%s",
-						FoursquareHelper.FOURSQUARE_BASE_URL,
-						FoursquareHelper.FOURSQUARE_VENUE_SEARCH_SUFFIX,
+						FoursquarePrefs.FOURSQUARE_BASE_URL,
+						FoursquarePrefs.FOURSQUARE_VENUE_SEARCH_SUFFIX,
 						clientId, clientSecret,
-						FoursquareHelper.CURRENT_API_DATE);
+						FoursquarePrefs.CURRENT_API_DATE);
 			}
 
 			Boolean isGPSSearch = searchQueryLocation.matches(Util.REGEX_GPS);
@@ -260,19 +439,19 @@ public class VenueEndpoint {
 						"&query=" + URLEncoder.encode(searchQuery, Util.ENCODER_CHARSET);
 			}
 
-//			Log.e("FoursquareHelper",
+//			Log.e("FoursquarePrefs",
 //			"Failed because we have no location...");
 //			return null;
 
 			if (Debug.isDebuggerConnected())
-				Log.i("FoursquareHelper", "Url: " + venueRequestUrl);
+				Log.i("FoursquarePrefs", "Url: " + venueRequestUrl);
 			String jsonVenueRequestResponse = Util.getHttpResponse(
 					venueRequestUrl, "", "");
 
 			try {
 				if (jsonVenueRequestResponse != null) {
 					/*
-					 * if(Debug.isDebuggerConnected()) Log.i("FoursquareHelper",
+					 * if(Debug.isDebuggerConnected()) Log.i("FoursquarePrefs",
 					 * "Response: " + jsonVenueRequestResponse);
 					 */
 					JsonParser jParser = new JsonParser();
@@ -302,52 +481,45 @@ public class VenueEndpoint {
 											Collections
 													.sort(myVenues,
 															new Comparator<CompactVenue>() {
-																public int compare(
-																		CompactVenue c1,
-																		CompactVenue c2) {
-																	return c1
-																			.getLocation()
-																			.getDistance()
-																			.compareTo(
-																					c2.getLocation()
-																							.getDistance());
+																public int compare(CompactVenue c1,CompactVenue c2) {
+																	return c1.location.distance.compareTo(c2.location.distance);
 																}
 															});
 										}
 										return myVenues;
 									} else {
-										Log.e("FoursquareHelper",
+										Log.e("FoursquarePrefs",
 												"Failed to parse the venues json");
 									}
 								} else {
-									Log.e("FoursquareHelper",
+									Log.e("FoursquarePrefs",
 											"Failed to parse the response json");
 								}
 							} else {
-								Log.e("FoursquareHelper", "Failed to return a 200, meaning there was an error with the call");
+								Log.e("FoursquarePrefs", "Failed to return a 200, meaning there was an error with the call");
 							}
 						} else {
-							Log.e("FoursquareHelper",
+							Log.e("FoursquarePrefs",
 									"Failed to parse the meta section");
 						}
 					} else {
-						Log.e("FoursquareHelper",
+						Log.e("FoursquarePrefs",
 								"Failed to parse main response");
 					}
 				} else {
-					Log.e("FoursquareHelper", "Problem fetching the data");
+					Log.e("FoursquarePrefs", "Problem fetching the data");
 				}
 
-				Log.e("FoursquareHelper", "Failed for some other reason...");
+				Log.e("FoursquarePrefs", "Failed for some other reason...");
 				return null;
 			} catch (Exception e) {
-				Log.e("FoursquareHelper",
+				Log.e("FoursquarePrefs",
 						"GetClosestVenuesWithLatLng: " + e.getMessage());
 				return null;
 			}
 
 		} catch (Exception e) {
-			Log.e("FoursquareHelper",
+			Log.e("FoursquarePrefs",
 					"GetClosestVenuesWithLatLng: " + e.getMessage());
 			return null;
 		}
@@ -386,7 +558,7 @@ public class VenueEndpoint {
 				myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
 				myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
 
-				if (mySource == FoursquareHelper.CALLER_SOURCE_DETAILS_INTENT
+				if (mySource == FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT
 						&& myVenueId.contains("http")) {
 					String myLongUrl = Util.ResolveShortUrl(myVenueId);
 					if (myLongUrl.length() > 0) {
@@ -436,7 +608,7 @@ public class VenueEndpoint {
 						EditText myEditText = (EditText) myCaller
 								.findViewById(R.id.editTextEditVenueInfoDescription);
 						myEditText.setVisibility(View.VISIBLE);
-						myEditText.setText(result.getDescription());
+						myEditText.setText(result.description);
 						myLinearLayout.setVisibility(View.GONE);
 						myCaller.setProgressBarVisibility(false);
 						myCaller.supportInvalidateOptionsMenu();
@@ -446,7 +618,7 @@ public class VenueEndpoint {
 						VenueEditCategoriesActivity myCategoryCaller = (VenueEditCategoriesActivity) myCaller;
 						VenueEditCategoriesActivity.originalCategories = new ArrayList<Category>();
 						VenueEditCategoriesActivity.originalCategories
-								.addAll(result.getCategories());
+								.addAll(result.categories);
 						myCategoryCaller.LoadCurrentCategories(null);
 						myCategoryCaller.setProgressBarVisibility(false);
 						break;
@@ -464,8 +636,8 @@ public class VenueEndpoint {
 
 						if (myVenueDetailCaller.findViewById(
 								R.id.relativeLayoutVenueWrapperOuter).isShown()) {
-							if (result.getDescription() != null
-									&& result.getDescription().length() > 0) {
+							if (result.description != null
+									&& result.description.length() > 0) {
 								LinearLayout myDescriptionLinearLayout = (LinearLayout) myVenueDetailCaller
 										.findViewById(R.id.linearLayoutVenueDescriptionBackground);
 
@@ -474,7 +646,7 @@ public class VenueEndpoint {
 								TextView myDescriptionTextView = (TextView) myVenueDetailCaller
 										.findViewById(R.id.textViewVenueDescription);
 								myDescriptionTextView.setText(result
-										.getDescription());
+										.description);
 								myDescriptionTextView
 										.setOnClickListener(new View.OnClickListener() {
 											@Override
@@ -517,29 +689,29 @@ public class VenueEndpoint {
 			if (accessToken != null && accessToken.length() > 0) {
 				venueRequestUrl = String
 						.format("%s/%s,/%s&oauth_token=%s&v=%s",
-								FoursquareHelper.FOURSQUARE_BASE_URL_MULTI,
+								FoursquarePrefs.FOURSQUARE_BASE_URL_MULTI,
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_ENDPOINT,
+										FoursquarePrefs.FOURSQUARE_VENUE_ENDPOINT,
 										Id),
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_HOURS,
+										FoursquarePrefs.FOURSQUARE_VENUE_HOURS,
 										Id), accessToken,
-								FoursquareHelper.CURRENT_API_DATE);
+								FoursquarePrefs.CURRENT_API_DATE);
 			} else {
 				venueRequestUrl = String
 						.format("%s/%s,/%s&client_id=%s&client_secret=%s&v=%s",
-								FoursquareHelper.FOURSQUARE_BASE_URL_MULTI,
+								FoursquarePrefs.FOURSQUARE_BASE_URL_MULTI,
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_ENDPOINT,
+										FoursquarePrefs.FOURSQUARE_VENUE_ENDPOINT,
 										Id),
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_HOURS,
+										FoursquarePrefs.FOURSQUARE_VENUE_HOURS,
 										Id), clientId, clientSecret,
-								FoursquareHelper.CURRENT_API_DATE);
+								FoursquarePrefs.CURRENT_API_DATE);
 			}
 
 			if (Debug.isDebuggerConnected())
-				Log.i("FoursquareHelper", "Url: " + venueRequestUrl);
+				Log.i("FoursquarePrefs", "Url: " + venueRequestUrl);
 
 			String jsonVenueRequestResponse = Util.getHttpResponse(
 					venueRequestUrl, "", "");
@@ -582,41 +754,41 @@ public class VenueEndpoint {
 
 									if (jObjectHours != null
 											&& jObjectHours.has("timeframes")) {
-										myVenue.setVenueHours(Venue.ParseVenueHoursFromJson(
+										myVenue.venueHours = Venue.ParseVenueHoursFromJson(
 												jObjectHours,
-												myVenue.getVenueHours()));
+												myVenue.venueHours);
 									}
 
 									return myVenue;
 									// } else {
-									// Log.e("FoursquareHelper",
+									// Log.e("FoursquarePrefs",
 									// "Failed to parse the venue json");
 									// }
 								} else {
-									Log.e("FoursquareHelper",
+									Log.e("FoursquarePrefs",
 											"Failed to parse the response json");
 								}
 							} else {
-								Log.e("FoursquareHelper",
+								Log.e("FoursquarePrefs",
 										"Failed to return a 200, "
 												+ "meaning there was an error with the call");
 							}
 						} else {
-							Log.e("FoursquareHelper",
+							Log.e("FoursquarePrefs",
 									"Failed to parse the meta section");
 						}
 					} else {
-						Log.e("FoursquareHelper",
+						Log.e("FoursquarePrefs",
 								"Failed to parse main response");
 					}
 				} else {
-					Log.e("FoursquareHelper", "Problem fetching the data");
+					Log.e("FoursquarePrefs", "Problem fetching the data");
 				}
 
-				Log.e("FoursquareHelper", "Failed for some other reason...");
+				Log.e("FoursquarePrefs", "Failed for some other reason...");
 				return null;
 			} catch (Exception e) {
-				Log.e("FoursquareHelper",
+				Log.e("FoursquarePrefs",
 						"GetClosestVenuesWithLatLng: " + e.getMessage());
 				return null;
 			}
@@ -663,21 +835,14 @@ public class VenueEndpoint {
 				myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
 				myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
 
-				String mySuperuserLevel = PreferencesHelper
+				int mySuperuserLevel = PreferencesHelper
 						.getFoursquareSuperuserLevel(myContext);
-				Integer superuserLevel;
 
-				try {
-					superuserLevel = Integer.parseInt(mySuperuserLevel);
-				} catch (NumberFormatException e) {
-					superuserLevel = 0;
-				}
-
-				canEdit = superuserLevel > 0;
+				canEdit = mySuperuserLevel > 0;
 
 				String venueResult = VenueEndpoint.EditVenue(myVenueId,
 						myAccessToken, myClientId, myClientSecret,
-						myModifiedVenue, superuserLevel, modifiedDescription,
+						myModifiedVenue, mySuperuserLevel, modifiedDescription,
 						fromAddCategory);
 				return venueResult != null ? venueResult : null;
 			} catch (Exception e) {
@@ -703,7 +868,7 @@ public class VenueEndpoint {
 							Toast.LENGTH_SHORT).show();
 					VenueEditTabsActivity.mDebugString = result;
 				} else {
-					if (result.equals(FoursquareHelper.SUCCESS)) {
+					if (result.equals(FoursquarePrefs.SUCCESS)) {
 						Toast.makeText(
 								myCaller.getApplicationContext(),
 								canEdit ? myContext
@@ -713,7 +878,7 @@ public class VenueEndpoint {
 								Toast.LENGTH_SHORT).show();
 						myCaller.setResult(Activity.RESULT_OK);
 					} else if (result
-							.equals(FoursquareHelper.FAIL_UNAUTHORIZED)) {
+							.equals(FoursquarePrefs.FAIL_UNAUTHORIZED)) {
 						Toast.makeText(
 								myCaller.getApplicationContext(),
 								myContext
@@ -760,31 +925,31 @@ public class VenueEndpoint {
 			if (accessToken != null && accessToken.length() > 0) {
 				venueRequestUrl = String
 						.format("%s%s?oauth_token=%s&v=%s",
-								FoursquareHelper.FOURSQUARE_BASE_URL,
+								FoursquarePrefs.FOURSQUARE_BASE_URL,
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_ENDPOINT,
+										FoursquarePrefs.FOURSQUARE_VENUE_ENDPOINT,
 										myVenueId)
-										+ (canEdit ? FoursquareHelper.FOURSQUARE_VENUE_EDIT_SUFFIX
-												: FoursquareHelper.FOURSQUARE_VENUE_PROPOSED_EDIT_SUFFIX),
-								accessToken, FoursquareHelper.CURRENT_API_DATE);
+										+ (canEdit ? FoursquarePrefs.FOURSQUARE_VENUE_EDIT_SUFFIX
+												: FoursquarePrefs.FOURSQUARE_VENUE_PROPOSED_EDIT_SUFFIX),
+								accessToken, FoursquarePrefs.CURRENT_API_DATE);
 			} else {
 				venueRequestUrl = String
 						.format("%s%s?client_id=%s&client_secret=%s&v=%s",
-								FoursquareHelper.FOURSQUARE_BASE_URL,
+								FoursquarePrefs.FOURSQUARE_BASE_URL,
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_ENDPOINT,
+										FoursquarePrefs.FOURSQUARE_VENUE_ENDPOINT,
 										myVenueId)
-										+ (canEdit ? FoursquareHelper.FOURSQUARE_VENUE_EDIT_SUFFIX
-												: FoursquareHelper.FOURSQUARE_VENUE_PROPOSED_EDIT_SUFFIX),
+										+ (canEdit ? FoursquarePrefs.FOURSQUARE_VENUE_EDIT_SUFFIX
+												: FoursquarePrefs.FOURSQUARE_VENUE_PROPOSED_EDIT_SUFFIX),
 								clientId, clientSecret,
-								FoursquareHelper.CURRENT_API_DATE);
+								FoursquarePrefs.CURRENT_API_DATE);
 			}
 
-			if (fromAddCategory && myModifiedVenue.getCategories() != null) {
+			if (fromAddCategory && myModifiedVenue.categories != null) {
 				if (canEdit) {
 					String myModifiedCategories = "";
-					for (Category c : myModifiedVenue.getCategories()) {
-						myModifiedCategories += c.getId() + ",";
+					for (Category c : myModifiedVenue.categories) {
+						myModifiedCategories += c.id + ",";
 					}
 
 					myModifiedCategories = myModifiedCategories.substring(0,
@@ -797,32 +962,24 @@ public class VenueEndpoint {
 				} else {
 					venueRequestUrl += String.format(
 							"&primaryCategoryId=%s",
-							Util.Encode(myModifiedVenue.getCategories().get(0)
-									.getId()));
+							Util.Encode(myModifiedVenue.categories.get(0).id));
 				}
 			} else {
 				// Add the editable values
 				venueRequestUrl += String
 						.format("&name=%s&address=%s&crossStreet=%s&city=%s&state=%s&zip=%s&phone=%s",
-								Util.Encode(myModifiedVenue.getName()), Util
-										.Encode(myModifiedVenue.getLocation()
-												.getAddress()), Util
-										.Encode(myModifiedVenue.getLocation()
-												.getCrossStreet()), Util
-										.Encode(myModifiedVenue.getLocation()
-												.getCity()), Util
-										.Encode(myModifiedVenue.getLocation()
-												.getState()), Util
-										.Encode(myModifiedVenue.getLocation()
-												.getPostalCode()), Util
-										.Encode(myModifiedVenue.getContact()
-												.getPhone()));
+								Util.Encode(myModifiedVenue.name),
+                                Util.Encode(myModifiedVenue.location.address),
+                                Util.Encode(myModifiedVenue.location.crossStreet),
+                                Util.Encode(myModifiedVenue.location.city),
+                                Util.Encode(myModifiedVenue.location.state),
+                                Util.Encode(myModifiedVenue.location.postalCode),
+                                Util.Encode(myModifiedVenue.contact.phone));
 
-				if (myModifiedVenue.getVenueHours() != null
-						&& myModifiedVenue.getVenueHours().getTimeFrames() != null) {
+				if (myModifiedVenue.venueHours != null
+						&& myModifiedVenue.venueHours.getTimeFrames() != null) {
 					StringBuilder venueHours = new StringBuilder();
-					for (TimeFrame t : myModifiedVenue.getVenueHours()
-							.getTimeFrames()) {
+					for (TimeFrame t : myModifiedVenue.venueHours.getTimeFrames()) {
 						venueHours.append(t.getFoursquareApiString());
 					}
 					if (venueHours.length() > 0) {
@@ -833,16 +990,16 @@ public class VenueEndpoint {
 
 				if (level >= 2) {
 					venueRequestUrl += String.format("&twitter=%s&url=%s", Util
-							.Encode(myModifiedVenue.getContact().getTwitter()),
-							Util.Encode(myModifiedVenue.getUrl()));
+							.Encode(myModifiedVenue.contact.twitter),
+							Util.Encode(myModifiedVenue.url));
 
 					if (modifiedDescription)
 						venueRequestUrl += String.format("&description=%s",
-								Util.Encode(myModifiedVenue.getDescription()));
+								Util.Encode(myModifiedVenue.description));
 
 					venueRequestUrl += String.format("&ll=%s,%s",
-							myModifiedVenue.getLocation().getLatitude(),
-							myModifiedVenue.getLocation().getLongitude());
+							myModifiedVenue.location.latitude,
+							myModifiedVenue.location.longitude);
 				}
 			}
 
@@ -850,7 +1007,7 @@ public class VenueEndpoint {
 				tempDebugString += String.format("Url: %s", venueRequestUrl);
 
 			if (Debug.isDebuggerConnected())
-				Log.i("FoursquareHelper", "Edit Request Url: "
+				Log.i("FoursquarePrefs", "Edit Request Url: "
 						+ venueRequestUrl);
 
 			String jsonEditVenueRequestResponse = Util.getHttpResponse(
@@ -863,7 +1020,7 @@ public class VenueEndpoint {
 			try {
 				if (jsonEditVenueRequestResponse != null) {
 					if (Debug.isDebuggerConnected())
-						Log.i("FoursquareHelper",
+						Log.i("FoursquarePrefs",
 								"Edit Venue Response for VenueId " + myVenueId
 										+ ": " + jsonEditVenueRequestResponse);
 
@@ -881,49 +1038,49 @@ public class VenueEndpoint {
 								if (SEND_DEBUG_EMAIL) {
 									return tempDebugString;
 								} else {
-									return FoursquareHelper.SUCCESS;
+									return FoursquarePrefs.SUCCESS;
 								}
 							} else if (responseCode == 403) {
 								if (SEND_DEBUG_EMAIL) {
 									return tempDebugString;
 								} else {
-									return FoursquareHelper.FAIL_UNAUTHORIZED;
+									return FoursquarePrefs.FAIL_UNAUTHORIZED;
 								}
 							} else {
-								Log.e("FoursquareHelper",
+								Log.e("FoursquarePrefs",
 										"Failed to return a 200, "
 												+ "meaning there was an error with the call");
 
 								if (SEND_DEBUG_EMAIL) {
 									return tempDebugString;
 								} else {
-									return FoursquareHelper.FAIL;
+									return FoursquarePrefs.FAIL;
 								}
 							}
 						} else {
-							Log.e("FoursquareHelper",
+							Log.e("FoursquarePrefs",
 									"Failed to parse the meta section");
 						}
 					} else {
-						Log.e("FoursquareHelper",
+						Log.e("FoursquarePrefs",
 								"Failed to parse main response");
 					}
 				} else {
-					Log.e("FoursquareHelper", "Problem fetching the data");
+					Log.e("FoursquarePrefs", "Problem fetching the data");
 				}
 
-				Log.e("FoursquareHelper", "Failed for some other reason...");
+				Log.e("FoursquarePrefs", "Failed for some other reason...");
 				if (SEND_DEBUG_EMAIL) {
 					return tempDebugString;
 				} else {
-					return FoursquareHelper.FAIL;
+					return FoursquarePrefs.FAIL;
 				}
 			} catch (Exception e) {
-				Log.e("FoursquareHelper", "EditVenue: " + e.getMessage());
+				Log.e("FoursquarePrefs", "EditVenue: " + e.getMessage());
 				if (SEND_DEBUG_EMAIL) {
 					return tempDebugString;
 				} else {
-					return FoursquareHelper.FAIL;
+					return FoursquarePrefs.FAIL;
 				}
 			}
 		} catch (Exception e) {
@@ -931,7 +1088,7 @@ public class VenueEndpoint {
 			if (SEND_DEBUG_EMAIL) {
 				return tempDebugString;
 			} else {
-				return FoursquareHelper.FAIL;
+				return FoursquarePrefs.FAIL;
 			}
 		}
 	}
@@ -945,35 +1102,35 @@ public class VenueEndpoint {
 			if (accessToken != null && accessToken.length() > 0) {
 				venueRequestUrl = String
 						.format("%s%s?oauth_token=%s&v=%s",
-								FoursquareHelper.FOURSQUARE_BASE_URL,
+								FoursquarePrefs.FOURSQUARE_BASE_URL,
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_ENDPOINT,
+										FoursquarePrefs.FOURSQUARE_VENUE_ENDPOINT,
 										myVenueId)
-										+ (canEdit ? FoursquareHelper.FOURSQUARE_VENUE_EDIT_SUFFIX
-												: FoursquareHelper.FOURSQUARE_VENUE_PROPOSED_EDIT_SUFFIX),
-								accessToken, FoursquareHelper.CURRENT_API_DATE);
+										+ (canEdit ? FoursquarePrefs.FOURSQUARE_VENUE_EDIT_SUFFIX
+												: FoursquarePrefs.FOURSQUARE_VENUE_PROPOSED_EDIT_SUFFIX),
+								accessToken, FoursquarePrefs.CURRENT_API_DATE);
 			} else {
 				venueRequestUrl = String
 						.format("%s%s?client_id=%s&client_secret=%s&v=%s",
-								FoursquareHelper.FOURSQUARE_BASE_URL,
+								FoursquarePrefs.FOURSQUARE_BASE_URL,
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_ENDPOINT,
+										FoursquarePrefs.FOURSQUARE_VENUE_ENDPOINT,
 										myVenueId)
-										+ (canEdit ? FoursquareHelper.FOURSQUARE_VENUE_EDIT_SUFFIX
-												: FoursquareHelper.FOURSQUARE_VENUE_PROPOSED_EDIT_SUFFIX),
+										+ (canEdit ? FoursquarePrefs.FOURSQUARE_VENUE_EDIT_SUFFIX
+												: FoursquarePrefs.FOURSQUARE_VENUE_PROPOSED_EDIT_SUFFIX),
 								clientId, clientSecret,
-								FoursquareHelper.CURRENT_API_DATE);
+								FoursquarePrefs.CURRENT_API_DATE);
 			}
 			if (Debug.isDebuggerConnected())
-				Log.i("FoursquareHelper", "Base Url: " + venueRequestUrl);
+				Log.i("FoursquarePrefs", "Base Url: " + venueRequestUrl);
 
 			String listOfCategoryIds = null;
 
 			for (Category c : myCategories) {
-				if (c.getPrimary())
-					listOfCategoryIds = c.getId() + listOfCategoryIds + ",";
+				if (c.primary)
+					listOfCategoryIds = c.id + listOfCategoryIds + ",";
 				else
-					listOfCategoryIds += c.getId() + ",";
+					listOfCategoryIds += c.id + ",";
 			}
 
 			listOfCategoryIds.subSequence(0, listOfCategoryIds.length() - 1);
@@ -983,7 +1140,7 @@ public class VenueEndpoint {
 					listOfCategoryIds);
 
 			if (Debug.isDebuggerConnected())
-				Log.i("FoursquareHelper", "Edit Venue Categories Request Url: "
+				Log.i("FoursquarePrefs", "Edit Venue Categories Request Url: "
 						+ venueRequestUrl);
 
 			String jsonEditVenueRequestResponse = Util.getHttpResponse(
@@ -992,7 +1149,7 @@ public class VenueEndpoint {
 			try {
 				if (jsonEditVenueRequestResponse != null) {
 					if (Debug.isDebuggerConnected())
-						Log.i("FoursquareHelper",
+						Log.i("FoursquarePrefs",
 								"Edit Venue Response for VenueId " + myVenueId
 										+ ": " + jsonEditVenueRequestResponse);
 					JsonParser jParser = new JsonParser();
@@ -1009,40 +1166,40 @@ public class VenueEndpoint {
 								JsonObject jObjectResponses = jObject
 										.getAsJsonObject("response");
 								if (jObjectResponses != null) {
-									return FoursquareHelper.SUCCESS;
+									return FoursquarePrefs.SUCCESS;
 								} else {
-									Log.e("FoursquareHelper",
+									Log.e("FoursquarePrefs",
 											"Failed to parse the response json");
 								}
 							} else if (responseCode == 403) {
-								return FoursquareHelper.FAIL_UNAUTHORIZED;
+								return FoursquarePrefs.FAIL_UNAUTHORIZED;
 							} else {
-								Log.e("FoursquareHelper",
+								Log.e("FoursquarePrefs",
 										"Failed to return a 200, "
 												+ "meaning there was an error with the call");
 							}
 						} else {
-							Log.e("FoursquareHelper",
+							Log.e("FoursquarePrefs",
 									"Failed to parse the meta section");
 						}
 					} else {
-						Log.e("FoursquareHelper",
+						Log.e("FoursquarePrefs",
 								"Failed to parse main response");
 					}
 				} else {
-					Log.e("FoursquareHelper", "Problem fetching the data");
+					Log.e("FoursquarePrefs", "Problem fetching the data");
 				}
 
-				Log.e("FoursquareHelper", "Failed for some other reason...");
-				return FoursquareHelper.FAIL;
+				Log.e("FoursquarePrefs", "Failed for some other reason...");
+				return FoursquarePrefs.FAIL;
 			} catch (Exception e) {
-				Log.e("FoursquareHelper",
+				Log.e("FoursquarePrefs",
 						"GetClosestVenuesWithLatLng: " + e.getMessage());
-				return FoursquareHelper.FAIL;
+				return FoursquarePrefs.FAIL;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return FoursquareHelper.FAIL;
+			return FoursquarePrefs.FAIL;
 		}
 	}
 
@@ -1054,19 +1211,19 @@ public class VenueEndpoint {
 			String venueRequestUrl;
 			if (accessToken != null && accessToken.length() > 0) {
 				venueRequestUrl = String.format("%s%s?oauth_token=%s&v=%s",
-						FoursquareHelper.FOURSQUARE_BASE_URL,
-						FoursquareHelper.FOURSQUARE_VENUE_CATEGORIES,
-						accessToken, FoursquareHelper.CURRENT_API_DATE);
+						FoursquarePrefs.FOURSQUARE_BASE_URL,
+						FoursquarePrefs.FOURSQUARE_VENUE_CATEGORIES,
+						accessToken, FoursquarePrefs.CURRENT_API_DATE);
 			} else {
 				venueRequestUrl = String.format(
 						"%s%s?client_id=%s&client_secret=%s&v=%s",
-						FoursquareHelper.FOURSQUARE_BASE_URL,
-						FoursquareHelper.FOURSQUARE_VENUE_CATEGORIES, clientId,
-						clientSecret, FoursquareHelper.CURRENT_API_DATE);
+						FoursquarePrefs.FOURSQUARE_BASE_URL,
+						FoursquarePrefs.FOURSQUARE_VENUE_CATEGORIES, clientId,
+						clientSecret, FoursquarePrefs.CURRENT_API_DATE);
 			}
 
 			if (Debug.isDebuggerConnected())
-				Log.i("FoursquareHelper", "Get Categories Url: "
+				Log.i("FoursquarePrefs", "Get Categories Url: "
 						+ venueRequestUrl);
 
 			String jsonVenueRequestResponse = Util.getHttpResponse(
@@ -1095,40 +1252,40 @@ public class VenueEndpoint {
 														jArrayVenues, true);
 										return myFoursquareCategories;
 									} else {
-										Log.e("FoursquareHelper",
+										Log.e("FoursquarePrefs",
 												"Failed to parse the venues json");
 									}
 								} else {
-									Log.e("FoursquareHelper",
+									Log.e("FoursquarePrefs",
 											"Failed to parse the response json");
 								}
 							} else {
-								Log.e("FoursquareHelper",
+								Log.e("FoursquarePrefs",
 										"Failed to return a 200, "
 												+ "meaning there was an error with the call");
 							}
 						} else {
-							Log.e("FoursquareHelper",
+							Log.e("FoursquarePrefs",
 									"Failed to parse the meta section");
 						}
 					} else {
-						Log.e("FoursquareHelper",
+						Log.e("FoursquarePrefs",
 								"Failed to parse main response");
 					}
 				} else {
-					Log.e("FoursquareHelper", "Problem fetching the data");
+					Log.e("FoursquarePrefs", "Problem fetching the data");
 				}
 
-				Log.e("FoursquareHelper", "Failed for some other reason...");
+				Log.e("FoursquarePrefs", "Failed for some other reason...");
 				return null;
 			} catch (Exception e) {
-				Log.e("FoursquareHelper",
+				Log.e("FoursquarePrefs",
 						"GetClosestVenuesWithLatLng: " + e.getMessage());
 				return null;
 			}
 
 		} catch (Exception e) {
-			Log.e("FoursquareHelper",
+			Log.e("FoursquarePrefs",
 					"GetClosestVenuesWithLatLng: " + e.getMessage());
 			return null;
 		}
@@ -1219,7 +1376,7 @@ public class VenueEndpoint {
 			myContext = theContext;
 			myVenueId = theVenueToModifyId;
 			myFlagType = theFlagType;
-			if (myFlagType.equals(FoursquareHelper.FlagType.DUPLICATE)) {
+			if (myFlagType.equals(FoursquarePrefs.FlagType.DUPLICATE)) {
 				myDuplicateId = theDuplicateId;
 			}
 			myCaller = FragmentActivity;
@@ -1256,7 +1413,7 @@ public class VenueEndpoint {
 				myCaller.setProgressBarVisibility(false);
 				myCaller.supportInvalidateOptionsMenu();
 				// myCaller.setProgressBarVisibility(false);
-				if (result.equals(FoursquareHelper.SUCCESS)) {
+				if (result.equals(FoursquarePrefs.SUCCESS)) {
 					// Crouton.makeText(myCaller,
 					// String.format(myContext.getString(R.string.flag_venue_success),
 					// Util.GetFlagTypeStringFromInt(myFlagType, true)),
@@ -1309,33 +1466,33 @@ public class VenueEndpoint {
 			if (accessToken != null && accessToken.length() > 0) {
 				venueRequestUrl = String
 						.format("%s%s?oauth_token=%s&v=%s",
-								FoursquareHelper.FOURSQUARE_BASE_URL,
+								FoursquarePrefs.FOURSQUARE_BASE_URL,
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_ENDPOINT,
+										FoursquarePrefs.FOURSQUARE_VENUE_ENDPOINT,
 										myVenueId)
-										+ FoursquareHelper.FOURSQUARE_VENUE_FLAG_SUFFIX,
-								accessToken, FoursquareHelper.CURRENT_API_DATE);
+										+ FoursquarePrefs.FOURSQUARE_VENUE_FLAG_SUFFIX,
+								accessToken, FoursquarePrefs.CURRENT_API_DATE);
 			} else {
 				venueRequestUrl = String
 						.format("%s%s?client_id=%s&client_secret=%s&v=%s",
-								FoursquareHelper.FOURSQUARE_BASE_URL,
+								FoursquarePrefs.FOURSQUARE_BASE_URL,
 								String.format(
-										FoursquareHelper.FOURSQUARE_VENUE_ENDPOINT,
+										FoursquarePrefs.FOURSQUARE_VENUE_ENDPOINT,
 										myVenueId)
-										+ FoursquareHelper.FOURSQUARE_VENUE_FLAG_SUFFIX,
+										+ FoursquarePrefs.FOURSQUARE_VENUE_FLAG_SUFFIX,
 								clientId, clientSecret,
-								FoursquareHelper.CURRENT_API_DATE);
+								FoursquarePrefs.CURRENT_API_DATE);
 			}
 
 			venueRequestUrl += String.format("&problem=%s", Util.Encode(Util
 					.GetFlagTypeStringFromInt(myFlagType, false)));
 
-			if (myFlagType.equals(FoursquareHelper.FlagType.DUPLICATE)
+			if (myFlagType.equals(FoursquarePrefs.FlagType.DUPLICATE)
 					&& !myDuplicateId.equals(""))
 				venueRequestUrl += String.format("&venueId=%s", myDuplicateId);
 
 			if (Debug.isDebuggerConnected())
-				Log.i("FoursquareHelper", "Flag Venue Request Url: "
+				Log.i("FoursquarePrefs", "Flag Venue Request Url: "
 						+ venueRequestUrl);
 
 			String jsonEditVenueRequestResponse = Util.getHttpResponse(
@@ -1344,7 +1501,7 @@ public class VenueEndpoint {
 			try {
 				if (jsonEditVenueRequestResponse != null) {
 					if (Debug.isDebuggerConnected())
-						Log.i("FoursquareHelper",
+						Log.i("FoursquarePrefs",
 								"Flag Venue Response for VenueId " + myVenueId
 										+ ": " + jsonEditVenueRequestResponse);
 					JsonParser jParser = new JsonParser();
@@ -1358,36 +1515,36 @@ public class VenueEndpoint {
 							Integer responseCode = jObjectMeta.get("code")
 									.getAsInt();
 							if (responseCode == 200) {
-								return FoursquareHelper.SUCCESS;
+								return FoursquarePrefs.SUCCESS;
 							} else if (responseCode == 403) {
-								return FoursquareHelper.FAIL_UNAUTHORIZED;
+								return FoursquarePrefs.FAIL_UNAUTHORIZED;
 							} else {
-								Log.e("FoursquareHelper",
+								Log.e("FoursquarePrefs",
 										"Failed to return a 200, "
 												+ "meaning there was an error with the call");
-								return FoursquareHelper.FAIL;
+								return FoursquarePrefs.FAIL;
 							}
 						} else {
-							Log.e("FoursquareHelper",
+							Log.e("FoursquarePrefs",
 									"Failed to parse the meta section");
 						}
 					} else {
-						Log.e("FoursquareHelper",
+						Log.e("FoursquarePrefs",
 								"Failed to parse main response");
 					}
 				} else {
-					Log.e("FoursquareHelper", "Problem fetching the data");
+					Log.e("FoursquarePrefs", "Problem fetching the data");
 				}
 
-				Log.e("FoursquareHelper", "Failed for some other reason...");
-				return FoursquareHelper.FAIL;
+				Log.e("FoursquarePrefs", "Failed for some other reason...");
+				return FoursquarePrefs.FAIL;
 			} catch (Exception e) {
-				Log.e("FoursquareHelper", "EditVenue: " + e.getMessage());
-				return FoursquareHelper.FAIL;
+				Log.e("FoursquarePrefs", "EditVenue: " + e.getMessage());
+				return FoursquarePrefs.FAIL;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return FoursquareHelper.FAIL;
+			return FoursquarePrefs.FAIL;
 		}
 	}
 }

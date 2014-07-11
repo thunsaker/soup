@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -20,12 +19,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.thunsaker.soup.R;
+import com.thunsaker.soup.app.BaseSoupActivity;
 import com.thunsaker.soup.util.Util;
 
 /*
  * Created by @thunsaker
  */
-public class LocationSelectActivity extends ActionBarActivity {
+public class LocationSelectActivity extends BaseSoupActivity {
 	private boolean useLogo = true;
 	private boolean showHomeUp = true;
 

@@ -3,7 +3,6 @@ package com.thunsaker.soup.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,14 +16,15 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
-import com.thunsaker.soup.R;
-import com.thunsaker.soup.FoursquareHelper;
 import com.thunsaker.soup.PreferencesHelper;
-import com.thunsaker.soup.classes.foursquare.Category;
-import com.thunsaker.soup.classes.foursquare.CompactVenue;
-import com.thunsaker.soup.classes.foursquare.FoursquareImage;
-import com.thunsaker.soup.classes.foursquare.Venue;
-import com.thunsaker.soup.util.foursquare.VenueEndpoint;
+import com.thunsaker.soup.R;
+import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.data.api.model.Category;
+import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.api.model.FoursquareImage;
+import com.thunsaker.soup.data.api.model.Venue;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
 /*
  * Created by @thunsaker
  */
-public class VenueEditCategoriesActivity extends ActionBarActivity {
+public class VenueEditCategoriesActivity extends BaseSoupActivity {
 	private boolean useLogo = true;
 	private boolean showHomeUp = true;
 
@@ -61,8 +61,7 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
 		setProgressBarVisibility(false);
 		setProgressBarIndeterminate(true);
 
-		level = Integer.parseInt(
-                PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext()));
+		level = PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext());
 
 		mLinearLayoutProgressBar = (LinearLayout)findViewById(R.id.linearLayoutProgressBarWrapper);
 		mLinearLayout = (LinearLayout)findViewById(R.id.linearLayoutVenueCategoriesWrapper);
@@ -78,25 +77,25 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
 		if(VenueDetailFragment.currentVenue != null) {
 			currentVenue = VenueDetailFragment.currentVenue;
 			originalCategories = new ArrayList<Category>();
-			if(currentVenue.getCategories() != null && currentVenue.getCategories().size() > 0)
-				originalCategories.addAll(currentVenue.getCategories());
+			if(currentVenue.categories != null && currentVenue.categories.size() > 0)
+				originalCategories.addAll(currentVenue.categories);
 		} else {
 			if(mLinearLayoutProgressBar != null && mLinearLayout != null) {
 				mLinearLayoutProgressBar.setVisibility(View.VISIBLE);
 				mLinearLayout.setVisibility(View.GONE);
 			}
 			setProgressBarVisibility(true);
-			new VenueEndpoint.GetVenue(getApplicationContext(),
-                    currentCompactVenue.getId(), this,
-                    FoursquareHelper.CALLER_SOURCE_EDIT_CATEGORIES).execute();
+			new FoursquareTasks.GetVenue(getApplicationContext(),
+                    currentCompactVenue.id, this,
+                    FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES).execute();
 		}
 
-		LoadCurrentCategories(currentVenue.getCategories());
+		LoadCurrentCategories(currentVenue.categories);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if(hasModified && level >= FoursquareHelper.SUPERUSER.SU1) {
+		if(hasModified && level >= FoursquarePrefs.SUPERUSER.SU1) {
 			getMenuInflater().inflate(R.menu.activity_venue_edit, menu);
 		}
 
@@ -117,7 +116,7 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
             Toast.makeText(this, R.string.edit_category_reverting_changes, Toast.LENGTH_SHORT).show();
 			originalCategories = null;
 			originalCategories = new ArrayList<Category>();
-			originalCategories.addAll(currentVenue.getCategories());
+			originalCategories.addAll(currentVenue.categories);
 			updatedCategories = null;
 			LoadCurrentCategories(originalCategories);
 			hasModified = false;
@@ -131,13 +130,13 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
 	private void SaveUpdatedCategories() {
 		Venue myModifiedVenue = new Venue();
 		myModifiedVenue = currentVenue;
-		myModifiedVenue.setCategories(null);
+		myModifiedVenue.categories = null;
 		if(updatedCategories.size() > 0) {
-			myModifiedVenue.setCategories(updatedCategories);
+			myModifiedVenue.categories = updatedCategories;
 
 			setProgressBarVisibility(true);
-			new VenueEndpoint.EditVenue(getApplicationContext(),
-                    currentVenue.getId(), myModifiedVenue, this, false, true).execute();
+			new FoursquareTasks.EditVenue(getApplicationContext(),
+                    currentVenue.id, myModifiedVenue, this, false, true).execute();
 		} else {
 //			Crouton.makeText(getParent(), R.string.edit_category_no_categories, Style.INFO).show();
             Toast.makeText(getApplicationContext(), R.string.edit_category_no_categories, Toast.LENGTH_SHORT).show();
@@ -162,7 +161,7 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
 							ToggleButton myCategoryPrimaryToggleButton = null;
 							ImageButton myCategoryDeleteImageButton = null;
 
-							if(cat.getPrimary()) {
+							if(cat.primary) {
 								myCategoryLinearLayout =
                                         (LinearLayout)findViewById(
                                                 R.id.linearLayoutCategoryWrapper1);
@@ -173,7 +172,7 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
                                         (ImageButton) findViewById(
                                                 R.id.imageViewCategoryDelete1);
 
-								if(level >= FoursquareHelper.SUPERUSER.SU1) {
+								if(level >= FoursquarePrefs.SUPERUSER.SU1) {
 									myCategoryPrimaryToggleButton.setOnClickListener(
                                             new OnClickListener() {
 										@Override
@@ -215,7 +214,7 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
                                             (ImageButton) findViewById(
                                                     R.id.imageViewCategoryDelete3);
 
-									if(level >= FoursquareHelper.SUPERUSER.SU1) {
+									if(level >= FoursquarePrefs.SUPERUSER.SU1) {
 										myCategoryPrimaryToggleButton
                                                 .setOnClickListener(new OnClickListener() {
 											@Override
@@ -257,7 +256,7 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
                                             (ImageButton) findViewById(
                                                     R.id.imageViewCategoryDelete2);
 
-									if(level >= FoursquareHelper.SUPERUSER.SU1) {
+									if(level >= FoursquarePrefs.SUPERUSER.SU1) {
 										myCategoryPrimaryToggleButton
                                                 .setOnClickListener(new OnClickListener() {
 											@Override
@@ -292,11 +291,11 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
 							if(myCategoryLinearLayout != null) {
 
 								final String categoryName =
-                                        cat.getName() != null ? cat.getName() : "";
+                                        cat.name != null ? cat.name : "";
 								final String categoryIconUrl =
-                                        cat.getIcon() != null ? cat.getIcon().getFoursquareLegacyImageUrl(FoursquareImage.SIZE_MEDIANO) : "";
+                                        cat.icon != null ? cat.icon.getFoursquareLegacyImageUrl(FoursquareImage.SIZE_MEDIANO) : "";
 								final Boolean isPrimary =
-                                        cat.getPrimary() != null ? cat.getPrimary() : false;
+                                        cat.primary != null ? cat.primary : false;
 
 								((TextView) myCategoryLinearLayout.getChildAt(2))
                                         .setText(categoryName);
@@ -336,7 +335,7 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
 				((LinearLayout)findViewById(R.id.linearLayoutCategoryWrapper3))
                         .setVisibility(View.GONE);
 
-			if(level >= FoursquareHelper.SUPERUSER.SU1) {
+			if(level >= FoursquarePrefs.SUPERUSER.SU1) {
 				if(!primarySet || !secondarySet || !tertiarySet)
 					ShowHideAddVenueItem(true);
 				else
@@ -358,13 +357,13 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
 		}
 
 		Category tempCategory = updatedCategories.get(placeHolder);
-		String newPrimaryId = tempCategory.getId();
-		tempCategory.setPrimary(true);
+		String newPrimaryId = tempCategory.id;
+		tempCategory.primary = true;
 		tempSortList.add(tempCategory);
 
 		for (Category c : updatedCategories) {
-			if(!c.getId().equals(newPrimaryId)) {
-				c.setPrimary(false);
+			if(!c.id.equals(newPrimaryId)) {
+				c.primary = false;
 				tempSortList.add(c);
 			}
 		}
@@ -390,12 +389,12 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
 
 		if(updatedCategories != null && updatedCategories.get(item) != null) {
 			Category myCategory = updatedCategories.get(item);
-			wasPrimary = myCategory.getPrimary();
+			wasPrimary = myCategory.primary;
 			updatedCategories.remove(myCategory);
 		}
 
 		if(wasPrimary && updatedCategories.size() > 0)
-			updatedCategories.get(0).setPrimary(true);
+			updatedCategories.get(0).primary = true;
 
 		LoadCurrentCategories(updatedCategories);
 	}
@@ -403,24 +402,24 @@ public class VenueEditCategoriesActivity extends ActionBarActivity {
 	protected void AddCategory(Category myCategory) {
 		if(updatedCategories == null) {
 			updatedCategories = new ArrayList<Category>();
-			if(currentVenue.getCategories() != null && currentVenue.getCategories().size() > 0)
-				updatedCategories.addAll(currentVenue.getCategories());
+			if(currentVenue.categories != null && currentVenue.categories.size() > 0)
+				updatedCategories.addAll(currentVenue.categories);
 		}
 
 		if(updatedCategories.size() == 0) {
-			myCategory.setPrimary(true);
+			myCategory.primary = true;
 			supportInvalidateOptionsMenu();
 			updatedCategories.add(myCategory);
 		} else {
             for (Category cat : updatedCategories) {
-                if(cat.getId().equals(myCategory.getId().trim())) {
+                if(cat.id.equals(myCategory.id.trim())) {
 //                    Crouton.makeText(this,
 //                            String.format(getString(R.string.edit_category_add_already_added),
-//                                    myCategory.getName()), Style.ALERT).show();
+//                                    myCategory.name), Style.ALERT).show();
 
                     Toast.makeText(this,
                             String.format(getString(R.string.edit_category_add_already_added),
-                                    myCategory.getName()), Toast.LENGTH_SHORT).show();
+                                    myCategory.name), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }

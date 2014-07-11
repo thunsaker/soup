@@ -1,40 +1,34 @@
 package com.thunsaker.soup.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.foursquare.FoursquareList;
+import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.data.api.model.FoursquareList;
 
 /*
  * Created by @thunsaker
  */
-public class ListActivity extends ActionBarActivity
-	implements ListFragment.Callbacks {
+public class ListActivity extends BaseSoupActivity
+	implements FoursquareListFragment.Callbacks {
 
 	public static final String LIST_TO_LOAD_EXTRA = "LIST_TO_LOAD_EXTRA";
 	public static String listIdToLoad = "";
 
-	@SuppressLint("InlinedApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-//		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-//			supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-//		}
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        }
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+			supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+		}
 
 		handleIntent(getIntent());
 
@@ -49,16 +43,16 @@ public class ListActivity extends ActionBarActivity
             ab.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent)));
         }
 
-		setProgressBarIndeterminate(true);
+		setSupportProgressBarIndeterminate(true);
 
 		if(savedInstanceState == null) {
 			setContentView(R.layout.activity_list);
 
-			if(getIntent().hasExtra(ListFragment.ARG_ITEM_JSON_STRING)) {
+			if(getIntent().hasExtra(FoursquareListFragment.ARG_ITEM_JSON_STRING)) {
 				Bundle arguments = new Bundle();
-				arguments.putString(ListFragment.ARG_ITEM_JSON_STRING, getIntent().getStringExtra(ListFragment.ARG_ITEM_JSON_STRING));
+				arguments.putString(FoursquareListFragment.ARG_ITEM_JSON_STRING, getIntent().getStringExtra(FoursquareListFragment.ARG_ITEM_JSON_STRING));
 
-				ListFragment fragment = new ListFragment();
+				FoursquareListFragment fragment = new FoursquareListFragment();
 				fragment.setArguments(arguments);
 				getSupportFragmentManager().beginTransaction().add(R.id.fragmentList, fragment).commit();
 			}
@@ -77,7 +71,7 @@ public class ListActivity extends ActionBarActivity
 			if(ListsFragment.currentListsList != null) {
 				for (FoursquareList list : ListsFragment.currentListsList) {
 					if(list.getId() == listIdToLoad) {
-						ListFragment.currentList = list;
+						FoursquareListFragment.currentList = list;
 						break;
 					}
 				}
@@ -94,8 +88,8 @@ public class ListActivity extends ActionBarActivity
 		case android.R.id.home:
 			NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
 			listIdToLoad = "";
-			ListFragment.currentList = null;
-			ListFragment.currentListItems = null;
+			FoursquareListFragment.currentList = null;
+			FoursquareListFragment.currentListItems = null;
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -113,7 +107,7 @@ public class ListActivity extends ActionBarActivity
 	public void onBackPressed() {
 		super.onBackPressed();
 		listIdToLoad = "";
-		ListFragment.currentList = null;
-		ListFragment.currentListItems = null;
+		FoursquareListFragment.currentList = null;
+		FoursquareListFragment.currentListItems = null;
 	}
 }

@@ -2,15 +2,15 @@ package com.thunsaker.soup.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.widget.Toast;
 
 import com.thunsaker.soup.R;
+import com.thunsaker.soup.app.BaseSoupActivity;
 
 /*
  * Created by @thunsaker
  */
-public class VenueDetailActivityReceiver extends ActionBarActivity {
+public class VenueDetailActivityReceiver extends BaseSoupActivity {
 	@Override
 	protected void onCreate(Bundle arg0) {
 		handleIntent(getIntent());

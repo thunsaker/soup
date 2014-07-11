@@ -20,13 +20,13 @@ import android.widget.Toast;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.VenueEditPagerAdapter;
-import com.thunsaker.soup.classes.foursquare.CompactVenue;
-import com.thunsaker.soup.classes.foursquare.Contact;
-import com.thunsaker.soup.classes.foursquare.Hours;
-import com.thunsaker.soup.classes.foursquare.Location;
-import com.thunsaker.soup.classes.foursquare.TimeFrame;
-import com.thunsaker.soup.classes.foursquare.Venue;
-import com.thunsaker.soup.util.foursquare.VenueEndpoint;
+import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.api.model.Contact;
+import com.thunsaker.soup.data.api.model.Hours;
+import com.thunsaker.soup.data.api.model.Location;
+import com.thunsaker.soup.data.api.model.TimeFrame;
+import com.thunsaker.soup.data.api.model.Venue;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.viewpagerindicator.TitlePageIndicator;
 
 /*
@@ -68,8 +68,7 @@ public class VenueEditTabsActivity extends ActionBarActivity {
         TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
         titleIndicator.setViewPager(mViewPager);
 
-        level = Integer.parseInt(
-                PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext()));
+        level = PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext());
 
         if(getIntent().hasExtra(VenueDetailFragment.VENUE_EDIT_EXTRA)) {
             venueToEdit = CompactVenue.GetCompactVenueFromJson(
@@ -136,11 +135,11 @@ public class VenueEditTabsActivity extends ActionBarActivity {
             Boolean modifiedDescription = false;
             if(level >= 2) {
                 modifiedDescription =
-                        !originalVenue.getDescription().equals(modifiedVenue.getDescription());
+                        !originalVenue.description.equals(modifiedVenue.description);
             }
             setProgressBarVisibility(true);
-            new VenueEndpoint.EditVenue(
-                    getApplicationContext(), venueToEdit.getId(), modifiedVenue,
+            new FoursquareTasks.EditVenue(
+                    getApplicationContext(), venueToEdit.id, modifiedVenue,
                     this,modifiedDescription,false)
                     .execute();
         }
@@ -151,13 +150,13 @@ public class VenueEditTabsActivity extends ActionBarActivity {
         if(VenueEditHoursFragment.currentVenueListHours != null) {
             Hours myVenueHours = new Hours();
             myVenueHours.setTimeFrames(VenueEditHoursFragment.currentVenueListHours);
-            modifiedVenue.setVenueHours(myVenueHours);
+            modifiedVenue.venueHours = myVenueHours;
         }
 
-        if(modifiedVenue.getVenueHours() != null &&
-                modifiedVenue.getVenueHours().getTimeFrames() != null &&
-                    modifiedVenue.getVenueHours().getTimeFrames().size() > 0) {
-            for (TimeFrame t : modifiedVenue.getVenueHours().getTimeFrames()) {
+        if(modifiedVenue.venueHours != null &&
+                modifiedVenue.venueHours.getTimeFrames() != null &&
+                    modifiedVenue.venueHours.getTimeFrames().size() > 0) {
+            for (TimeFrame t : modifiedVenue.venueHours.getTimeFrames()) {
                 t.setFoursquareApiString(
                         TimeFrame.createFoursquareApiString(getApplicationContext(), t));
             }
@@ -165,16 +164,11 @@ public class VenueEditTabsActivity extends ActionBarActivity {
 
         if(VenueEditLocationFragment.mAddressEditText != null) {
             Location modifiedLocation = new Location();
-            modifiedLocation.setAddress(
-                    VenueEditLocationFragment.mAddressEditText.getText().toString());
-            modifiedLocation.setCrossStreet(
-                    VenueEditLocationFragment.mCrossStreetEditText.getText().toString());
-            modifiedLocation.setCity(
-                    VenueEditLocationFragment.mCityEditText.getText().toString());
-            modifiedLocation.setState(
-                    VenueEditLocationFragment.mStateEditText.getText().toString());
-            modifiedLocation.setPostalCode(
-                    VenueEditLocationFragment.mZipEditText.getText().toString());
+            modifiedLocation.address = VenueEditLocationFragment.mAddressEditText.getText().toString();
+            modifiedLocation.crossStreet = VenueEditLocationFragment.mCrossStreetEditText.getText().toString();
+            modifiedLocation.city = VenueEditLocationFragment.mCityEditText.getText().toString();
+            modifiedLocation.state = VenueEditLocationFragment.mStateEditText.getText().toString();
+            modifiedLocation.postalCode = VenueEditLocationFragment.mZipEditText.getText().toString();
 
             try {
                 // TODO: Implement my own try parse functions
@@ -184,32 +178,31 @@ public class VenueEditTabsActivity extends ActionBarActivity {
                 Double myLat;
                 if(myLatLngArray[0] != null) {
                     myLat = Double.parseDouble(myLatLngArray[0]);
-                    modifiedLocation.setLatitude(myLat);
+                    modifiedLocation.latitude = myLat;
                 }
 
                 Double myLng;
                 if(myLatLngArray[1] != null) {
                     myLng = Double.parseDouble(myLatLngArray[1]);
-                    modifiedLocation.setLongitude(myLng);
+                    modifiedLocation.longitude = myLng;
                 }
             } catch (Exception e) {
-                modifiedLocation.setLatitude(originalVenue.getLocation().getLatitude());
-                modifiedLocation.setLongitude(originalVenue.getLocation().getLongitude());
+                modifiedLocation.latitude = originalVenue.location.latitude;
+                modifiedLocation.longitude = originalVenue.location.longitude;
             }
-            modifiedVenue.setLocation(modifiedLocation);
+            modifiedVenue.location = modifiedLocation;
         }
 
         if(VenueEditInfoFragment.mNameEditText != null) {
-            modifiedVenue.setName(VenueEditInfoFragment.mNameEditText.getText().toString());
+            modifiedVenue.name = VenueEditInfoFragment.mNameEditText.getText().toString();
 
             Contact modifiedContact = new Contact();
-            modifiedContact.setPhone(VenueEditInfoFragment.mPhoneEditText.getText().toString());
-            modifiedContact.setTwitter(VenueEditInfoFragment.mTwitterEditText.getText().toString());
-            modifiedVenue.setContact(modifiedContact);
+            modifiedContact.phone = VenueEditInfoFragment.mPhoneEditText.getText().toString();
+            modifiedContact.twitter = VenueEditInfoFragment.mTwitterEditText.getText().toString();
+            modifiedVenue.contact = modifiedContact;
 
-            modifiedVenue.setUrl(VenueEditInfoFragment.mUrlEditText.getText().toString());
-            modifiedVenue.setDescription(
-                    VenueEditInfoFragment.mDescriptionEditText.getText().toString());
+            modifiedVenue.url = VenueEditInfoFragment.mUrlEditText.getText().toString();
+            modifiedVenue.description = VenueEditInfoFragment.mDescriptionEditText.getText().toString();
         }
     }
 

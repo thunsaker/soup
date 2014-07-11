@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pullToRefreshLayoutLists"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/now_background" >
 
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipeLayoutListsContainer"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/now_background" >
     <GridView
         android:id="@+id/gridViewLists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="auto_fit" />
 
-</uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

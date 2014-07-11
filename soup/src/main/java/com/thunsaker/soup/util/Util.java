@@ -11,9 +11,10 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.thunsaker.soup.classes.foursquare.CompactVenue;
-import com.thunsaker.soup.classes.foursquare.Contact;
-import com.thunsaker.soup.classes.foursquare.Location;
+import com.thunsaker.soup.BuildConfig;
+import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.api.model.Contact;
+import com.thunsaker.soup.data.api.model.Location;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -202,7 +203,10 @@ public class Util {
 
 	public static boolean IsProInstalled(Context myContext){
 		PackageManager manager = myContext.getPackageManager();
-		return manager.checkSignatures(SOUP_PACKAGE_NAME, SOUP_PRO_PACKAGE_NAME) == PackageManager.SIGNATURE_MATCH;
+        if(BuildConfig.DEBUG)
+		    return manager.checkSignatures(SOUP_PACKAGE_NAME + ".debug", SOUP_PRO_PACKAGE_NAME + ".debug") == PackageManager.SIGNATURE_MATCH;
+        else
+		    return manager.checkSignatures(SOUP_PACKAGE_NAME, SOUP_PRO_PACKAGE_NAME) == PackageManager.SIGNATURE_MATCH;
 	}
 
 	/**
@@ -246,25 +250,25 @@ public class Util {
 		boolean hasProblems = false;
 		try {
 			if(venue != null) {
-				if(venue.getLocation() != null) {
-					Location myLocation = venue.getLocation();
-					if(myLocation.getAddress().length() == 0 || myLocation.getCity().length() == 0 || myLocation.getState().length() == 0 || myLocation.getPostalCode().length() == 0 || myLocation.getCrossStreet().length() == 0) {
+				if(venue.location != null) {
+					Location myLocation = venue.location;
+					if(myLocation.address.length() == 0 || myLocation.city.length() == 0 || myLocation.state.length() == 0 || myLocation.postalCode.length() == 0 || myLocation.crossStreet.length() == 0) {
 						hasProblems = true;
 					}
 				} else {
 					hasProblems = true;
 				}
 
-				if(venue.getContact() != null) {
-					Contact myContact = venue.getContact();
-					if(myContact.getPhone().length() == 0) {
+				if(venue.contact != null) {
+					Contact myContact = venue.contact;
+					if(myContact.phone.length() == 0) {
 						hasProblems = true;
 					}
 				} else {
 					hasProblems = true;
 				}
 
-				if(venue.getCategories().size() == 0)
+				if(venue.categories.size() == 0)
 					hasProblems = true;
 
 			} else {

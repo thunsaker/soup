@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="title_activity_welcome">Welcome</string>
     <string name="title_venue_detail">Details</string>
     <string name="title_activity_foursquare_authorization">Foursquare Authorization</string>
@@ -11,23 +12,19 @@
     <string name="title_activity_location_select">Pick A Location</string>
     <string name="title_activity_history">History</string>
     <string name="title_venue_detail_receiver">Edit in Soup</string>
-
     <string name="drawer_open">Opened</string>
     <string name="drawer_close">Closed</string>
     <string name="drawer_section_default">Section</string>
     <string name="drawer_item_default">Item</string>
-
     <string name="drawer_titles_venues">Venues</string>
     <string name="drawer_titles_history">History</string>
     <string name="drawer_titles_lists">Lists</string>
     <string name="drawer_titles_profile">Profile</string>
     <string name="drawer_titles_about">About</string>
     <string name="drawer_titles_logout">Log Out</string>
-
     <string name="title_fragment_edit_info">Info</string>
     <string name="title_fragment_edit_location">Location</string>
     <string name="title_fragment_edit_hours">Hours</string>
-
     <string name="app_about_title">About Soup</string>
     <string name="about_message">Soup is a superuser app for foursquare superusers! Use this app to edit venues, flag them as mislocated/closed/etc. and try to make foursquare a better place for everyone.</string>
     <string name="about_developer">Built by Thomas Hunsaker</string>
@@ -35,16 +32,13 @@
     <string name="about_follow_me">Follow Me on Google+</string>
     <string name="welcome_title">Welcome!</string>
     <string name="welcome_description">Soup is a Foursquare Superuser app for managing and editing venues while on the go.</string>
-
-    <string name="dialog_please_wait">Please Wait&#8230;</string>
-    <string name="dialog_loading">Loading&#8230;</string>
-    <string name="dialog_other_apps">Other Apps&#8230;</string>
-
+    <string name="dialog_please_wait">Please Wait…</string>
+    <string name="dialog_loading">Loading…</string>
+    <string name="dialog_other_apps">Other Apps…</string>
     <string name="location_wait">Refreshing venue list.</string>
     <string name="auth_cancelled">Authorization cancelled.</string>
     <string name="auth_failed">Authorization failed. :(</string>
     <string name="dialog_logout_confirmation">Are you sure you want to log out?</string>
-
     <string name="action_refresh">Refresh</string>
     <string name="action_about">About</string>
     <string name="action_logout">Log Out</string>
@@ -61,7 +55,6 @@
     <string name="action_history">My Check-In History</string>
     <string name="action_lists">My Foursquare Lists</string>
     <string name="action_today">Today</string>
-
     <string name="image_description_category_icon">Generic Category Icon</string>
     <string name="image_description_category_add">Add Category Icon</string>
     <string name="image_description_soup">A Bowl of Soup</string>
@@ -81,7 +74,6 @@
     <string name="image_description_list_completed">Completed Item</string>
     <string name="image_description_list_following">Followed List</string>
     <string name="image_description_list_photo">List Photo</string>
-
     <string name="search_hint">Venue Name</string>
     <string name="search_location_label">near</string>
     <string name="search_location_hint">Location (optional)</string>
@@ -92,18 +84,14 @@
     <string name="search_location_hint_blank">Leave blank to use current location.</string>
     <string name="search_overlay_pick_location">Pick a spot on a map</string>
     <string name="search_overlay_add_location">Add location to your search</string>
-
     <string name="search_duplicate_original">Mark as Original</string>
     <string name="search_duplicate_original_condensed">Original</string>
     <string name="search_duplicate_duplicate">Mark as Duplicate</string>
     <string name="search_duplicate_duplicate_condensed">Duplicate</string>
-
     <string name="edit_venue_name_title">Name</string>
     <string name="edit_venue_name_hint">Bacta Tank</string>
     <string name="edit_venue_address_title">Address</string>
-
     <string name="edit_venue_cross_street_title">Cross Street</string>
-
     <string name="edit_venue_city_title">City</string>
     <string name="edit_venue_city_hint">Echo Base</string>
     <string name="edit_venue_state_title">State</string>
@@ -130,38 +118,36 @@
     <string name="edit_category_add_optional">Don\'t select sub-subcategory</string>
 
     <string-array name="venue_details_flag_venue_categories">
-        <item>Mislocated</item><!-- 0 - FLAG_TYPE_MISLOCATED -->
-        <item>Doesn\'t Exist</item><!-- 1 - FLAG_TYPE_DOESNT_EXIST -->
-        <item>Closed</item><!-- 2 - FLAG_TYPE_CLOSED -->
-        <item>Inappropriate</item><!-- 3 - FLAG_TYPE_INAPPROPRIATE -->
-        <item>Event Over</item><!-- 4 - FLAG_TYPE_EVENT_OVER -->
+        <item>Mislocated</item>
+        <!-- 0 - FLAG_TYPE_MISLOCATED -->
+        <item>Doesn\'t Exist</item>
+        <!-- 1 - FLAG_TYPE_DOESNT_EXIST -->
+        <item>Closed</item>
+        <!-- 2 - FLAG_TYPE_CLOSED -->
+        <item>Inappropriate</item>
+        <!-- 3 - FLAG_TYPE_INAPPROPRIATE -->
+        <item>Event Over</item>
+        <!-- 4 - FLAG_TYPE_EVENT_OVER -->
     </string-array>
 
     <string name="venue_details_dialog_flag_venue">Flag Venue</string>
     <string name="venue_details_dialog_flag_duplicate_title">Confirm Duplicate</string>
     <string name="venue_details_dialog_flag_duplicate_message">Are you sure you want to flag&lt;br />&lt;br />&lt;b>%1$s&lt;/b>&lt;br />&lt;br />as a duplicate of&lt;br />&lt;br />&lt;b>%2$s&lt;/b>?</string>
-
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_no">No</string>
     <string name="dialog_yes">Yes</string>
-
     <string name="venue_details_dialog_flag_message">Choose Error Type</string>
     <string name="flag_venue_success">Successfully flagged venue as: %s</string>
     <string name="flag_venue_fail">Flagging failed. :( Please try again.</string>
-
     <string name="venue_details_edit_button">Edit</string>
     <string name="venue_details_edit_categories_button">Categories</string>
     <string name="venue_details_flag_button">Flag</string>
     <string name="venue_details_duplicate_button">Mark As Duplicate</string>
-
     <string name="venue_detail_marked_as_duplicate">Marked as Duplicate</string>
     <string name="venue_detail_marked_as_original">Marked as original, reported selected venue as duplicate.</string>
-
     <string name="validation_failed">Cannot submit edits. Please fix error(s) and try again.</string>
-
     <string name="venue_list_no_results">No nearby venues.\nWould you like to search?</string>
     <string name="venue_list_search_no_results">No venues found.</string>
-
     <string name="alert_gps_disabled">GPS is disabled.\nNot all functions are available at this time.</string>
     <string name="alert_still_loading">Still loading, please wait.</string>
     <string name="alert_no_internet">No internet!</string>
@@ -169,20 +155,16 @@
     <string name="alert_error_loading_details">Problem loading Venue details</string>
     <string name="alert_receiver_not_valid">No foursquare URL found</string>
     <string name="alert_no_list_items">No List Items</string>
-
     <string name="enable_gps">Enable GPS</string>
     <string name="or">or</string>
-
     <string name="history_title_today">Today</string>
     <string name="history_title_last_week">Last Week</string>
     <string name="history_title_last_month">Last Month</string>
     <string name="history_section_title_today">TODAY</string>
     <string name="history_section_title_yesterday">YESTERDAY</string>
     <string name="history_section_no_history">No check-ins available</string>
-
     <string name="pro_upsell_preview_text">Soup Pro takes your superusering to the next level!\n\nGet rid of the ads, get access to your Foursquare checkin history and Foursquare Lists!</string>
     <string name="pro_upsell_button">Upgrade to Pro!</string>
-
     <string name="edit_venue_time_name_hint">Name Segment (brunch, lunch, etc)</string>
     <string name="edit_venue_hours_delete">Delete</string>
     <string name="edit_venue_hours_edit">Edit</string>
@@ -192,7 +174,6 @@
     <string name="edit_venue_hours_open">Open</string>
     <string name="edit_venue_hours_close">Close</string>
     <string name="edit_venue_hours_24_hours">Open 24 Hours</string>
-
     <string name="day_of_week_sunday_short_styled">Sun</string>
     <string name="day_of_week_monday_short_styled">Mon</string>
     <string name="day_of_week_tuesday_short_styled">Tue</string>
@@ -200,7 +181,6 @@
     <string name="day_of_week_thursday_short_styled">Thu</string>
     <string name="day_of_week_friday_short_styled">Fri</string>
     <string name="day_of_week_saturday_short_styled">Sat</string>
-
     <string name="day_of_week_sunday_short">sun</string>
     <string name="day_of_week_monday_short">mon</string>
     <string name="day_of_week_tuesday_short">tue</string>
@@ -208,50 +188,49 @@
     <string name="day_of_week_thursday_short">thu</string>
     <string name="day_of_week_friday_short">fri</string>
     <string name="day_of_week_saturday_short">sat</string>
-
     <string name="title_activity_venue_edit_hours_add">Edit Hours</string>
     <string name="edit_venue_revert_changes_dialog">Are you sure you want to revert ALL changes to this Venue?</string>
     <string name="edit_venue_delete_hours_dialog">Tem certeza de que deseja excluir estes horas?</string>
     <string name="alert_error_loading_venues">Error loading venues</string>
     <string name="search_category_filter">Type to filter</string>
-
     <string name="profile_name">Foursquare User</string>
     <string name="profile_superuser_level">Superuser Level</string>
     <string name="profile_superuser_level_1">Level 1</string>
     <string name="profile_superuser_level_2">Level 2</string>
     <string name="profile_superuser_level_3">Level 3</string>
-
     <string name="lists_title">Lists</string>
     <string name="lists_todo">My To-Do List</string>
     <string name="lists_item_count">%s venues</string>
     <string name="lists_title_header_creator">Created by %s</string>
     <string name="lists_title_created">Lists I\'ve Created</string>
     <string name="lists_title_following">Lists I\'m Following</string>
-
     <string name="venue_list_search_footer">Can\'t find the venue nearby? Try a search!</string>
-
     <string name="dialog_checkin_confirmation">Check-in to %s?</string>
-
     <string name="notification_checkin_title">Soup Quick Check-In</string>
-    <string name="notification_checkin_pending">Checking you in&#8230;</string>
+    <string name="notification_checkin_pending">Checking you in…</string>
     <string name="notification_checkin_complete">Checked into %s!</string>
     <string name="notification_checkin_fail">Check-in failed. :(</string>
     <string name="notification_checkin_foursquare">Open in 4sq</string>
     <string name="notification_checkin_retry">Retry</string>
+    <string name="prefs_soup_title">Settings</string>
+    <string name="prefs_soup_title_summary">Soup settings</string>
+    <string name="prefs_soup_category_title_general">General</string>
+    <string name="prefs_soup_title_connect">Foursquare</string>
+    <string name="prefs_soup_title_connected">Connected</string>
+    <string name="prefs_soup_distance_units_title">Distance Units</string>
+    <string name="prefs_soup_distance_units_summary">Metric</string>
+    <string name="prefs_soup_distance_units_default">Metric</string>
+    <string name="prefs_soup_title_push">Push Notifications (Pro)</string>
+    <string name="prefs_soup_title_push_summary_on">Soup will notify you when venues you have checked into, need som Superuser love.</string>
+    <string name="prefs_soup_title_push_summary_off">Push notifications to your device, when venues need more information?</string>
+    <string name="prefs_soup_about_version">Build Version</string>
+    <string name="prefs_soup_about_rate_title">Rate Soup</string>
+    <string name="prefs_soup_category_title_about">About</string>
+    <string name="prefs_soup_about_rate_summary">Rate and comment in the Play Store.</string>
+    <string name="title_activity_main_map">MainMapActivity</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="error_map">Error loading map, no location.</string>
+    <string name="venues_list_loading">Getting Venues...</string>
+    <string name="empty_list">No Results Found :(</string>
 
-	<string name="prefs_soup_title">Settings</string>
-	<string name="prefs_soup_title_summary">Soup settings</string>
-	<string name="prefs_soup_category_title_general">General</string>
-	<string name="prefs_soup_title_connect">Foursquare</string>
-	<string name="prefs_soup_title_connected">Connected</string>
-	<string name="prefs_soup_distance_units_title">Distance Units</string>
-	<string name="prefs_soup_distance_units_summary">Metric</string>
-	<string name="prefs_soup_distance_units_default">Metric</string>
-	<string name="prefs_soup_title_push">Push Notifications (Pro)</string>
-	<string name="prefs_soup_title_push_summary_on">Soup will notify you when venues you have checked into, need som Superuser love.</string>
-	<string name="prefs_soup_title_push_summary_off">Push notifications to your device, when venues need more information?</string>
-	<string name="prefs_soup_about_version">Build Version</string>
-	<string name="prefs_soup_about_rate_title">Rate Soup</string>
-	<string name="prefs_soup_category_title_about">About</string>
-	<string name="prefs_soup_about_rate_summary">Rate and comment in the Play Store.</string>
 </resources>

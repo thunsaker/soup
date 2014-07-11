@@ -1,11 +1,10 @@
 package com.thunsaker.soup.ui;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -19,7 +18,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,36 +26,49 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
-import com.thunsaker.soup.AuthHelper;
-import com.thunsaker.soup.FoursquareHelper;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.FoursquareClient;
+import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.app.SoupApp;
+import com.thunsaker.soup.data.FoursquareClient;
+import com.thunsaker.soup.data.events.VenueSearchEvent;
+import com.thunsaker.soup.services.AuthHelper;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
+import com.thunsaker.soup.services.foursquare.endpoints.CheckinEndpoint;
+import com.thunsaker.soup.services.foursquare.endpoints.UserEndpoint;
 import com.thunsaker.soup.ui.settings.SettingsActivity;
 import com.thunsaker.soup.ui.settings.SettingsLegacyActivity;
 import com.thunsaker.soup.util.Util;
-import com.thunsaker.soup.util.foursquare.CheckinEndpoint;
-import com.thunsaker.soup.util.foursquare.UserEndpoint;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 /*
  * Created by @thunsaker
  */
-public class MainActivity extends ActionBarActivity implements
+public class MainActivity extends BaseSoupActivity implements
 		VenueListFragment.Callbacks, ListsFragment.Callbacks {
+
+    @Inject @ForApplication
+    Context mContext;
+
+    @Inject
+    EventBus mBus;
 
     @Inject
     LocationManager mLocationManager;
-
-    @Inject
-    Application app;
 
 	private String[] mDrawerItems;
 	private DrawerLayout mDrawerLayout;
@@ -72,8 +83,7 @@ public class MainActivity extends ActionBarActivity implements
 			"com.thunsaker.soup.ui.WelcomeActivity" }; // Log Out
     //			"com.thunsaker.soup.ui.SettingsActivity" }; // Settings
 
-	private final static Uri soupProUri = Uri
-			.parse("market://details?id=com.thunsaker.soup.pro");
+	private final static Uri soupProUri = Uri.parse("market://details?id=com.thunsaker.soup.pro");
 
 	public static boolean isFoursquareConnected = false;
 	static FoursquareClient mFoursquareClient;
@@ -98,24 +108,22 @@ public class MainActivity extends ActionBarActivity implements
 	public static final String VENUE_ID_CHECKIN_EXTRA = "VENUE_ID_CHECKIN_EXTRA";
 	public static final String VENUE_NAME_CHECKIN_EXTRA = "VENUE_NAME_CHECKIN_EXTRA";
 
-	@SuppressLint("InlinedApi")
+    public static double markerActionBarAdjustment = 0.00;
+
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Crashlytics.start(this);
+        mBus.register(this);
 
 		handleIntent(getIntent());
-
-//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-//        }
 
 		setContentView(R.layout.activity_main);
 
 		mDrawerTitle = getString(R.string.app_name);
 		mTitle = getString(R.string.app_name);
 
-		mDrawerItems = Util.IsProInstalled(getApplicationContext()) ? getResources()
+		mDrawerItems = Util.IsProInstalled(mContext.getApplicationContext()) ? getResources()
 				.getStringArray(R.array.navigation_array_items_pro)
 				: getResources().getStringArray(R.array.navigation_array_items);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -141,16 +149,7 @@ public class MainActivity extends ActionBarActivity implements
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setHomeButtonEnabled(true);
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-//            ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-//            ab.setSplitBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-//            ab.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-//        }
-
-//		setProgressBarIndeterminate(true);
+        ActionBar ab = SetupActionBar();
 
 		mFoursquareClient = new FoursquareClient(
 				AuthHelper.FOURSQUARE_CLIENT_ID,
@@ -161,68 +160,91 @@ public class MainActivity extends ActionBarActivity implements
 				.getFoursquareConnected(getApplicationContext());
 
         if (isFoursquareConnected) {
-			if (Util.IsProInstalled(getApplicationContext())) {
-                hideAds();
+            if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(mContext) == ConnectionResult.SUCCESS) {
 
-				ab.setTitle(R.string.app_name_pro);
-				ab.setLogo(R.drawable.ic_launcher_pro);
+                if (Util.IsProInstalled(getApplicationContext())) {
+                    hideAds();
+
+                    ab.setTitle(R.string.app_name_pro);
+                    ab.setLogo(R.drawable.ic_launcher_pro);
+                } else {
+                    showAds();
+                }
+
+                selectItem(0);
+
+                checkSuperuserLevel();
+
+                genericIntent = new Intent(getApplicationContext(),
+                        MainActivity.class);
+                TaskStackBuilder stackBuilder = TaskStackBuilder
+                        .create(getApplicationContext());
+                stackBuilder.addParentStack(MainActivity.class);
+                stackBuilder.addNextIntent(genericIntent);
+                genericPendingIntent = stackBuilder.getPendingIntent(0,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                VenueListFragment.searchQuery = "";
+                VenueListFragment.searchQueryLocation = "";
+
+                ShowNavDrawer(PreferencesHelper.getShownNavDrawer(getApplicationContext()));
             } else {
-                showAds();
+                // TODO: Google Play Service Required Message - Provide Link to Play Services Update?
+                Toast.makeText(mContext, "Google Play Services is not installed or needs to be updated. :(", Toast.LENGTH_LONG).show();
             }
-
-			selectItem(0);
-
-			String superuserLevel = PreferencesHelper
-					.getFoursquareSuperuserLevel(getApplicationContext()) != null ? PreferencesHelper
-					.getFoursquareSuperuserLevel(getApplicationContext())
-					: FoursquareHelper.SUPERUSER_STATUS_UNKNOWN;
-			if (superuserLevel.equals(FoursquareHelper.SUPERUSER_STATUS_UNKNOWN)
-					|| superuserLevel.equals("")) {
-				String userRequestUrl;
-				String accessToken = PreferencesHelper
-						.getFoursquareToken(getApplicationContext());
-				if (accessToken != null && accessToken.length() > 0) {
-					userRequestUrl = String
-							.format("%s%s?&oauth_token=%s&v=%s",
-									FoursquareHelper.FOURSQUARE_BASE_URL,
-									FoursquareHelper.FOURSQUARE_USER_ENDPOINT
-											+ FoursquareHelper.FOURSQUARE_USER_SELF_SUFFIX,
-									accessToken,
-									FoursquareHelper.CURRENT_API_DATE);
-				} else {
-					userRequestUrl = String
-							.format("%s%s?client_id=%s&client_secret=%s&v=%s",
-									FoursquareHelper.FOURSQUARE_BASE_URL,
-									FoursquareHelper.FOURSQUARE_USER_ENDPOINT
-											+ FoursquareHelper.FOURSQUARE_USER_SELF_SUFFIX,
-									MainActivity.mFoursquareClient
-											.getClientId(),
-									MainActivity.mFoursquareClient
-											.getClientSecret(),
-									FoursquareHelper.CURRENT_API_DATE);
-				}
-
-				new UserEndpoint.GetUserInfo(getApplicationContext(),
-						userRequestUrl).execute();
-
-				genericIntent = new Intent(getApplicationContext(),
-						MainActivity.class);
-				TaskStackBuilder stackBuilder = TaskStackBuilder
-						.create(getApplicationContext());
-				stackBuilder.addParentStack(MainActivity.class);
-				stackBuilder.addNextIntent(genericIntent);
-				genericPendingIntent = stackBuilder.getPendingIntent(0,
-						PendingIntent.FLAG_UPDATE_CURRENT);
-			}
-
-			VenueListFragment.searchQuery = "";
-			VenueListFragment.searchQueryLocation = "";
-
-			ShowNavDrawer(PreferencesHelper.getShownNavDrawer(getApplicationContext()));
 		} else {
 			ShowWelcomeActivity();
 		}
 	}
+
+    public void checkSuperuserLevel() {
+        int superuserLevel = FoursquarePrefs.SUPERUSER.UNKNOWN;
+        try {
+            PreferencesHelper.getFoursquareSuperuserLevel(mContext);
+        } catch (ClassCastException exception) {
+            PreferencesHelper.migrateSuperUserPref(mContext);
+            superuserLevel = PreferencesHelper.getFoursquareSuperuserLevel(mContext);
+        }
+        if (superuserLevel == FoursquarePrefs.SUPERUSER.UNKNOWN) {
+            String userRequestUrl;
+            String accessToken = PreferencesHelper
+                    .getFoursquareToken(getApplicationContext());
+            if (accessToken != null && accessToken.length() > 0) {
+                userRequestUrl = String
+                        .format("%s%s?&oauth_token=%s&v=%s",
+                                FoursquarePrefs.FOURSQUARE_BASE_URL,
+                                FoursquarePrefs.FOURSQUARE_USER_ENDPOINT
+                                        + FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX,
+                                accessToken,
+                                FoursquarePrefs.CURRENT_API_DATE
+                        );
+            } else {
+                userRequestUrl = String
+                        .format("%s%s?client_id=%s&client_secret=%s&v=%s",
+                                FoursquarePrefs.FOURSQUARE_BASE_URL,
+                                FoursquarePrefs.FOURSQUARE_USER_ENDPOINT
+                                        + FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX,
+                                MainActivity.mFoursquareClient
+                                        .getClientId(),
+                                MainActivity.mFoursquareClient
+                                        .getClientSecret(),
+                                FoursquarePrefs.CURRENT_API_DATE
+                        );
+            }
+
+            new UserEndpoint.GetUserInfo(mContext, userRequestUrl).execute();
+        }
+    }
+
+    private ActionBar SetupActionBar() {
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setHomeButtonEnabled(true);
+//        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent))); // Set the background color
+        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
+        return ab;
+    }
+
     private void showAds() {
         adView = new AdView(this);
         adView.setAdSize(AdSize.BANNER);
@@ -232,7 +254,11 @@ public class MainActivity extends ActionBarActivity implements
 
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("D17425E1A2C3EB1DE2D8E56DEE780F50")
+                .addTestDevice("2B0F45ECB7E319BC2500CD6AFF1353CC") // N7 - 4.4.4
+                .addTestDevice("D50AF454D0BF794B6A38811EEA1F21EE") // GS3 - 4.3
+                .addTestDevice("6287716BED76BCE3BB981DD19AA858E1") // GS3 - 4.1
+                .addTestDevice("FDC26B2E6C049E2E9ECE7C97D42A4726") // G2 - 2.3.4
+                .addTestDevice("1BF36BBC3C197AFF96AF3F9F305CAD48") // N5 - L
                 .build();
 
         if(adView != null)
@@ -573,4 +599,9 @@ public class MainActivity extends ActionBarActivity implements
 		longPressedVenueName = "";
 		activity.finish();
 	}
+
+    public void onEvent(VenueSearchEvent event) {
+        FoursquareTasks foursquareTasks = new FoursquareTasks((SoupApp) mContext);
+        foursquareTasks.new GetClosestVenuesNew(event.searchQuery, event.searchLocation, event.duplicateVenueId).execute();
+    }
 }

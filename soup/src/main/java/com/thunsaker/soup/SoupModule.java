@@ -7,13 +7,15 @@ package com.thunsaker.soup;
 import android.content.Context;
 import android.location.LocationManager;
 
-//import com.thunsaker.soup.data.DataModule;
-//import com.thunsaker.soup.ui.UiModule;
+import com.thunsaker.android.common.annotations.ForApplication;
+import com.thunsaker.soup.app.SoupApp;
+import com.thunsaker.soup.util.foursquare.VenueEndpoint;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -72,9 +74,13 @@ public class SoupModule {
         return (LocationManager) app.getSystemService(LOCATION_SERVICE);
     }
 
-//    @Provides
-//    @Singleton
-//    Bus provideBus() {
-//        return new Bus();
-//    }
+    @Provides
+    @Singleton
+    EventBus provideBus() {
+        return new EventBus();
+    }
+
+    @Provides
+    @Singleton
+    VenueEndpoint provideVenueEndpoint() { return new VenueEndpoint();}
 }

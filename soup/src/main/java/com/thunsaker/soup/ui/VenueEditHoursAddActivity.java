@@ -1,14 +1,8 @@
 package com.thunsaker.soup.ui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,12 +14,18 @@ import android.widget.ToggleButton;
 import com.doomonafireball.betterpickers.timepicker.TimePickerBuilder;
 import com.doomonafireball.betterpickers.timepicker.TimePickerDialogFragment.TimePickerDialogHandler;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.classes.foursquare.TimeFrame;
+import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.data.api.model.TimeFrame;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by thunsaker on 7/19/13.
  */
-public class VenueEditHoursAddActivity extends ActionBarActivity
+public class VenueEditHoursAddActivity extends BaseSoupActivity
         implements TimePickerDialogHandler {
     private boolean useLogo = true;
     private boolean showHomeUp = true;
@@ -80,7 +80,7 @@ public class VenueEditHoursAddActivity extends ActionBarActivity
         mToggleButtonFri = (ToggleButton)findViewById(R.id.toggleButtonFri);
         mToggleButtonSat = (ToggleButton)findViewById(R.id.toggleButtonSat);
         mToggleButton24 = (ToggleButton)findViewById(R.id.toggleButton24Hours);
-        
+
         mToggleButton24.setOnCheckedChangeListener(twentyFourHourToggleChangeListener);
 
         if(originalTimeFrame != null) {
@@ -118,7 +118,7 @@ public class VenueEditHoursAddActivity extends ActionBarActivity
             mTextViewTimeClose.setText(
                     String.format("%s:%s",
                             closeTime.substring(0,2),closeTime.substring(2)));
-            
+
             if(openTime == "0000" && closeTime == "+0000") {
             	mToggleButton24.setChecked(true);
             } else {
@@ -208,7 +208,7 @@ public class VenueEditHoursAddActivity extends ActionBarActivity
             if(selectedDays.size() > 0){
                 updatedTimeFrame = new TimeFrame();
                 updatedTimeFrame.setDaysList(selectedDays);
-                
+
                 if(mToggleButton24.isChecked()) {
                 	updatedTimeFrame.setIs24Hours(true);
                 	updatedTimeFrame.setOpenTimesString(getString(R.string.edit_venue_hours_24_hours));
@@ -217,7 +217,7 @@ public class VenueEditHoursAddActivity extends ActionBarActivity
 	                String rawTimeClose = mTextViewTimeClose.getText().toString();
 	                updatedTimeFrame.setOpenTime(rawTimeOpen.replace(":", ""));
 	                updatedTimeFrame.setCloseTime(rawTimeClose.toString().replace(":",""));
-	
+
 	                updatedTimeFrame.setOpenTimesString(
 	                        String.format("%s-%s", rawTimeOpen, rawTimeClose));
                 }
@@ -285,7 +285,7 @@ public class VenueEditHoursAddActivity extends ActionBarActivity
             closeBuilder.show();
         }
     };
-    
+
     CompoundButton.OnCheckedChangeListener twentyFourHourToggleChangeListener = new CompoundButton.OnCheckedChangeListener() {
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

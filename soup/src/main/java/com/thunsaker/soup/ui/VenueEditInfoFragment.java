@@ -13,10 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.FoursquareHelper;
-import com.thunsaker.soup.util.foursquare.VenueEndpoint;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
-/**
+/*
  * Created by thunsaker on 7/19/13.
  */
 public class VenueEditInfoFragment extends Fragment {
@@ -75,13 +75,13 @@ public class VenueEditInfoFragment extends Fragment {
             String description = "";
 
             if(VenueEditTabsActivity.originalVenue != null) {
-                name = VenueEditTabsActivity.originalVenue.getName();
-                phone = VenueEditTabsActivity.originalVenue.getContact().getPhone() != null
-                        ? VenueEditTabsActivity.originalVenue.getContact().getPhone()
+                name = VenueEditTabsActivity.originalVenue.name;
+                phone = VenueEditTabsActivity.originalVenue.contact.phone != null
+                        ? VenueEditTabsActivity.originalVenue.contact.phone
                         : "";
-                twitter = VenueEditTabsActivity.originalVenue.getContact().getTwitter();
-                url = VenueEditTabsActivity.originalVenue.getUrl();
-                description = VenueEditTabsActivity.originalVenue.getDescription();
+                twitter = VenueEditTabsActivity.originalVenue.contact.twitter;
+                url = VenueEditTabsActivity.originalVenue.url;
+                description = VenueEditTabsActivity.originalVenue.description;
                 mDescriptionEditText.setVisibility(View.VISIBLE);
                 mDescriptionProgressBar.setVisibility(View.GONE);
             } else {
@@ -89,16 +89,16 @@ public class VenueEditInfoFragment extends Fragment {
                 mDescriptionProgressBar.setVisibility(View.VISIBLE);
 
                 getActivity().setProgressBarVisibility(true);
-                new VenueEndpoint.GetVenue(getActivity().getApplicationContext(),
-                        VenueEditTabsActivity.venueToEdit.getId(), this.getActivity(),
-                        FoursquareHelper.CALLER_SOURCE_EDIT_VENUE).execute();
+                new FoursquareTasks.GetVenue(getActivity().getApplicationContext(),
+                        VenueEditTabsActivity.venueToEdit.id, this.getActivity(),
+                        FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
 
-                name = VenueEditTabsActivity.venueToEdit.getName();
-                phone = VenueEditTabsActivity.venueToEdit.getContact().getPhone() != null
-                        ? VenueEditTabsActivity.venueToEdit.getContact().getPhone()
+                name = VenueEditTabsActivity.venueToEdit.name;
+                phone = VenueEditTabsActivity.venueToEdit.contact.phone != null
+                        ? VenueEditTabsActivity.venueToEdit.contact.phone
                         : "";
-                twitter = VenueEditTabsActivity.venueToEdit.getContact().getTwitter();
-                url = VenueEditTabsActivity.venueToEdit.getUrl();
+                twitter = VenueEditTabsActivity.venueToEdit.contact.twitter;
+                url = VenueEditTabsActivity.venueToEdit.url;
             }
 
             mNameEditText.setText(name);

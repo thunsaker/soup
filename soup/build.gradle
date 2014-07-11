@@ -6,14 +6,14 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.9.+'
+//        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.9.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
 
     }
 }
 
-apply plugin: 'android-sdk-manager'
-apply plugin: 'android'
+//apply plugin: 'android-sdk-manager'
+apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
 
 repositories {
@@ -24,13 +24,13 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.3'
+    buildToolsVersion "19.1"
 
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 19
-        versionCode 19
-        versionName "2.0.3.1"
+        versionCode 20
+        versionName "2.0.4"
     }
 
     signingConfigs {
@@ -54,7 +54,7 @@ android {
             zipAlign true
             debuggable true
             runProguard false
-            packageNameSuffix ".debug"
+            applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
             signingConfig signingConfigs.debugSigning
         }
@@ -78,22 +78,29 @@ android {
 }
 
 dependencies {
-    //    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':foursquareoauthlibrary')
     compile project(':Android-ViewPagerIndicator')
+
+    compile 'com.android.support:support-v4:19.+'
+    compile 'com.android.support:appcompat-v7:19.+'
 
     compile ("com.doomonafireball.betterpickers:library:1.5.2") {
         exclude group: 'com.android.support', module: 'support-v4'
     }
-    compile 'com.android.support:appcompat-v7:+'
+
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.google.guava:guava:16.0.1'
     compile 'com.google.android.gms:play-services:+'
+
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:+'
-    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abc:+'
     compile 'com.crashlytics.android:crashlytics:1.+'
 
-//    compile 'com.squareup:otto:1.3.4'
-    compile 'com.squareup.dagger:dagger-compiler:1.2.0'
     compile 'com.squareup.dagger:dagger:1.2.0'
+    provided 'com.squareup.dagger:dagger-compiler:1.2.0'
+
+    compile 'joda-time:joda-time:+'
+
+    compile 'com.jakewharton:butterknife:5.0.0'
+    compile 'de.greenrobot:eventbus:2.2.0'
+    compile 'com.squareup.picasso:picasso:2.2.+'
+    compile 'com.squareup.retrofit:retrofit:1.5.1'
 }
