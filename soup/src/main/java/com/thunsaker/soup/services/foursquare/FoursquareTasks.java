@@ -212,7 +212,7 @@ public class FoursquareTasks {
                             VenueListFragment.searchResultsVenueList);
                     myCaller.setListAdapter(VenueListFragment.searchResultsVenueListAdapter);
 
-                    Toast.makeText(myContext, myContext.getString(R.string.alert_error_loading_venues), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(myContext, myContext.getString(R.string.alert_error_loading_venues) + " - Location 7", Toast.LENGTH_SHORT).show();
                 }
 
                 VenueListFragment.isRefreshing = false;

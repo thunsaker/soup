@@ -241,7 +241,7 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
                         Toast.LENGTH_SHORT).show();
             }
         } catch (Exception ex) {
-            Toast.makeText(getActivity(), R.string.alert_error_loading_venues,
+            Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Location 3",
                     Toast.LENGTH_SHORT).show();
             ex.printStackTrace();
         }
@@ -509,8 +509,8 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
                 } else {
                     enableLocationSettings();
                 }
-            } else {
-                RefreshVenuesList(searchQuery, searchQueryLocation, duplicateVenueId);
+//            } else {
+//                RefreshVenuesList(searchQuery, searchQueryLocation, duplicateVenueId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -625,7 +625,7 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
             searchResultsVenueListAdapter = new VenueListAdapter(mContext, R.layout.list_venue_item, searchResultsVenueList);
             setListAdapter(searchResultsVenueListAdapter);
 
-            Toast.makeText(mContext, mContext.getString(R.string.alert_error_loading_venues), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, mContext.getString(R.string.alert_error_loading_venues) + " - Location 4", Toast.LENGTH_SHORT).show();
         }
     }
 }

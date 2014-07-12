@@ -247,7 +247,7 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 		} catch (Exception ex) {
 			// Crouton.makeText(getActivity(),
 			// R.string.alert_error_loading_venues, Style.INFO).show();
-			Toast.makeText(getActivity(), R.string.alert_error_loading_venues, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Location 5", Toast.LENGTH_SHORT).show();
 			ex.printStackTrace();
 		}
 	}

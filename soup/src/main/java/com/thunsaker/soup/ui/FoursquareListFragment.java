@@ -193,7 +193,7 @@ public class FoursquareListFragment extends BaseSoupFragment implements
                 } catch (Exception ex) {
                     // Crouton.makeText(getActivity(),
                     // R.string.alert_error_loading_venues, Style.INFO).show();
-                    Toast.makeText(getActivity(), R.string.alert_error_loading_venues, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Location 6", Toast.LENGTH_SHORT).show();
                     ex.printStackTrace();
                 }
             }

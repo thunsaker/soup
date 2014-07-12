@@ -204,7 +204,7 @@ public class VenueEndpoint {
 							VenueListFragment.searchResultsVenueList);
 					myCaller.setListAdapter(VenueListFragment.searchResultsVenueListAdapter);
 
-					Toast.makeText(myContext, myContext.getString(R.string.alert_error_loading_venues), Toast.LENGTH_SHORT).show();
+					Toast.makeText(myContext, myContext.getString(R.string.alert_error_loading_venues) + " - Location 2", Toast.LENGTH_SHORT).show();
 				}
 
 				VenueListFragment.isRefreshing = false;
@@ -374,7 +374,7 @@ public class VenueEndpoint {
                             VenueListFragment.searchResultsVenueList);
                     myCaller.setListAdapter(VenueListFragment.searchResultsVenueListAdapter);
 
-                    Toast.makeText(myContext, myContext.getString(R.string.alert_error_loading_venues), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(myContext, myContext.getString(R.string.alert_error_loading_venues) + " - Location 1", Toast.LENGTH_SHORT).show();
                 }
 
                 VenueListFragment.isRefreshing = false;

@@ -26,14 +26,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
@@ -160,7 +157,7 @@ public class MainActivity extends BaseSoupActivity implements
 				.getFoursquareConnected(getApplicationContext());
 
         if (isFoursquareConnected) {
-            if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(mContext) == ConnectionResult.SUCCESS) {
+//            if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(mContext) == ConnectionResult.SUCCESS) {
 
                 if (Util.IsProInstalled(getApplicationContext())) {
                     hideAds();
@@ -188,10 +185,10 @@ public class MainActivity extends BaseSoupActivity implements
                 VenueListFragment.searchQueryLocation = "";
 
                 ShowNavDrawer(PreferencesHelper.getShownNavDrawer(getApplicationContext()));
-            } else {
-                // TODO: Google Play Service Required Message - Provide Link to Play Services Update?
-                Toast.makeText(mContext, "Google Play Services is not installed or needs to be updated. :(", Toast.LENGTH_LONG).show();
-            }
+//            } else {
+//                // TODO: Google Play Service Required Message - Provide Link to Play Services Update?
+//                Toast.makeText(mContext, "Google Play Services is not installed or needs to be updated. :(", Toast.LENGTH_LONG).show();
+//            }
 		} else {
 			ShowWelcomeActivity();
 		}
@@ -241,7 +238,7 @@ public class MainActivity extends BaseSoupActivity implements
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setHomeButtonEnabled(true);
 //        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent))); // Set the background color
-        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
+        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
         return ab;
     }
 
