@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 public class Venue extends CompactVenue {
 	public String description;
     public Hours venueHours;
+    // TODO: Add Venue Images here to make the detail screen prettier
 
     public Venue() { }
 
@@ -24,20 +25,6 @@ public class Venue extends CompactVenue {
         this.venueHours = existingVenue.venueHours;
 	}
 
-//	public String getDescription() {
-//		return Description;
-//	}
-//	public void setDescription(String description) {
-//		this.Description = description;
-//	}
-//
-//    public Hours getVenueHours() {
-//        return VenueHours;
-//    }
-//    public void setVenueHours(Hours venueHours) {
-//        VenueHours = venueHours;
-//    }
-
 	public static Venue ConvertCompactVenueToVenue(CompactVenue CompactVenueToConvert) {
 		Venue myVenue = new Venue();
         myVenue.id = CompactVenueToConvert.id;
@@ -52,6 +39,26 @@ public class Venue extends CompactVenue {
         myVenue.referralId = CompactVenueToConvert.referralId;
 		return myVenue;
 	}
+
+    public static Venue ConvertVenueResponseToVenue(FoursquareVenueResponse venueResponseToConvert) {
+        Venue myVenue = new Venue();
+        myVenue.id = venueResponseToConvert.id;
+        myVenue.name = venueResponseToConvert.name;
+        myVenue.contact = venueResponseToConvert.contact;
+        myVenue.location = venueResponseToConvert.location != null
+                ? com.thunsaker.soup.data.api.model.Location
+                .GetLocationFromFoursquareLocationResponse(venueResponseToConvert.location)
+                : null;
+        myVenue.canonicalUrl = venueResponseToConvert.canonicalUrl;
+        myVenue.categories = venueResponseToConvert.categories;
+        myVenue.verified = venueResponseToConvert.verified;
+        myVenue.stats = venueResponseToConvert.stats;
+        myVenue.url = venueResponseToConvert.url;
+        myVenue.referralId = venueResponseToConvert.referralId;
+        myVenue.description = venueResponseToConvert.description;
+        myVenue.venueHours = venueResponseToConvert.hours != null ? Hours.ConvertVenueHoursResponseToHours(venueResponseToConvert.hours) : null;
+        return myVenue;
+    }
 
 	public static Venue ParseVenueFromJson(JsonObject jObjectVenue) {
 		CompactVenue myCompactVenue = ParseCompactVenueFromJson(jObjectVenue);
@@ -70,8 +77,8 @@ public class Venue extends CompactVenue {
     public static Hours ParseVenueHoursFromJson(JsonObject jObjectHours, Hours venueHours) {
         JsonArray timesArray = jObjectHours.get("timeframes") != null
                 ? jObjectHours.get("timeframes").getAsJsonArray() : null;
-        venueHours.setTimeFrames(
-                TimeFrame.ParseVenueHourFromJson(timesArray, venueHours.getTimeFrames()));
+        venueHours.timeFrames =
+                TimeFrame.ParseVenueHourFromJson(timesArray, venueHours.timeFrames);
         return venueHours;
     }
 }

@@ -7,18 +7,6 @@
     android:scrollbarStyle="outsideOverlay"
     android:background="@color/now_background" >
 
-    <!--<com.twotoasters.jazzylistview.JazzyListView-->
-            <!--android:id="@+id/listViewHistoryLastMonth"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--android:divider="@null"-->
-            <!--android:listSelector="@drawable/layout_selector_green"-->
-            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-            <!--app:effect="cards"-->
-            <!--app:only_animate_new_items="false"-->
-            <!--app:only_animate_fling="false"-->
-            <!--app:max_velocity="0" />-->
-
 	<ListView
 	    android:id="@+id/listViewHistoryLastMonth"
 	    android:layout_width="match_parent"
@@ -27,7 +15,7 @@
 	    android:orientation="vertical"
 	    android:paddingTop="5dp"
 	    android:divider="@null" />
-	
+
     <TextView
 		android:id="@+id/textViewHistorySectionLastMonthEmpty"
 		android:layout_width="fill_parent"
@@ -36,6 +24,8 @@
 		android:layout_margin="10dp"
 		android:background="@drawable/now_border_outline"
 		android:text="@string/history_section_no_history"
+        android:textColor="@color/body_text"
 		android:textIsSelectable="false"
-		android:visibility="gone" />
+		android:visibility="gone"
+        tools:ignore="UnusedAttribute" />
 </LinearLayout>

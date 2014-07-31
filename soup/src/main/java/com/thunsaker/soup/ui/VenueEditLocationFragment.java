@@ -1,9 +1,9 @@
 package com.thunsaker.soup.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -20,14 +20,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
+import com.thunsaker.soup.app.BaseSoupFragment;
+import com.thunsaker.soup.app.SoupApp;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
+
+import javax.inject.Inject;
 
 /*
  * Created by thunsaker on 7/19/13.
  */
-public class VenueEditLocationFragment extends Fragment {
+public class VenueEditLocationFragment extends BaseSoupFragment {
+    @Inject
+    @ForApplication
+    Context mContext;
+
     public static final String ARG_OBJECT = "object";
 
     public static LinearLayout mMainLocationLinearLayout;
@@ -104,9 +113,8 @@ public class VenueEditLocationFragment extends Fragment {
                 latLng = VenueEditTabsActivity.originalVenue.location.getLatLngString();
             } else {
                 getActivity().setProgressBarVisibility(true);
-                new FoursquareTasks.GetVenue(getActivity().getApplicationContext(),
-                        VenueEditTabsActivity.venueToEdit.id, this.getActivity(),
-                        FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
+                FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
+                mFoursquareTasks.new GetVenue(VenueEditTabsActivity.venueToEdit.id, FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
 
                 address = VenueEditTabsActivity.venueToEdit.location.address;
                 crossStreet = VenueEditTabsActivity.venueToEdit.location.crossStreet;

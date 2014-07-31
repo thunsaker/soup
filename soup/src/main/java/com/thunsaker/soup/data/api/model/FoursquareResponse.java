@@ -10,6 +10,6 @@ public class FoursquareResponse {
 
     public class FoursquareResponseError {
         public String errorType;
-        public String errorMessage;
+        public String errorDetail;
     }
 }

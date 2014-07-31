@@ -10,7 +10,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.VenueEditPagerAdapter;
+import com.thunsaker.soup.app.BaseSoupActivity;
 import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.Contact;
 import com.thunsaker.soup.data.api.model.Hours;
@@ -32,7 +32,7 @@ import com.viewpagerindicator.TitlePageIndicator;
 /*
  * Created by @thunsaker
  */
-public class VenueEditTabsActivity extends ActionBarActivity {
+public class VenueEditTabsActivity extends BaseSoupActivity {
     VenueEditPagerAdapter mVenueEditPagerAdapter;
     ViewPager mViewPager;
 
@@ -131,13 +131,16 @@ public class VenueEditTabsActivity extends ActionBarActivity {
         LoadModifiedVenue();
 
         if(ValidateModifiedVenue()) {
-            setProgressBarVisibility(true);
+            setSupportProgressBarVisibility(true);
             Boolean modifiedDescription = false;
             if(level >= 2) {
-                modifiedDescription =
-                        !originalVenue.description.equals(modifiedVenue.description);
+                if(originalVenue == null || originalVenue.description == null)
+                    modifiedDescription = true;
+                if(!modifiedDescription && !originalVenue.description.equals(modifiedVenue.description))
+                    modifiedDescription = true;
             }
-            setProgressBarVisibility(true);
+
+            setSupportProgressBarVisibility(true);
             new FoursquareTasks.EditVenue(
                     getApplicationContext(), venueToEdit.id, modifiedVenue,
                     this,modifiedDescription,false)
@@ -149,14 +152,14 @@ public class VenueEditTabsActivity extends ActionBarActivity {
         modifiedVenue = new Venue(originalVenue);
         if(VenueEditHoursFragment.currentVenueListHours != null) {
             Hours myVenueHours = new Hours();
-            myVenueHours.setTimeFrames(VenueEditHoursFragment.currentVenueListHours);
+            myVenueHours.timeFrames = VenueEditHoursFragment.currentVenueListHours;
             modifiedVenue.venueHours = myVenueHours;
         }
 
         if(modifiedVenue.venueHours != null &&
-                modifiedVenue.venueHours.getTimeFrames() != null &&
-                    modifiedVenue.venueHours.getTimeFrames().size() > 0) {
-            for (TimeFrame t : modifiedVenue.venueHours.getTimeFrames()) {
+                modifiedVenue.venueHours.timeFrames != null &&
+                    modifiedVenue.venueHours.timeFrames.size() > 0) {
+            for (TimeFrame t : modifiedVenue.venueHours.timeFrames) {
                 t.setFoursquareApiString(
                         TimeFrame.createFoursquareApiString(getApplicationContext(), t));
             }

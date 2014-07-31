@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linearLayoutListItemMainWrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,74 +17,71 @@
         android:id="@+id/relativeLayoutListItemWrapper"
         android:layout_width="wrap_content"
         android:layout_height="150dp"
-		android:background="@color/now_background"
+        android:background="@color/now_background"
         android:paddingBottom="2dp" >
 
-        <RelativeLayout
-            android:id="@+id/relativeLayoutListItemWrapperInner"
+        <FrameLayout
+            android:id="@+id/frameLayoutListOverlay"
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:background="@drawable/now_border"
-            android:paddingBottom="2dp" >
+            android:clickable="true"
+            android:foreground="@drawable/layout_selector_green">
 
-            <ImageView
-                android:id="@+id/imageViewListPhoto"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/relativeLayoutListItemWrapperInner"
+                android:layout_width="wrap_content"
                 android:layout_height="150dp"
-                android:background="@color/now_background"
-                android:scaleType="centerCrop"
-                android:src="@drawable/list_placeholder_orange_small"
-                android:contentDescription="@string/image_description_list_photo" />
-            <LinearLayout
-                android:layout_alignParentBottom="true"
-                android:id="@+id/linearLayoutTextWrapper"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white_transparent"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/textViewListName"
+                android:background="@drawable/now_border"
+                android:paddingBottom="2dp" >
+
+                <ImageView
+                    android:id="@+id/imageViewListPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@color/now_background"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/list_placeholder_orange_small"
+                    android:contentDescription="@string/image_description_list_photo" />
+                <LinearLayout
+                    android:layout_alignParentBottom="true"
+                    android:id="@+id/linearLayoutTextWrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:gravity="left"
-                    android:maxLines="1"
-                    android:paddingBottom="5dip"
-                    android:paddingLeft="10dip"
-                    android:paddingRight="25dip"
-                    android:paddingTop="10dip"
-                    android:text="@null"
-                    android:textColor="@color/body_text"
-                    android:textIsSelectable="false"
-                    android:textSize="@dimen/list_venue_item_title" />
+                    android:background="@color/white_transparent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/textViewListName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="left"
+                        android:maxLines="1"
+                        android:paddingBottom="5dip"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="25dip"
+                        android:paddingTop="10dip"
+                        android:text="@null"
+                        android:textColor="@color/body_text"
+                        android:textIsSelectable="false"
+                        android:textSize="@dimen/list_venue_item_title" />
 
-                <TextView
-                    android:id="@+id/textViewListCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:maxLines="1"
-                    android:paddingBottom="10dip"
-                    android:paddingLeft="10dip"
-                    android:paddingRight="10dip"
-                    android:text="@null"
-                    android:textColor="@color/body_text"
-                    android:textIsSelectable="false"
-                    android:textSize="12sp" />
-            </LinearLayout>
-        </RelativeLayout>
-
-        <ImageView
-            android:id="@+id/imageViewListIsFollowed"
-            android:layout_width="32dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="8dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/list_following_affordance_translucent"
-            android:contentDescription="@string/image_description_list_following"
-            android:visibility="visible" />
+                    <TextView
+                        android:id="@+id/textViewListCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:maxLines="1"
+                        android:paddingBottom="10dip"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dip"
+                        android:text="@null"
+                        android:textColor="@color/body_text"
+                        android:textIsSelectable="false"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </RelativeLayout>
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/imageViewListIsPublic"
@@ -100,16 +97,16 @@
             android:contentDescription="@string/image_description_private"
             android:visibility="visible" />
 
-        <Button
-            android:id="@+id/buttonListActivityOverlay"
-            android:layout_width="0dip"
-            android:layout_height="0dip"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/layout_selector_green"
-            android:text="" />
     </RelativeLayout>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/imageViewListFollowing"
+        android:layout_width="32dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="8dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/list_saved_affordance"
+        android:contentDescription="@string/image_description_list_following"
+        android:visibility="visible" />
+</RelativeLayout>

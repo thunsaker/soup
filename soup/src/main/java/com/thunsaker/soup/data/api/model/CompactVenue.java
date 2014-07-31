@@ -15,7 +15,7 @@ public class CompactVenue {
 	public Boolean verified;
 	public VenueStats stats;
 	public String url;
-	public Boolean beenHere;
+	public VenueBeenHere beenHere;
 /*	public VenueLikes Likes;
 	public Menu Menu;
 	public BeenHere BeenHere;
@@ -23,84 +23,6 @@ public class CompactVenue {
 	public HereNow HereNow;
 	public Listed listed; */
 	public String referralId;
-
-//	public String getId() {
-//		return Id;
-//	}
-//	public void id = String id) {
-//		Id = id;
-//	}
-//
-//	public String getName() {
-//		return Name;
-//	}
-//	public void name =  String name) {
-//		Name = name;
-//	}
-//
-//	public Contact getContact() {
-//		return Contact;
-//	}
-//	public void setContact(Contact contact) {
-//		Contact = contact;
-//	}
-//
-//	public com.thunsaker.soup.data.api.model.Location getLocation() {
-//		return Location;
-//	}
-//	public void setLocation(com.thunsaker.soup.data.api.model.Location location) {
-//		Location = location;
-//	}
-//
-//	// Canonical Url (Foursquare Url)
-//	public String getCanonicalUrl() {
-//		return CanonicalUrl;
-//	}
-//	public void setCanonicalUrl(String canonicalUrl) {
-//		CanonicalUrl = canonicalUrl;
-//	}
-//
-//	public List<Category> getCategories() {
-//		return Categories;
-//	}
-//	public void setCategories(List<Category> categories) {
-//		Categories = categories;
-//	}
-//
-//	public Boolean getVerified() {
-//		return Verified;
-//	}
-//	public void setVerified(Boolean verified) {
-//		Verified = verified;
-//	}
-//
-//	public VenueStats getStats() {
-//		return Stats;
-//	}
-//	public void setStats(VenueStats stats) {
-//		Stats = stats;
-//	}
-//
-//	public String getUrl() {
-//		return Url;
-//	}
-//	public void setUrl(String url) {
-//		Url = url;
-//	}
-//
-//	public String getReferralId() {
-//		return ReferralId;
-//	}
-//	public void setReferralId(String referralId) {
-//		this.ReferralId = referralId;
-//	}
-//
-//	public Boolean getBeenHere() {
-//		return BeenHere;
-//	}
-//	public void setBeenHere(Boolean beenHere) {
-//		BeenHere = beenHere;
-//	}
 
 	@Override
 	public String toString() {
@@ -153,9 +75,9 @@ public class CompactVenue {
 			myVenue.referralId = jsonObject.get("referralId") != null
 					? jsonObject.get("referralId").getAsString()
 					: "";
-			myVenue.beenHere =
-                    jsonObject.get("beenHere") != null
-                            && jsonObject.get("beenHere").getAsJsonObject().get("marked").getAsBoolean();
+//			myVenue.beenHere =
+//                    jsonObject.get("beenHere") != null
+//                            ? jsonObject.get("beenHere").getAsString()
 
 			return myVenue;
 		} catch (Exception e) {
@@ -195,7 +117,7 @@ public class CompactVenue {
                     ? response.referralId
                     : "";
             // TODO: Convert this to use the object
-            myVenue.beenHere = response.beenHere != null && response.beenHere.count > 0;
+//            myVenue.beenHere = response.beenHere != null && response.beenHere.count > 0;
             return myVenue;
         } catch (Exception e) {
             return null;

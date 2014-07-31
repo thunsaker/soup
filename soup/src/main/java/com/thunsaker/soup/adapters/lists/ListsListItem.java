@@ -57,7 +57,7 @@ public class ListsListItem implements ListsListItemBase {
 			ImageView alertImageView = (ImageView) relativeLayoutWrapper.getChildAt(1);
 
 			Calendar myDate = Calendar.getInstance();
-			long timeInMilis = Long.parseLong(checkin.createdDate) * 1000;
+			long timeInMilis = Long.parseLong(checkin.createdAt) * 1000;
 			myDate.setTimeInMillis(timeInMilis);
 
 			SimpleDateFormat dateFormatTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()); // Time (with AM/PM)

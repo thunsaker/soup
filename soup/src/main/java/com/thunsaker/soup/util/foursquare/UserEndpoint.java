@@ -17,7 +17,6 @@ import com.thunsaker.soup.data.api.model.Checkin;
 import com.thunsaker.soup.data.api.model.FoursquareList;
 import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
-import com.thunsaker.soup.ui.HistoryActivity;
 import com.thunsaker.soup.ui.ListsFragment;
 import com.thunsaker.soup.util.Util;
 
@@ -39,6 +38,7 @@ public class UserEndpoint {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
+            String log_tag = "UserEndpoint - GetUserInfo";
 			String response = Util.getHttpResponse(myUrl, false, Util.contentType, Util.contentType);
 			try {
 				if (response != null) {
@@ -61,25 +61,25 @@ public class UserEndpoint {
 										PreferencesHelper.setFoursquareSuperuserLevel(myContext, superuserLevel);
 										return true;
 									} else {
-										Log.e("UserEndpoint", "Failed to parse the user json");
+										Log.e(log_tag, "Failed to parse the user json");
 									}
 								} else {
-									Log.e("UserEndpoint", "Failed to parse the response json");
+									Log.e(log_tag, "Failed to parse the response json");
 								}
 							} else {
-								Log.e("UserEndpoint", "Failed to return a 200, meaning there was an error with the call");
+								Log.e(log_tag, "Failed to return a 200, meaning there was an error with the call");
 							}
 						} else {
-							Log.e("UserEndpoint", "Failed to parse the meta section");
+							Log.e(log_tag, "Failed to parse the meta section");
 						}
 					} else {
-						Log.e("UserEndpoint", "Failed to parse main response");
+						Log.e(log_tag, "Failed to parse main response");
 					}
 				} else {
-					Log.e("UserEndpoint", "Problem fetching the data");
+					Log.e(log_tag, "Problem fetching the data");
 				}
 
-				Log.e("UserEndpoint", "Failed for some other reason...");
+				Log.e(log_tag, "Failed for some other reason...");
 				return null;
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -93,6 +93,7 @@ public class UserEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static class GetCheckins extends AsyncTask<Void, Integer, List<Checkin>> {
 		Context myContext;
         BaseSoupActivity myCaller;
@@ -141,35 +142,36 @@ public class UserEndpoint {
 			}
 		}
 
-		@Override
-		protected void onPostExecute(List<Checkin> result) {
-			super.onPostExecute(result);
-			myCaller.setProgressBarVisibility(false);
-
-			try {
-				if(result != null) {
-					switch (myHistoryView) {
-					case 1: // FoursquarePrefs.History.View.LAST_WEEK
-						HistoryActivity.historyListLastWeek = result;
-						HistoryActivity.SetupHistoryView(myCaller);
-						break;
-					case 2: // FoursquarePrefs.History.View.LAST_MONTH
-						HistoryActivity.historyListLastMonth = result;
-						// TODO: Add the adapter
-						HistoryActivity.SetupHistoryView(myCaller);
-						break;
-					default: // FoursquarePrefs.History.View.TODAY
-						HistoryActivity.historyListToday = result;
-						HistoryActivity.SetupHistoryView(myCaller);
-						break;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+//		@Override
+//		protected void onPostExecute(List<Checkin> result) {
+//			super.onPostExecute(result);
+//			myCaller.setProgressBarVisibility(false);
+//
+//			try {
+//				if(result != null) {
+//					switch (myHistoryView) {
+//					case 1: // FoursquarePrefs.History.View.LAST_WEEK
+//						HistoryActivity.historyListLastWeek = result;
+//						HistoryActivity.SetupHistoryView(myCaller);
+//						break;
+//					case 2: // FoursquarePrefs.History.View.LAST_MONTH
+//						HistoryActivity.historyListLastMonth = result;
+//						// TODO: Add the adapter
+//						HistoryActivity.SetupHistoryView(myCaller);
+//						break;
+//					default: // FoursquarePrefs.History.View.TODAY
+//						HistoryActivity.historyListToday = result;
+//						HistoryActivity.SetupHistoryView(myCaller);
+//						break;
+//					}
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
+    @Deprecated
 	public static List<Checkin> GetCheckins(String accessToken, String clientId, String clientSecret, long startTimestamp, long endTimestamp, Integer limit, Integer offset, String sortOrder) {
 		List<Checkin> myCheckins = new ArrayList<Checkin>();
 		try {
@@ -209,6 +211,8 @@ public class UserEndpoint {
 
 //			Log.i("UserEndpoint", "Response: " + jsonCheckinsRequestResponse);
 
+            String log_tag = "UserEndpoint - GetCheckins";
+
 			try {
 				if(jsonCheckinsRequestResponse != null) {
 					JsonParser jParser = new JsonParser();
@@ -231,31 +235,31 @@ public class UserEndpoint {
 											}
 											return myCheckins;
 										} else {
-											Log.e("UserEndpoint", "Failed to parse the items json");
+											Log.e(log_tag, "Failed to parse the items json");
 										}
 									} else {
-										Log.e("UserEndpoint", "Failed to parse the venue json");
+										Log.e(log_tag, "Failed to parse the venue json");
 									}
 								} else {
-									Log.e("UserEndpoint", "Failed to parse the response json");
+									Log.e(log_tag, "Failed to parse the response json");
 								}
 							} else {
-								Log.e("UserEndpoint", "Failed to return a 200, meaning there was an error with the call");
+								Log.e(log_tag, "Failed to return a 200, meaning there was an error with the call");
 							}
 						} else {
-							Log.e("UserEndpoint", "Failed to parse the meta section");
+							Log.e(log_tag, "Failed to parse the meta section");
 						}
 					} else {
-						Log.e("UserEndpoint", "Failed to parse main response");
+						Log.e(log_tag, "Failed to parse main response");
 					}
 				} else {
-					Log.e("UserEndpoint", "Problem fetching the data");
+					Log.e(log_tag, "Problem fetching the data");
 				}
 
-				Log.e("UserEndpoint", "Failed for some other reason...");
+				Log.e(log_tag, "Failed for some other reason...");
 				return null;
 			} catch (Exception e) {
-				Log.e("UserEndpoint", "GetCheckins: " + e.getMessage());
+				Log.e(log_tag, "GetCheckins: " + e.getMessage());
 				return null;
 			}
 		} catch (Exception e) {
@@ -447,6 +451,7 @@ public class UserEndpoint {
 
 	private static List<FoursquareList> ParseListFromJson(JsonObject jObject, String listType) {
 		List<FoursquareList> myLists = new ArrayList<FoursquareList>();
+        String log_tag = "UserEndpoint - ParseListFromJson";
 		if (jObject != null) {
 			JsonObject jObjectMeta = jObject
 					.getAsJsonObject("meta");
@@ -474,27 +479,27 @@ public class UserEndpoint {
 
 								return myLists;
 							} else {
-								Log.e("UserEndpoint", "No lists...");
+								Log.e(log_tag, "No lists...");
 								return null;
 							}
 						} else {
-							Log.e("UserEndpoint - GetLists",
+							Log.e("UserEndpoint - ParseListFromJson",
 									"Failed to parse the lists json");
 						}
 					} else {
-						Log.e("UserEndpoint - GetLists",
+						Log.e("UserEndpoint - ParseListFromJson",
 								"Failed to parse the response json");
 					}
 				} else {
-					Log.e("UserEndpoint - GetLists",
+					Log.e("UserEndpoint - ParseListFromJson",
 							"Failed to return a 200, meaning there was an error with the call");
 				}
 			} else {
-				Log.e("UserEndpoint - GetLists",
+				Log.e("UserEndpoint - ParseListFromJson",
 						"Failed to parse the meta section");
 			}
 		} else {
-			Log.e("UserEndpoint - GetLists",
+			Log.e("UserEndpoint - ParseListFromJson",
 					"Failed to parse main response");
 		}
 		return null;

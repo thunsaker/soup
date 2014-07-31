@@ -60,7 +60,7 @@ public class VenueEndpoint {
             String jsonVenueRequestResponse = Util.getHttpResponse(venueRequestUrl, "", "");
             return ConvertJsonResponseToVenueList(searchQuery, jsonVenueRequestResponse);
 
-//            mFoursquareService.searchVenues(mAccessToken, currentLatLng, searchQuery,)
+//            mFoursquareService.searchVenues(mAccessToken, currentLatLng, resultSearchQuery,)
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return null;
@@ -376,10 +376,10 @@ public class VenueEndpoint {
                                 Util.Encode(myModifiedVenue.contact.phone));
 
 				if (myModifiedVenue.venueHours != null
-						&& myModifiedVenue.venueHours.getTimeFrames() != null) {
+						&& myModifiedVenue.venueHours.timeFrames != null) {
 					StringBuilder venueHours = new StringBuilder();
 					for (TimeFrame t : myModifiedVenue.venueHours
-							.getTimeFrames()) {
+							.timeFrames) {
 						venueHours.append(t.getFoursquareApiString());
 					}
 					if (venueHours.length() > 0) {

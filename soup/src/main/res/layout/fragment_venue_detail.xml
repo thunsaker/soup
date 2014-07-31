@@ -119,42 +119,71 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <ProgressBar
-                android:id="@+id/progressBarVenueDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:indeterminate="true"
-                android:visibility="visible" />
-
-            <LinearLayout
-                android:id="@+id/linearLayoutVenueDescriptionBackground"
+            <RelativeLayout
+                android:id="@+id/relativeLayoutVenueDescriptionWrapper"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/border_top_gray"
-                android:paddingTop="5dp"
-                android:visibility="gone" >
+                android:layout_marginTop="8dp">
 
-                <TextView
-                    android:id="@+id/textViewVenueDescription"
-                    android:layout_width="fill_parent"
+                <ProgressBar
+                    android:id="@+id/progressBarVenueDescription"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector_green"
-                    android:ellipsize="end"
-                    android:gravity="left"
-                    android:maxLines="3"
-                    android:textIsSelectable="false" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:layout_centerHorizontal="true"
+                    android:indeterminate="true" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutVenueDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone" >
+
+                    <View
+                        android:layout_height="1dp"
+                        android:layout_width="fill_parent"
+                        android:background="@color/foursquare_gray" />
+
+                    <TextView
+                        android:id="@+id/textViewVenueDescription"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/layout_selector_green"
+                        android:ellipsize="end"
+                        android:gravity="left"
+                        android:maxLines="3"
+                        android:textIsSelectable="false" />
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
 
-    <!--
-     	<include 
-	    layout="@layout/activity_venue_detail_actions"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true" />
-    -->
+    <RelativeLayout
+        android:id="@+id/relativeLayoutVenueDetailError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/now_background"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/imageViewVenueDetailFragmentEmpty"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="-64dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/textViewVenueDetailFragment"
+            android:src="@drawable/bowl_gray_single_color"/>
+        <TextView
+            android:id="@+id/textViewVenueDetailFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="@dimen/material_type_med"
+            android:text="@string/venue_detail_not_found" />
+    </RelativeLayout>
 
 </RelativeLayout>

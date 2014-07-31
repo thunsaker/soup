@@ -27,14 +27,11 @@ import java.util.Locale;
  */
 public class VenueEditHoursAddActivity extends BaseSoupActivity
         implements TimePickerDialogHandler {
-    private boolean useLogo = true;
-    private boolean showHomeUp = true;
 
     public static final Integer TIME_PICKER_OPEN = 0;
     public static final Integer TIME_PICKER_CLOSE = 1;
 
     public static final int EDIT_HOURS = 0;
-    public static final String UPDATED_HOURS_EXTRA = "UPDATED_HOURS_EXTRA";
     public static final String ORIGINAL_HOURS_EXTRA = "ORIGINAL_HOURS_EXTRA";
     public static Integer itemToUpdate = -1;
 
@@ -85,32 +82,33 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
 
         if(originalTimeFrame != null) {
             // Set the days
-            if(originalTimeFrame.getDaysList() != null) {
+            if(originalTimeFrame.daysList != null) {
                 mToggleButtonMon.setChecked(
-                        originalTimeFrame.getDaysList().contains(1) ? true : false);
+                        originalTimeFrame.daysList.contains(1));
                 mToggleButtonTue.setChecked(
-                        originalTimeFrame.getDaysList().contains(2) ? true : false);
+                        originalTimeFrame.daysList.contains(2));
                 mToggleButtonWed.setChecked(
-                        originalTimeFrame.getDaysList().contains(3) ? true : false);
+                        originalTimeFrame.daysList.contains(3));
                 mToggleButtonThu.setChecked(
-                        originalTimeFrame.getDaysList().contains(4) ? true : false);
+                        originalTimeFrame.daysList.contains(4));
                 mToggleButtonFri.setChecked(
-                        originalTimeFrame.getDaysList().contains(5) ? true : false);
+                        originalTimeFrame.daysList.contains(5));
                 mToggleButtonSat.setChecked(
-                        originalTimeFrame.getDaysList().contains(6) ? true : false);
+                        originalTimeFrame.daysList.contains(6));
                 mToggleButtonSun.setChecked(
-                        originalTimeFrame.getDaysList().contains(7) ? true : false);
+                        originalTimeFrame.daysList.contains(7));
             }
 
             // Set the times
-            String openTime = originalTimeFrame.getOpenTime();
+            String openTime = originalTimeFrame.openTime;
             if(openTime.length() < 4)
                 openTime = "0" + openTime;
+            // TODO: Fix error editing existing times
             mTextViewTimeOpen.setText(
                     String.format("%s:%s",
                             openTime.substring(0,2), openTime.substring(2)));
 
-            String closeTime = originalTimeFrame.getCloseTime();
+            String closeTime = originalTimeFrame.closeTime;
             if(closeTime.length() < 4)
                 closeTime = "0" + closeTime;
             if(closeTime.length() == 5)
@@ -119,7 +117,7 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
                     String.format("%s:%s",
                             closeTime.substring(0,2),closeTime.substring(2)));
 
-            if(openTime == "0000" && closeTime == "+0000") {
+            if(openTime.equals("0000") && closeTime.equals("+0000")) {
             	mToggleButton24.setChecked(true);
             } else {
             	mToggleButton24.setChecked(false);
@@ -135,9 +133,9 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
 
     private void SetupActionBar() {
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayShowHomeEnabled(showHomeUp);
-        ab.setDisplayUseLogoEnabled(useLogo);
-        ab.setDisplayHomeAsUpEnabled(showHomeUp);
+        ab.setDisplayShowHomeEnabled(true);
+        ab.setDisplayUseLogoEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -207,47 +205,45 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
 
             if(selectedDays.size() > 0){
                 updatedTimeFrame = new TimeFrame();
-                updatedTimeFrame.setDaysList(selectedDays);
+                updatedTimeFrame.daysList = selectedDays;
 
                 if(mToggleButton24.isChecked()) {
-                	updatedTimeFrame.setIs24Hours(true);
-                	updatedTimeFrame.setOpenTimesString(getString(R.string.edit_venue_hours_24_hours));
+                	updatedTimeFrame.is24Hours = true;
+                	updatedTimeFrame.openTimesString = getString(R.string.edit_venue_hours_24_hours);
                 } else {
 	                String rawTimeOpen = mTextViewTimeOpen.getText().toString();
 	                String rawTimeClose = mTextViewTimeClose.getText().toString();
-	                updatedTimeFrame.setOpenTime(rawTimeOpen.replace(":", ""));
-	                updatedTimeFrame.setCloseTime(rawTimeClose.toString().replace(":",""));
+	                updatedTimeFrame.openTime = rawTimeOpen.replace(":", "");
+	                updatedTimeFrame.closeTime = rawTimeClose.replace(":", "");
 
-	                updatedTimeFrame.setOpenTimesString(
-	                        String.format("%s-%s", rawTimeOpen, rawTimeClose));
+	                updatedTimeFrame.openTimesString =
+	                        String.format("%s-%s", rawTimeOpen, rawTimeClose);
                 }
 
                 if(selectedDays.size() == 1) {
-                    updatedTimeFrame.setDaysString(
+                    updatedTimeFrame.daysString =
                             TimeFrame.ConvertIntegerDayToLocalizedDayString(
-                                    getApplicationContext(), selectedDays.get(0)));
+                                    getApplicationContext(), selectedDays.get(0));
                 } else if(selectedDays.size() == 7) {
-                    updatedTimeFrame.setDaysString(
+                    updatedTimeFrame.daysString =
                             String.format("%s-%s",
                                     TimeFrame.ConvertIntegerDayToLocalizedDayString(
                                             getApplicationContext(), Collections.min(selectedDays)),
                                     TimeFrame.ConvertIntegerDayToLocalizedDayString(
-                                            getApplicationContext(), Collections.max(selectedDays))));
+                                            getApplicationContext(), Collections.max(selectedDays)));
                 } else {
                     StringBuilder daysString = new StringBuilder();
-                    Integer lastDay = 0;
-                    for (int i = 0; i < selectedDays.size(); i++) {
+                    for (Integer selectedDay : selectedDays) {
                         String dayName = TimeFrame.ConvertIntegerDayToLocalizedDayString(
-                                getApplicationContext(), selectedDays.get(i));
-                        lastDay = selectedDays.get(i);
+                                getApplicationContext(), selectedDay);
 
-                        if(daysString.length() == 0) {
+                        if (daysString.length() == 0) {
                             daysString.append(dayName);
                         } else {
-                            daysString.append("," + dayName);
+                            daysString.append(",").append(dayName);
                         }
                     }
-                    updatedTimeFrame.setDaysString(daysString.toString());
+                    updatedTimeFrame.daysString = daysString.toString();
                 }
                 return true;
             } else {

@@ -10,47 +10,33 @@ import java.util.List;
  * Created by @thunsaker
  */
 public class Hours {
-    private String Status;
-    private boolean IsOpen;
-    private List<TimeFrame> TimeFrames;
-
-    public String getStatus() {
-        return Status;
-    }
-    public void setStatus(String status) {
-        Status = status;
-    }
-
-    public boolean isIsOpen() {
-        return IsOpen;
-    }
-    public void setIsOpen(boolean isOpen) {
-        IsOpen = isOpen;
-    }
-
-    public List<TimeFrame> getTimeFrames() {
-        return TimeFrames;
-    }
-    public void setTimeFrames(List<TimeFrame> timeFrames) {
-        TimeFrames = timeFrames;
-    }
+    public String status;
+    public boolean isOpen;
+    public List<TimeFrame> timeFrames;
 
     public static Hours ParseVenueHoursFromJson(JsonObject jsonObject) {
         try {
             Hours myHours = new Hours();
-            myHours.setIsOpen(jsonObject.get("isOpen") != null
-                    ? jsonObject.get("isOpen").getAsBoolean() : false);
-            myHours.setStatus(jsonObject.get("status") != null
-                    ? jsonObject.get("status").getAsString() : "");
+            myHours.isOpen = jsonObject.get("isOpen") != null && jsonObject.get("isOpen").getAsBoolean();
+            myHours.status = jsonObject.get("status") != null
+                    ? jsonObject.get("status").getAsString() : "";
             JsonArray timesArray = jsonObject.get("timeframes") != null
                     ? jsonObject.get("timeframes").getAsJsonArray() : null;
-            myHours.setTimeFrames(timesArray != null
+            myHours.timeFrames = timesArray != null
                     ? TimeFrame.ParseVenueHourStringsFromJson(timesArray)
-                    : new ArrayList<TimeFrame>());
+                    : new ArrayList<TimeFrame>();
 
             return myHours;
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static Hours ConvertVenueHoursResponseToHours(GetVenueHoursResponse.VenueHoursResponse response) {
+        Hours hours = new Hours();
+        hours.isOpen = response.isOpen;
+        hours.status = response.status;
+        hours.timeFrames = response.timeframes != null ? TimeFrame.ConvertVenueHoursTimeFrameResponseListToTimeFrameList(response.timeframes) : new ArrayList<TimeFrame>();
+        return hours;
     }
 }

@@ -5,10 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -17,10 +13,17 @@ import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.SoupApp;
 import com.thunsaker.soup.data.api.model.Category;
+import com.thunsaker.soup.data.api.model.Checkin;
 import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.FoursquareCompactVenueResponse;
+import com.thunsaker.soup.data.api.model.FoursquareResponse;
+import com.thunsaker.soup.data.api.model.FoursquareVenueResponse;
+import com.thunsaker.soup.data.api.model.GetUserCheckinHistoryResponse;
+import com.thunsaker.soup.data.api.model.GetVenueResponse;
 import com.thunsaker.soup.data.api.model.Venue;
 import com.thunsaker.soup.data.api.model.VenueSearchResponse;
+import com.thunsaker.soup.data.events.CheckinHistoryEvent;
+import com.thunsaker.soup.data.events.GetVenueEvent;
 import com.thunsaker.soup.data.events.VenueListEvent;
 import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.services.FoursquareService;
@@ -28,10 +31,7 @@ import com.thunsaker.soup.services.foursquare.endpoints.VenueEndpoint;
 import com.thunsaker.soup.ui.MainActivity;
 import com.thunsaker.soup.ui.VenueAddCategoryActivity;
 import com.thunsaker.soup.ui.VenueDetailActivity;
-import com.thunsaker.soup.ui.VenueDetailFragment;
-import com.thunsaker.soup.ui.VenueEditCategoriesActivity;
 import com.thunsaker.soup.ui.VenueEditTabsActivity;
-import com.thunsaker.soup.ui.VenueListFragment;
 import com.thunsaker.soup.util.Util;
 
 import java.util.ArrayList;
@@ -59,231 +59,67 @@ public class FoursquareTasks {
     // DEBUG EMAIL
     public static boolean SEND_DEBUG_EMAIL = false;
 
-    @Deprecated
-    public class GetClosestVenues extends AsyncTask<Void, Integer, List<CompactVenue>> {
-        Context myContext;
-        LatLng myLatLng;
-        String mySearchQuery;
-        String mySearchQueryLocation;
-        String myAccessToken;
-        String myClientId;
-        String myClientSecret;
-        VenueListFragment myCaller;
-        String myDuplicateSearchId;
-
-        public GetClosestVenues(Context theContext, VenueListFragment theCaller, String theSearchQuery,
-                                String theSearchQueryLocation, String theDuplicateSearchId) {
-            myContext = theContext;
-            myLatLng = MainActivity.currentLocation;
-            mySearchQuery = theSearchQuery;
-            mySearchQueryLocation = theSearchQueryLocation;
-            myCaller = theCaller;
-            myDuplicateSearchId = theDuplicateSearchId;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected List<CompactVenue> doInBackground(Void... params) {
-            try {
-                if (VenueListFragment.isSearching && mySearchQuery.equals("")) {
-                    VenueListFragment.searchResultsVenueList = new ArrayList<CompactVenue>();
-                    return null;
-                }
-
-                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("")
-                        ? PreferencesHelper.getFoursquareToken(myContext) : "";
-//                myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
-//                myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
-
-                List<CompactVenue> nearbyVenues = new ArrayList<CompactVenue>();
-//                if (mySearchQueryLocation != null
-//                        && mySearchQueryLocation.length() > 0) {
-//                    nearbyVenues = VenueEndpoint.GetClosestVenuesWithLatLng(
-//                            myLatLng, mySearchQuery, myAccessToken, myClientId,
-//                            myClientSecret, mySearchQueryLocation);
-                    VenueSearchResponse response =
-                            mFoursquareService.searchVenues(
-                                    myAccessToken, myLatLng.toString(),
-                                    mySearchQuery, "",
-                                    FoursquarePrefs.DEFAULT_SEARCH_LIMIT,
-                                    FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_CHECKIN,
-                                    FoursquarePrefs.DEFAULT_SEARCH_RADIUS);
-
-                    for(FoursquareCompactVenueResponse compact : response.response.venues) {
-                        nearbyVenues.add(FoursquareCompactVenueResponse.ConvertFoursquareCompactVenueResponseToCompactVenue(compact));
-                    }
-//                } else {
-//                    nearbyVenues = VenueEndpoint.GetClosestVenuesWithLatLng(
-//                            myLatLng, mySearchQuery, myAccessToken, myClientId,
-//                            myClientSecret, "");
-//                }
-                return nearbyVenues != null ? nearbyVenues : null;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<CompactVenue> result) {
-            super.onPostExecute(result);
-
-            List<CompactVenue> updatedList;
-
-            try {
-                if (result != null && myCaller.isVisible()) {
-                    if (!mySearchQuery.equals("")) {
-                        if (VenueListFragment.isDuplicateSearching) {
-                            List<CompactVenue> modifiedList = new ArrayList<CompactVenue>();
-                            if (VenueListFragment.searchDuplicateResultsVenueList == null)
-                                VenueListFragment.searchDuplicateResultsVenueList = new ArrayList<CompactVenue>();
-
-                            for (CompactVenue c : result) {
-                                String tempId = c.id.trim();
-                                if (!tempId.equals(myDuplicateSearchId.trim()))
-                                    modifiedList.add(c);
-                            }
-
-                            VenueListFragment.searchDuplicateResultsVenueList = modifiedList;
-
-                            if (VenueListFragment.searchDuplicateResultsVenueListAdapter == null)
-                                VenueListFragment.searchDuplicateResultsVenueListAdapter = myCaller.new VenueListAdapter(
-                                        myContext, R.layout.list_venue_item,
-                                        null);
-
-                            if (VenueListFragment.searchDuplicateResultsVenueListAdapter.items == null)
-                                VenueListFragment.searchDuplicateResultsVenueListAdapter.items = new ArrayList<CompactVenue>();
-
-                            VenueListFragment.searchDuplicateResultsVenueListAdapter.items.addAll(modifiedList);
-                            VenueListFragment.searchDuplicateResultsVenueListAdapter.notifyDataSetChanged();
-
-                            updatedList = VenueListFragment.searchDuplicateResultsVenueList;
-                        } else {
-                            if (VenueListFragment.searchResultsVenueList == null)
-                                VenueListFragment.searchResultsVenueList = new ArrayList<CompactVenue>();
-
-                            VenueListFragment.searchResultsVenueList = result;
-
-                            if (VenueListFragment.searchResultsVenueListAdapter == null)
-                                VenueListFragment.searchResultsVenueListAdapter = myCaller.new VenueListAdapter(
-                                        myContext, R.layout.list_venue_item,
-                                        null);
-
-                            if (VenueListFragment.searchResultsVenueListAdapter.items == null)
-                                VenueListFragment.searchResultsVenueListAdapter.items = new ArrayList<CompactVenue>();
-
-                            VenueListFragment.searchResultsVenueListAdapter.items
-                                    .addAll(result);
-                            VenueListFragment.searchResultsVenueListAdapter
-                                    .notifyDataSetChanged();
-
-                            updatedList = VenueListFragment.searchResultsVenueList;
-                        }
-                    } else {
-                        if (VenueListFragment.currentVenueList == null)
-                            VenueListFragment.currentVenueList = new ArrayList<CompactVenue>();
-
-                        VenueListFragment.currentVenueList = result;
-
-                        if (VenueListFragment.currentVenueListAdapter.items == null)
-                            VenueListFragment.currentVenueListAdapter.items = new ArrayList<CompactVenue>();
-
-                        VenueListFragment.currentVenueListAdapter.items
-                                .addAll(result);
-                        VenueListFragment.currentVenueListAdapter
-                                .notifyDataSetChanged();
-
-                        updatedList = VenueListFragment.currentVenueList;
-                    }
-
-                    if (updatedList != null) {
-                        VenueListFragment.VenueListAdapter myAdapter = myCaller.new VenueListAdapter(
-                                myContext, R.layout.list_venue_item,
-                                updatedList);
-                        myCaller.setListAdapter(myAdapter);
-                    }
-                } else if (VenueListFragment.isSearching && mySearchQuery.equals("")) {
-                    VenueListFragment.searchResultsVenueListAdapter = myCaller.new VenueListAdapter(
-                            myContext, R.layout.list_venue_item,
-                            VenueListFragment.searchResultsVenueList);
-                    myCaller.setListAdapter(VenueListFragment.searchResultsVenueListAdapter);
-
-                    Toast.makeText(myContext, myContext.getString(R.string.alert_error_loading_venues) + " - Location 7", Toast.LENGTH_SHORT).show();
-                }
-
-                VenueListFragment.isRefreshing = false;
-            } catch (Exception e) {
-                e.printStackTrace();
-                if (myCaller != null && myCaller.isVisible()) {
-                    myCaller.getActivity().setProgressBarVisibility(false);
-//                    VenueListFragment.mPullToRefreshLayout.setRefreshComplete();
-                }
-                VenueListFragment.isRefreshing = false;
-            } finally {
-                if (myCaller != null && myCaller.isVisible()) {
-                    myCaller.getActivity().setProgressBarVisibility(false);
-//                    VenueListFragment.mPullToRefreshLayout.setRefreshComplete();
-                }
-                VenueListFragment.isRefreshing = false;
-            }
-        }
-    }
-
     public class GetClosestVenuesNew extends AsyncTask<Void, Integer, List<CompactVenue>> {
         LatLng myLatLng;
         String mySearchQuery;
         String mySearchQueryLocation;
         String myDuplicateSearchId;
+        int myListType;
 
-        public GetClosestVenuesNew(String theSearchQuery, String theSearchQueryLocation, String theDuplicateSearchId) {
+        public GetClosestVenuesNew(String theSearchQuery, String theSearchQueryLocation, String theDuplicateSearchId, int theListType) {
             myLatLng = MainActivity.currentLocation;
             mySearchQuery = theSearchQuery;
             mySearchQueryLocation = theSearchQueryLocation;
             myDuplicateSearchId = theDuplicateSearchId;
+            myListType = theListType;
         }
 
         @Override
         protected List<CompactVenue> doInBackground(Void... params) {
             try {
-                if (VenueListFragment.isSearching && mySearchQuery.equals("")) {
-                    VenueListFragment.searchResultsVenueList = new ArrayList<CompactVenue>();
-                    return null;
-                }
+                // TODO: Why are we returning null here? is it to prevent a list from being displayed?
+//                if (VenueListFragment.isSearching && mySearchQuery.equals("")) {
+//                    VenueListFragment.searchResultsVenueList = new ArrayList<CompactVenue>();
+//                    return null;
+//                }
 
                 List<CompactVenue> nearbyVenues = new ArrayList<CompactVenue>();
-//                VenueEndpoint venueEndpoint = new VenueEndpoint((SoupApp) mContext);
-//                if (mySearchQueryLocation != null
-//                        && mySearchQueryLocation.length() > 0) {
-//                    nearbyVenues = venueEndpoint.GetClosestVenuesWithLatLng(myLatLng, mySearchQuery, mySearchQueryLocation);
-//                } else {
-//                    nearbyVenues = venueEndpoint.GetClosestVenuesWithLatLng(myLatLng, mySearchQuery, "");
-//                }
 
                 String mAccessToken = PreferencesHelper.getFoursquareToken(mContext);
 
-                VenueSearchResponse response =
-                        mFoursquareService.searchVenues(
-                                mAccessToken, String.format("%s,%s", myLatLng.latitude, myLatLng.longitude),
-                                mySearchQuery, "",
-                                FoursquarePrefs.DEFAULT_SEARCH_LIMIT,
-                                FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_CHECKIN,
-                                FoursquarePrefs.DEFAULT_SEARCH_RADIUS);
+                VenueSearchResponse response;
+                if(mySearchQueryLocation != null && mySearchQueryLocation.length() > 0) {
+                    response =
+                            mFoursquareService.searchVenues(
+                                    mAccessToken,
+                                    mySearchQuery, mySearchQueryLocation,
+                                    FoursquarePrefs.DEFAULT_SEARCH_LIMIT,
+                                    FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_CHECKIN,
+                                    FoursquarePrefs.DEFAULT_SEARCH_RADIUS);
+                } else {
+                    response =
+                            mFoursquareService.searchVenuesNearby(
+                                    mAccessToken, String.format("%s,%s", myLatLng.latitude, myLatLng.longitude),
+                                    mySearchQuery,
+                                    FoursquarePrefs.DEFAULT_SEARCH_LIMIT,
+                                    FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_CHECKIN,
+                                    FoursquarePrefs.DEFAULT_SEARCH_RADIUS);
+                }
+
                 if(response != null) {
                     if(response.meta.code == 200 && response.response.venues != null) {
                         for (FoursquareCompactVenueResponse compact : response.response.venues) {
                             nearbyVenues.add(FoursquareCompactVenueResponse.ConvertFoursquareCompactVenueResponseToCompactVenue(compact));
                         }
+                    } else if (response.meta.code == 503) {
+                        ShowServerErrorToast(response.meta);
                     } else {
-                        Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorMessage);
-                        return null;
+                        Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                        nearbyVenues = null;
                     }
                 }
 
-                return nearbyVenues != null ? nearbyVenues : null;
+                return nearbyVenues;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -294,14 +130,24 @@ public class FoursquareTasks {
         protected void onPostExecute(List<CompactVenue> result) {
             super.onPostExecute(result);
 
-            List<CompactVenue> updatedList;
-
             if(result != null) {
-                mBus.post(new VenueListEvent(true, "", result, mySearchQuery, mySearchQueryLocation, myDuplicateSearchId));
+                mBus.post(new VenueListEvent(true, "", result, mySearchQuery, mySearchQueryLocation, myDuplicateSearchId, myListType));
             } else {
-                mBus.post(new VenueListEvent(false, "", null, mySearchQuery, mySearchQueryLocation, myDuplicateSearchId));
+                mBus.post(new VenueListEvent(false, "", null, mySearchQuery, mySearchQueryLocation, myDuplicateSearchId, myListType));
             }
         }
+    }
+
+    private void ShowServerErrorToast(FoursquareResponse.FoursquareResponseMeta responseMeta) {
+        Toast.makeText(mContext,
+                String.format(
+                        mContext.getResources().getString(R.string.error_server),
+                        responseMeta.errorDetail != null
+                                ? responseMeta.errorDetail
+                                : mContext.getResources().getString(R.string.foursquare_server_status)
+                ),
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
     public static class EditVenue extends AsyncTask<Void, Integer, String> {
@@ -414,41 +260,35 @@ public class FoursquareTasks {
         }
     }
 
-    public static class GetVenue extends AsyncTask<Void, Integer, Venue> {
-        Context myContext;
+    public class GetVenue extends AsyncTask<Void, Integer, Venue> {
         String myVenueId;
-        FragmentActivity myCaller;
-        VenueDetailActivity myVenueDetailCaller;
         Integer mySource;
-
         String myAccessToken;
-        String myClientId;
-        String myClientSecret;
 
-        public GetVenue(Context theContext, String theVenueId,
-                        FragmentActivity theCaller, Integer theSource) {
-            myContext = theContext;
+        /**
+         *
+         * @param theVenueId
+         * @param theSource     Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE} or
+                                {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES) or
+                                {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS} or
+                                {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT}
+         */
+        public GetVenue(String theVenueId, Integer theSource) {
             myVenueId = theVenueId;
             mySource = theSource;
-            myCaller = theCaller;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
         }
 
         @Override
         protected Venue doInBackground(Void... params) {
             try {
-                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("") ? PreferencesHelper
-                        .getFoursquareToken(myContext) : "";
-                myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
-                myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
+                Venue resultVenue = null;
 
-                if (mySource.equals(FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT)
-                        && myVenueId.contains("http")) {
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                        ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+                // Extract the venueId from a url
+                if (mySource.equals(FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT) && myVenueId.contains("http")) {
                     String myLongUrl = Util.ResolveShortUrl(myVenueId);
                     if (myLongUrl.length() > 0) {
                         if (!myLongUrl.equals("") && myLongUrl.length() > 24) {
@@ -461,19 +301,28 @@ public class FoursquareTasks {
                                 venueId = myLongUrl.substring(
                                         myLongUrl.indexOf("/venue/") + 7,
                                         myLongUrl.length());
-                            else
+                            else // We don't have a foursquare URL and can't do anything...
                                 return null;
-                            // We don't have a foursquare URL and can't do
-                            // anything...
-
                             myVenueId = venueId;
                         }
                     }
                 }
 
-                Venue venueResult = VenueEndpoint.GetVenue(myVenueId,
-                        myAccessToken, myClientId, myClientSecret);
-                return venueResult != null ? venueResult : null;
+                GetVenueResponse response = mFoursquareService.getVenue(myVenueId, myAccessToken);
+
+                if(response != null) {
+                    if(response.meta.code == 200 && response.response.venue != null) {
+                        resultVenue = FoursquareVenueResponse.ConvertFoursquareVenueResponseToVenue(response.response.venue);
+                    } else if (response.meta.code == 503) {
+                        ShowServerErrorToast(response.meta);
+                    } else {
+                        Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                    }
+                } else {
+                    Log.i("FoursquareTasks", "Failure :( GetVenue call");
+                }
+
+                return resultVenue;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -485,87 +334,87 @@ public class FoursquareTasks {
             super.onPostExecute(result);
 
             try {
-                if (result != null) {
-                    VenueEditTabsActivity.originalVenue = result;
-                    VenueDetailFragment.currentVenue = result;
-                    if (mySource == 3)
-                        mySource = 2;
-                    switch (mySource) {
-                        case 0: // CALLER_SOURCE_EDIT_VENUE
-                            LinearLayout myLinearLayout = (LinearLayout) myCaller
-                                    .findViewById(R.id.linearLayoutProgressBarLoadingVenueInfoDescriptionWrapper);
-                            EditText myEditText = (EditText) myCaller
-                                    .findViewById(R.id.editTextEditVenueInfoDescription);
-                            myEditText.setVisibility(View.VISIBLE);
-                            myEditText.setText(result.description);
-                            myLinearLayout.setVisibility(View.GONE);
-                            myCaller.setProgressBarVisibility(false);
-                            myCaller.supportInvalidateOptionsMenu();
-                            break;
-                        case 1: // CALLER_SOURCE_EDIT_CATEGORIES
-                            VenueEditCategoriesActivity.currentVenue = result;
-                            VenueEditCategoriesActivity myCategoryCaller = (VenueEditCategoriesActivity) myCaller;
-                            VenueEditCategoriesActivity.originalCategories = new ArrayList<Category>();
-                            VenueEditCategoriesActivity.originalCategories
-                                    .addAll(result.categories);
-                            myCategoryCaller.LoadCurrentCategories(null);
-                            myCategoryCaller.setProgressBarVisibility(false);
-                            break;
-                        case 2: // CALLER_SOURCE_DETAILS
-                            myVenueDetailCaller = (VenueDetailActivity) myCaller;
-                            myVenueDetailCaller.setProgressBarVisibility(false);
+                if (mySource == 3)
+                    mySource = 2;
 
-                            if (VenueDetailFragment.currentCompactVenue == null) {
-                                VenueDetailFragment
-                                        .LoadDetails(
-                                                myVenueDetailCaller
-                                                        .findViewById(R.id.relativeLayoutVenueWrapperOuter),
-                                                myVenueDetailCaller
-                                        );
-                            }
-
-                            if (myVenueDetailCaller.findViewById(
-                                    R.id.relativeLayoutVenueWrapperOuter).isShown()) {
-                                if (result.description != null
-                                        && result.description.length() > 0) {
-                                    LinearLayout myDescriptionLinearLayout = (LinearLayout) myVenueDetailCaller
-                                            .findViewById(R.id.linearLayoutVenueDescriptionBackground);
-
-                                    myDescriptionLinearLayout
-                                            .setVisibility(View.VISIBLE);
-                                    TextView myDescriptionTextView = (TextView) myVenueDetailCaller
-                                            .findViewById(R.id.textViewVenueDescription);
-                                    myDescriptionTextView.setText(result
-                                            .description);
-                                    myDescriptionTextView
-                                            .setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    TextView text = (TextView) v;
-                                                    text.setMaxLines(Integer.MAX_VALUE);
-                                                    text.setBackgroundDrawable(null);
-                                                    text.setOnClickListener(null);
-                                                }
-                                            });
-                                }
-                                myVenueDetailCaller.findViewById(
-                                        R.id.progressBarVenueDescription)
-                                        .setVisibility(View.GONE);
-                            }
-
-                            if (VenueDetailActivity.wasEdited)
-                                VenueDetailFragment.LoadDetails(myVenueDetailCaller
-                                                .findViewById(R.id.venue_detail_container),
-                                        myVenueDetailCaller
-                                );
-                            break;
-                    }
-
+                if(result != null) {
+                    mBus.post(new GetVenueEvent(true, "", result, 2));
                 } else {
-                    Toast.makeText(myContext,
-                            R.string.alert_error_loading_details,
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.alert_error_loading_details, Toast.LENGTH_SHORT).show();
+                    mBus.post(new GetVenueEvent(false, "", null, mySource));
                 }
+
+//                    VenueEditTabsActivity.originalVenue = result;
+//                    VenueDetailFragment.currentVenue = result;
+//                    if (mySource == 3)
+//                        mySource = 2;
+//                    switch (mySource) {
+//                        case 0: // CALLER_SOURCE_EDIT_VENUE
+//                            LinearLayout myLinearLayout = (LinearLayout) myCaller
+//                                    .findViewById(R.id.linearLayoutProgressBarLoadingVenueInfoDescriptionWrapper);
+//                            EditText myEditText = (EditText) myCaller
+//                                    .findViewById(R.id.editTextEditVenueInfoDescription);
+//                            myEditText.setVisibility(View.VISIBLE);
+//                            myEditText.setText(result.description);
+//                            myLinearLayout.setVisibility(View.GONE);
+//                            myCaller.setProgressBarVisibility(false);
+//                            myCaller.supportInvalidateOptionsMenu();
+//                            break;
+//                        case 1: // CALLER_SOURCE_EDIT_CATEGORIES
+//                            VenueEditCategoriesActivity.currentVenue = result;
+//                            VenueEditCategoriesActivity myCategoryCaller = (VenueEditCategoriesActivity) myCaller;
+//                            VenueEditCategoriesActivity.originalCategories = new ArrayList<Category>();
+//                            VenueEditCategoriesActivity.originalCategories.addAll(result.categories);
+//                            myCategoryCaller.LoadCurrentCategories(null);
+//                            myCategoryCaller.setProgressBarVisibility(false);
+//                            break;
+//                        case 2: // CALLER_SOURCE_DETAILS
+//                            myVenueDetailCaller = (VenueDetailActivity) myCaller;
+//                            myVenueDetailCaller.setProgressBarVisibility(false);
+//
+//                            if (VenueDetailFragment.currentCompactVenue == null) {
+//                                VenueDetailFragment.LoadDetails(
+//                                        myVenueDetailCaller.findViewById(R.id.relativeLayoutVenueWrapperOuter),
+//                                        myVenueDetailCaller
+//                                );
+//                            }
+//
+//                            if (myVenueDetailCaller.findViewById(
+//                                    R.id.relativeLayoutVenueWrapperOuter).isShown()) {
+//                                if (result.description != null
+//                                        && result.description.length() > 0) {
+//                                    LinearLayout myDescriptionLinearLayout = (LinearLayout) myVenueDetailCaller
+//                                            .findViewById(R.id.linearLayoutVenueDescriptionBackground);
+//
+//                                    myDescriptionLinearLayout
+//                                            .setVisibility(View.VISIBLE);
+//                                    TextView myDescriptionTextView = (TextView) myVenueDetailCaller
+//                                            .findViewById(R.id.textViewVenueDescription);
+//                                    myDescriptionTextView.setText(result
+//                                            .description);
+//                                    myDescriptionTextView
+//                                            .setOnClickListener(new View.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(View v) {
+//                                                    TextView text = (TextView) v;
+//                                                    text.setMaxLines(Integer.MAX_VALUE);
+//                                                    text.setBackgroundDrawable(null);
+//                                                    text.setOnClickListener(null);
+//                                                }
+//                                            });
+//                                }
+//                                myVenueDetailCaller.findViewById(
+//                                        R.id.progressBarVenueDescription)
+//                                        .setVisibility(View.GONE);
+//                            }
+//
+//                            if (VenueDetailActivity.wasEdited)
+//                                VenueDetailFragment.LoadDetails(myVenueDetailCaller
+//                                                .findViewById(R.id.venue_detail_container),
+//                                        myVenueDetailCaller
+//                                );
+//                            break;
+//                    }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -594,7 +443,7 @@ public class FoursquareTasks {
         @Override
         protected List<Category> doInBackground(Void... params) {
             try {
-                myAccessToken = PreferencesHelper.getFoursquareToken(myContext) != "" ? PreferencesHelper
+                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("") ? PreferencesHelper
                         .getFoursquareToken(myContext) : "";
                 myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
                 myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
@@ -671,7 +520,7 @@ public class FoursquareTasks {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                myAccessToken = PreferencesHelper.getFoursquareToken(myContext) != "" ? PreferencesHelper
+                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("") ? PreferencesHelper
                         .getFoursquareToken(myContext) : "";
                 myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
                 myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
@@ -730,6 +579,78 @@ public class FoursquareTasks {
             if (myCaller != null) {
                 myCaller.setProgressBarVisibility(true);
                 myCaller.supportInvalidateOptionsMenu();
+            }
+        }
+    }
+
+    public class GetUserHistory extends AsyncTask<Void, Integer, List<Checkin>> {
+        long myStartTimestamp;
+        long myEndTimestamp;
+        Integer myLimit;
+        Integer myOffset;
+        String mySortOrder;
+
+        public GetUserHistory(long theStartTimestamp, long theEndTimestamp, Integer theLimit, Integer theOffset, String theSortOrder) {
+            myStartTimestamp = theStartTimestamp;
+            myEndTimestamp = theEndTimestamp;
+            myLimit = theLimit;
+            myOffset = theOffset;
+            mySortOrder = theSortOrder;
+        }
+
+        @Override
+        protected List<Checkin> doInBackground(Void... params) {
+            try {
+                List<Checkin> myCheckins = new ArrayList<Checkin>();
+
+                String mAccessToken = PreferencesHelper.getFoursquareToken(mContext);
+
+                GetUserCheckinHistoryResponse response;
+                if(myOffset == -1)
+                    response =
+                            mFoursquareService.getUserCheckins(
+                                    FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX,
+                                    mAccessToken,
+                                    myStartTimestamp,
+                                    myEndTimestamp,
+                                    mySortOrder);
+                else
+                    response =
+                            mFoursquareService.getUserCheckins(
+                                    FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX,
+                                    mAccessToken,
+                                    myStartTimestamp,
+                                    myEndTimestamp,
+                                    myLimit.toString(),
+                                    myOffset,
+                                    mySortOrder);
+
+                if(response != null) {
+                    if(response.meta.code == 200 && response.response != null) {
+                        myCheckins.addAll(response.response.checkins.items);
+                    } else if (response.meta.code == 503) {
+                        ShowServerErrorToast(response.meta);
+                    } else {
+                        Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                        myCheckins = null;
+                    }
+                }
+
+                return myCheckins;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Checkin> result) {
+            super.onPostExecute(result);
+
+            if(result != null) {
+                mBus.post(new CheckinHistoryEvent(true, "", result));
+            } else {
+                mBus.post(new CheckinHistoryEvent(false, "", null));
             }
         }
     }

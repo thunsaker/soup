@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.thunsaker.soup.BuildConfig;
 import com.thunsaker.soup.data.api.model.CompactVenue;
-import com.thunsaker.soup.data.api.model.Contact;
 import com.thunsaker.soup.data.api.model.Location;
 
 import org.apache.http.HttpEntity;
@@ -252,23 +251,20 @@ public class Util {
 			if(venue != null) {
 				if(venue.location != null) {
 					Location myLocation = venue.location;
-					if(myLocation.address.length() == 0 || myLocation.city.length() == 0 || myLocation.state.length() == 0 || myLocation.postalCode.length() == 0 || myLocation.crossStreet.length() == 0) {
-						hasProblems = true;
-					}
+                    if (myLocation.address == null || myLocation.city == null ||
+                            myLocation.state == null || myLocation.postalCode == null ||
+                            myLocation.crossStreet == null || myLocation.address.length() == 0 ||
+                            myLocation.city.length() == 0 || myLocation.state.length() == 0 ||
+                            myLocation.postalCode.length() == 0 || myLocation.crossStreet.length() == 0)
+                        hasProblems = true;
 				} else {
 					hasProblems = true;
 				}
 
-				if(venue.contact != null) {
-					Contact myContact = venue.contact;
-					if(myContact.phone.length() == 0) {
-						hasProblems = true;
-					}
-				} else {
-					hasProblems = true;
-				}
+				if(venue.contact == null || venue.contact.phone == null || venue.contact.phone.length() == 0)
+				    hasProblems = true;
 
-				if(venue.categories.size() == 0)
+				if(venue.categories == null || venue.categories.size() == 0)
 					hasProblems = true;
 
 			} else {

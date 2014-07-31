@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.thunsaker.soup.ui.CheckinHistoryActivity" >
+    <item android:id="@+id/action_history_top"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/action_top"/>
+</menu>

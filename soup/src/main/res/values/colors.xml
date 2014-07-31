@@ -28,5 +28,13 @@
 
     <color name="body_text">#ff222222</color>
     <color name="header_text">#ff444444</color>
-    <color name="gray_dark">#ff2E2E2E</color>
+    <color name="gray_dark">#ff2e2e2e</color>
+    <color name="gray_light">#ffaaaaaa</color>
+    <color name="gray_light_super">#ffeeeeee</color>
+
+    <color name="cal_default_background">#fff5f7f9</color>
+    <color name="cal_default_background_inactive">#ffd7d9db</color>
+    <color name="cal_default_background_today">#ff778088</color>
+    <color name="cal_default_border">#ffdadcdd</color>
+    <color name="cal_default_text_color_day">#ffa7aeb4</color>
 </resources>

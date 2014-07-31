@@ -20,9 +20,9 @@ import dagger.Provides;
         }
 )
 public class SoupActivityModule {
-    private final BaseSoupActivity mActivity;
+    private final Activity mActivity;
 
-    public SoupActivityModule(BaseSoupActivity activity) {
+    public SoupActivityModule(Activity activity) {
         mActivity = activity;
     }
 

@@ -17,7 +17,6 @@ import com.thunsaker.soup.data.api.model.Checkin;
 import com.thunsaker.soup.data.api.model.FoursquareList;
 import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
-import com.thunsaker.soup.ui.HistoryActivity;
 import com.thunsaker.soup.ui.ListsFragment;
 import com.thunsaker.soup.util.Util;
 
@@ -93,6 +92,7 @@ public class UserEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static class GetCheckins extends AsyncTask<Void, Integer, List<Checkin>> {
 		Context myContext;
         BaseSoupActivity myCaller;
@@ -141,33 +141,33 @@ public class UserEndpoint {
 			}
 		}
 
-		@Override
-		protected void onPostExecute(List<Checkin> result) {
-			super.onPostExecute(result);
-			myCaller.setProgressBarVisibility(false);
-
-			try {
-				if(result != null) {
-					switch (myHistoryView) {
-					case 1: // FoursquarePrefs.History.View.LAST_WEEK
-						HistoryActivity.historyListLastWeek = result;
-						HistoryActivity.SetupHistoryView(myCaller);
-						break;
-					case 2: // FoursquarePrefs.History.View.LAST_MONTH
-						HistoryActivity.historyListLastMonth = result;
-						// TODO: Add the adapter
-						HistoryActivity.SetupHistoryView(myCaller);
-						break;
-					default: // FoursquarePrefs.History.View.TODAY
-						HistoryActivity.historyListToday = result;
-						HistoryActivity.SetupHistoryView(myCaller);
-						break;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+//		@Override
+//		protected void onPostExecute(List<Checkin> result) {
+//			super.onPostExecute(result);
+//			myCaller.setProgressBarVisibility(false);
+//
+//			try {
+//				if(result != null) {
+//					switch (myHistoryView) {
+//					case 1: // FoursquarePrefs.History.View.LAST_WEEK
+//						HistoryActivity.historyListLastWeek = result;
+//						HistoryActivity.SetupHistoryView(myCaller);
+//						break;
+//					case 2: // FoursquarePrefs.History.View.LAST_MONTH
+//						HistoryActivity.historyListLastMonth = result;
+//						// TODO: Add the adapter
+//						HistoryActivity.SetupHistoryView(myCaller);
+//						break;
+//					default: // FoursquarePrefs.History.View.TODAY
+//						HistoryActivity.historyListToday = result;
+//						HistoryActivity.SetupHistoryView(myCaller);
+//						break;
+//					}
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
 	public static List<Checkin> GetCheckins(String accessToken, String clientId, String clientSecret, long startTimestamp, long endTimestamp, Integer limit, Integer offset, String sortOrder) {

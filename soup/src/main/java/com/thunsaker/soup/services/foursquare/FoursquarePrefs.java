@@ -20,7 +20,7 @@ public class FoursquarePrefs {
     public static String FOURSQUARE_VENUE_HOURS = "/venues/%s/hours";
 
 	public static String FOURSQUARE_USER_ENDPOINT = "/users";
-	public static String FOURSQUARE_USER_SELF_SUFFIX = "/self";
+	public static String FOURSQUARE_USER_SELF_SUFFIX = "self";
 	public static String FOURSQUARE_USER_CHECKINS_SUFFIX = "/checkins";
 	public static String FOURSQUARE_USER_CHECKINS_ADD_SUFFIX = "/add";
 	public static String FOURSQUARE_USER_LISTS_SUFFIX = "/lists";
@@ -81,7 +81,8 @@ public class FoursquarePrefs {
 
 		final public static class Limit {
 			final public static Integer MAX = 250;
-			final public static Integer DEFAULT = 20;
+			final public static Integer DEFAULT = 30;
+            final public static Integer NO_LIMIT = -1;
 		}
 	}
 

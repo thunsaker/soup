@@ -1,10 +1,7 @@
 package com.thunsaker.soup.adapters.history;
 
-import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -13,7 +10,6 @@ import android.widget.TextView;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.adapters.history.HistoryListItemArrayAdapter.RowType;
 import com.thunsaker.soup.data.api.model.Checkin;
-import com.thunsaker.soup.ui.VenueDetailActivity;
 import com.thunsaker.soup.util.Util;
 
 import java.text.SimpleDateFormat;
@@ -21,12 +17,10 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class HistoryListItem implements HistoryListItemBase {
-	private final Checkin checkin;
-	private final ActionBarActivity activity;
+	public final Checkin checkin;
 
-	public HistoryListItem(LayoutInflater inflater, Checkin checkin, ActionBarActivity activity) {
+	public HistoryListItem(LayoutInflater inflater, Checkin checkin) {
 		this.checkin = checkin;
-		this.activity = activity;
 	}
 
 	@Override
@@ -51,41 +45,32 @@ public class HistoryListItem implements HistoryListItemBase {
 			RelativeLayout relativeLayoutWrapper = (RelativeLayout) view.getChildAt(0);
 			LinearLayout linearLayoutWrapper = (LinearLayout) relativeLayoutWrapper.getChildAt(0);
 			LinearLayout linearLayoutWrapperName = (LinearLayout) linearLayoutWrapper.getChildAt(0);
-			((TextView) linearLayoutWrapperName.getChildAt(1)).setText(checkin.venue.name);
+			((TextView) linearLayoutWrapperName.getChildAt(1))
+                    .setText(checkin.venue != null && checkin.venue.name != null ? checkin.venue.name : "");
 			ImageView privateImageView = (ImageView) linearLayoutWrapperName.getChildAt(0);
-			((TextView) linearLayoutWrapper.getChildAt(1)).setText(checkin.venue.location.address);
+			((TextView) linearLayoutWrapper.getChildAt(1))
+                    .setText(checkin.venue != null && checkin.venue.location != null && checkin.venue.location.address != null
+                            ? checkin.venue.location.address : "");
 			ImageView alertImageView = (ImageView) relativeLayoutWrapper.getChildAt(1);
 
 			Calendar myDate = Calendar.getInstance();
-			long timeInMilis = Long.parseLong(checkin.createdDate) * 1000;
+			long timeInMilis = Long.parseLong(checkin.createdAt) * 1000;
 			myDate.setTimeInMillis(timeInMilis);
 
 			SimpleDateFormat dateFormatTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()); // Time (with AM/PM)
 
 			((TextView) relativeLayoutWrapper.getChildAt(2)).setText(dateFormatTime.format(myDate.getTime()));
 
-			if(Util.VenueHasProblems(checkin.venue))
+			if(checkin.venue == null || Util.VenueHasProblems(checkin.venue))
 				alertImageView.setVisibility(View.VISIBLE);
 			else
 				alertImageView.setVisibility(View.GONE);
-
-			final String venueId = checkin.venue.id;
-			final ActionBarActivity myActivity = activity;
 
 			if(checkin.isPrivate) {
 				privateImageView.setVisibility(View.VISIBLE);
 			} else {
 				privateImageView.setVisibility(View.GONE);
 			}
-
-			relativeLayoutWrapper.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent venueDetailsIntent = new Intent(myActivity.getApplicationContext(), VenueDetailActivity.class);
-					venueDetailsIntent.putExtra(VenueDetailActivity.VENUE_TO_LOAD_EXTRA, venueId);
-					myActivity.startActivity(venueDetailsIntent);
-				}
-			});
 		} else {
 			view = (RelativeLayout) inflater.inflate(R.layout.list_history_item_empty, null);
 		}
