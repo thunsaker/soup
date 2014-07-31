@@ -7,15 +7,17 @@ import java.util.List;
 
 public class VenueListEvent extends BaseEvent {
     public List<CompactVenue> resultList;
-    public String searchQuery;
-    public String listLocation;
-    public String duplicateVenueId;
+    public String resultSearchQuery;
+    public String resultListLocation;
+    public String resultDuplicateVenueId;
+    public int resultListType;
 
-    public VenueListEvent(Boolean result, String resultMessage, List<CompactVenue> resultList, String searchQuery, String listLocation, String duplicateVenueId) {
+    public VenueListEvent(boolean result, String resultMessage, List<CompactVenue> resultList, String resultSearchQuery, String resultListLocation, String resultDuplicateVenueId, int resultListType) {
         super(result, resultMessage);
         this.resultList = resultList;
-        this.listLocation = listLocation;
-        this.searchQuery = searchQuery;
-        this.duplicateVenueId = duplicateVenueId;
+        this.resultListLocation = resultListLocation;
+        this.resultSearchQuery = resultSearchQuery;
+        this.resultDuplicateVenueId = resultDuplicateVenueId;
+        this.resultListType = resultListType;
     }
 }

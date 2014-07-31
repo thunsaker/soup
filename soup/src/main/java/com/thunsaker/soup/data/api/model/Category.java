@@ -14,7 +14,7 @@ public class Category {
     public String pluralName;
     public String shortName;
     public FoursquareImage icon;
-    public Boolean primary;
+    public boolean primary;
     public List<Category> subcategories;
 
 //	public String getId() {

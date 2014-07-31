@@ -168,8 +168,8 @@ public class FoursquareListFragment extends BaseSoupFragment implements
                     if (!FoursquareListFragment.isRefreshing) {
                         if(mListView.getHeaderViewsCount() == 2 && position == 1) {
                             String userUrl = "";
-                            if(currentList != null && currentList.getUser() != null && currentList.getUser().getId().length() > 0)
-                                userUrl = String.format("https://foursquare.com/user/%s", currentList.getUser().getId());
+                            if(currentList != null && currentList.getUser() != null && currentList.getUser().id.length() > 0)
+                                userUrl = String.format("https://foursquare.com/user/%s", currentList.getUser().id);
 
                             if(userUrl != null && userUrl.length() > 0)
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(userUrl)));
@@ -329,7 +329,7 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 						addressTextView.setText(myVenueAddress);
 
 					ImageView doneImageView = (ImageView) v.findViewById(R.id.imageViewListItemDone);
-					if (venue.beenHere)
+					if (venue.beenHere.marked)
 						doneImageView.setVisibility(View.VISIBLE);
 					else
 						doneImageView.setVisibility(View.GONE);

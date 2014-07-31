@@ -1,5 +1,6 @@
 package com.thunsaker.soup.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -16,9 +17,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.app.SoupApp;
 import com.thunsaker.soup.data.api.model.Category;
 import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.FoursquareImage;
@@ -29,12 +32,18 @@ import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /*
  * Created by @thunsaker
  */
 public class VenueEditCategoriesActivity extends BaseSoupActivity {
-	private boolean useLogo = true;
-	private boolean showHomeUp = true;
+    @Inject
+    @ForApplication
+    Context mContext;
 
 	private static final int ADD_CATEGORY_REQUEST = 0;
 	public static Venue currentVenue;
@@ -42,30 +51,48 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 	public static List<Category> originalCategories = new ArrayList<Category>();
 	private List<Category> updatedCategories = null;
 
-	public LinearLayout mLinearLayoutProgressBar = null;
-	public LinearLayout mLinearLayout = null;
-	public TextView mAddCategoryTextView = null;
+    @InjectView(R.id.linearLayoutProgressBarWrapper) LinearLayout mLinearLayoutProgressBar;
+    @InjectView(R.id.linearLayoutVenueCategoriesWrapper) LinearLayout mLinearLayout;
+    @InjectView(R.id.textViewCategoryAddTitle) TextView mAddCategoryTextView;
+
+    @InjectView(R.id.linearLayoutCategoryWrapper1) LinearLayout mCategoryWrapper1;
+    @InjectView(R.id.toggleButtonPrimary1) ToggleButton mCategoryPrimaryToggle1;
+    @InjectView(R.id.imageViewCategoryIcon1) ImageView mCategoryIcon1;
+    @InjectView(R.id.textViewCategoryName1) TextView mCategoryName1;
+    @InjectView(R.id.imageViewCategoryDelete1) ImageButton mDeleteCategory1;
+
+    @InjectView(R.id.linearLayoutCategoryWrapper2) LinearLayout mCategoryWrapper2;
+    @InjectView(R.id.toggleButtonPrimary2) ToggleButton mCategoryPrimaryToggle2;
+    @InjectView(R.id.imageViewCategoryIcon2) ImageView mCategoryIcon2;
+    @InjectView(R.id.textViewCategoryName2) TextView mCategoryName2;
+    @InjectView(R.id.imageViewCategoryDelete2) ImageButton mDeleteCategory2;
+
+    @InjectView(R.id.linearLayoutCategoryWrapper3) LinearLayout mCategoryWrapper3;
+    @InjectView(R.id.toggleButtonPrimary3) ToggleButton mCategoryPrimaryToggle3;
+    @InjectView(R.id.imageViewCategoryIcon3) ImageView mCategoryIcon3;
+    @InjectView(R.id.textViewCategoryName3) TextView mCategoryName3;
+    @InjectView(R.id.imageViewCategoryDelete3) ImageButton mDeleteCategory3;
+
 	boolean hasModified = false;
 	int level = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_PROGRESS);
+		supportRequestWindowFeature(Window.FEATURE_PROGRESS);
 
 		setContentView(R.layout.activity_venue_edit_categories);
-		ActionBar ab = getSupportActionBar();
-		ab.setDisplayHomeAsUpEnabled(showHomeUp);
-		ab.setDisplayUseLogoEnabled(useLogo);
 
-		setProgressBarVisibility(false);
-		setProgressBarIndeterminate(true);
+		ActionBar ab = getSupportActionBar();
+		ab.setDisplayHomeAsUpEnabled(true);
+		ab.setDisplayUseLogoEnabled(true);
+
+		setSupportProgressBarVisibility(false);
+        setSupportProgressBarIndeterminate(true);
+
+        ButterKnife.inject(this);
 
 		level = PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext());
-
-		mLinearLayoutProgressBar = (LinearLayout)findViewById(R.id.linearLayoutProgressBarWrapper);
-		mLinearLayout = (LinearLayout)findViewById(R.id.linearLayoutVenueCategoriesWrapper);
-		mAddCategoryTextView = (TextView) findViewById(R.id.textViewCategoryAddTitle);
 
 		if(getIntent().hasExtra(VenueDetailFragment.VENUE_EDIT_EXTRA)) {
 			currentCompactVenue =
@@ -84,9 +111,9 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 				mLinearLayoutProgressBar.setVisibility(View.VISIBLE);
 				mLinearLayout.setVisibility(View.GONE);
 			}
-			setProgressBarVisibility(true);
-			new FoursquareTasks.GetVenue(getApplicationContext(),
-                    currentCompactVenue.id, this,
+			setSupportProgressBarVisibility(true);
+            FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
+			mFoursquareTasks.new GetVenue(currentCompactVenue.id,
                     FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES).execute();
 		}
 
@@ -128,13 +155,13 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 	}
 
 	private void SaveUpdatedCategories() {
-		Venue myModifiedVenue = new Venue();
+		Venue myModifiedVenue;
 		myModifiedVenue = currentVenue;
 		myModifiedVenue.categories = null;
 		if(updatedCategories.size() > 0) {
 			myModifiedVenue.categories = updatedCategories;
 
-			setProgressBarVisibility(true);
+			setSupportProgressBarVisibility(true);
 			new FoursquareTasks.EditVenue(getApplicationContext(),
                     currentVenue.id, myModifiedVenue, this, false, true).execute();
 		} else {
@@ -149,171 +176,145 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 			boolean secondarySet = false;
 			boolean tertiarySet = false;
 
-			List<Category> categoriesToLoad = null;
+			List<Category> categoriesToLoad;
 			categoriesToLoad = new ArrayList<Category>();
 			if(myCategories != null && myCategories.size() > 0) {
 				categoriesToLoad.addAll(myCategories);
 
-				if(categoriesToLoad != null && categoriesToLoad.size() > 0) {
+				if(categoriesToLoad.size() > 0) {
 					for (Category cat : categoriesToLoad) {
 						if(cat != null) {
-							LinearLayout myCategoryLinearLayout = null;
-							ToggleButton myCategoryPrimaryToggleButton = null;
-							ImageButton myCategoryDeleteImageButton = null;
+                            final String categoryName = cat.name != null ? cat.name : "";
+                            final String categoryIconUrl = cat.icon != null ? cat.icon.getFoursquareLegacyImageUrl(FoursquareImage.SIZE_MEDIANO) : "";
 
 							if(cat.primary) {
-								myCategoryLinearLayout =
-                                        (LinearLayout)findViewById(
-                                                R.id.linearLayoutCategoryWrapper1);
-								myCategoryPrimaryToggleButton =
-                                        (ToggleButton)findViewById(
-                                                R.id.toggleButtonPrimary1);
-								myCategoryDeleteImageButton =
-                                        (ImageButton) findViewById(
-                                                R.id.imageViewCategoryDelete1);
-
 								if(level >= FoursquarePrefs.SUPERUSER.SU1) {
-									myCategoryPrimaryToggleButton.setOnClickListener(
+									mCategoryPrimaryToggle1.setOnClickListener(
                                             new OnClickListener() {
-										@Override
-										public void onClick(View v) {
-											ToggleButton myToggle = (ToggleButton)v;
-											myToggle.setChecked(true);
-										}
-									});
+                                                @Override
+                                                public void onClick(View v) {
+                                                    ToggleButton myToggle = (ToggleButton) v;
+                                                    myToggle.setChecked(true);
+                                                }
+                                            }
+                                    );
 
-                                    myCategoryDeleteImageButton.setVisibility(View.VISIBLE);
-                                    myCategoryDeleteImageButton
+                                    mDeleteCategory1.setVisibility(View.VISIBLE);
+                                    mDeleteCategory1.setOnClickListener(new OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            RemoveCategory(0);
+                                        }
+                                    });
+								} else {
+									mDeleteCategory1.setVisibility(View.GONE);
+									mCategoryPrimaryToggle1
                                             .setOnClickListener(new OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    RemoveCategory(0);
+                                                    ToggleButton myToggle = (ToggleButton) v;
+                                                    myToggle.setChecked(true);
                                                 }
                                             });
-								} else {
-									myCategoryDeleteImageButton.setVisibility(View.GONE);
-									myCategoryPrimaryToggleButton
-                                            .setOnClickListener(new OnClickListener() {
-										@Override
-										public void onClick(View v) {
-											ToggleButton myToggle = (ToggleButton)v;
-											myToggle.setChecked(true);
-										}
-									});
 								}
+
+                                mCategoryName1.setText(categoryName);
+                                mCategoryPrimaryToggle1.setChecked(true);
+
+                                if(!categoryIconUrl.equals(""))
+                                    UrlImageViewHelper.setUrlDrawable(mCategoryIcon1, categoryIconUrl, R.drawable.foursquare_generic_category_icon);
+                                else
+                                    mCategoryIcon1.setImageResource(R.drawable.generic_category_icon);
+
+                                mCategoryWrapper1.setVisibility(View.VISIBLE);
+
 								primarySet = true;
 							} else {
 								if(secondarySet) {
-									myCategoryLinearLayout =
-                                            (LinearLayout)findViewById(
-                                                    R.id.linearLayoutCategoryWrapper3);
-									myCategoryPrimaryToggleButton =
-                                            (ToggleButton)findViewById(
-                                                    R.id.toggleButtonPrimary3);
-									myCategoryDeleteImageButton =
-                                            (ImageButton) findViewById(
-                                                    R.id.imageViewCategoryDelete3);
-
 									if(level >= FoursquarePrefs.SUPERUSER.SU1) {
-										myCategoryPrimaryToggleButton
+										mCategoryPrimaryToggle3
                                                 .setOnClickListener(new OnClickListener() {
-											@Override
-											public void onClick(View v) {
-												ToggleButton myToggle = (ToggleButton)v;
-												if(myToggle.isChecked()) {
-													MakePrimary(2);
-												}
-											}
-										});
-										myCategoryDeleteImageButton.setVisibility(View.VISIBLE);
-										myCategoryDeleteImageButton
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        ToggleButton myToggle = (ToggleButton) v;
+                                                        if (myToggle.isChecked()) {
+                                                            MakePrimary(2);
+                                                        }
+                                                    }
+                                                });
+										mDeleteCategory3.setVisibility(View.VISIBLE);
+										mDeleteCategory3
                                                 .setOnClickListener(new OnClickListener() {
-											@Override
-												public void onClick(View v) {
-													RemoveCategory(2);
-												}
-											});
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        RemoveCategory(2);
+                                                    }
+                                                });
 									} else {
-										myCategoryDeleteImageButton.setVisibility(View.GONE);
-										myCategoryPrimaryToggleButton
+										mDeleteCategory3.setVisibility(View.GONE);
+										mCategoryPrimaryToggle3
                                                 .setOnClickListener(new OnClickListener() {
-											@Override
-											public void onClick(View v) {
-												ToggleButton myToggle = (ToggleButton)v;
-												myToggle.setChecked(false);
-											}
-										});
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        ToggleButton myToggle = (ToggleButton) v;
+                                                        myToggle.setChecked(false);
+                                                    }
+                                                });
 									}
+
+                                    mCategoryName3.setText(categoryName);
+                                    mCategoryPrimaryToggle3.setChecked(false);
+
+                                    if(!categoryIconUrl.equals(""))
+                                        UrlImageViewHelper.setUrlDrawable(mCategoryIcon3, categoryIconUrl, R.drawable.foursquare_generic_category_icon);
+                                    else
+                                        mCategoryIcon3.setImageResource(R.drawable.generic_category_icon);
+
+                                    mCategoryWrapper3.setVisibility(View.VISIBLE);
+
 									tertiarySet = true;
 								} else {
-									myCategoryLinearLayout =
-                                            (LinearLayout)findViewById(
-                                                    R.id.linearLayoutCategoryWrapper2);
-									myCategoryPrimaryToggleButton =
-                                            (ToggleButton)findViewById(
-                                                    R.id.toggleButtonPrimary2);
-									myCategoryDeleteImageButton =
-                                            (ImageButton) findViewById(
-                                                    R.id.imageViewCategoryDelete2);
-
 									if(level >= FoursquarePrefs.SUPERUSER.SU1) {
-										myCategoryPrimaryToggleButton
+										mCategoryPrimaryToggle2
                                                 .setOnClickListener(new OnClickListener() {
-											@Override
-											public void onClick(View v) {
-												ToggleButton myToggle = (ToggleButton)v;
-												if(myToggle.isChecked()) {
-													MakePrimary(1);
-												}
-											}
-										});
-										myCategoryDeleteImageButton.setVisibility(View.VISIBLE);
-										myCategoryDeleteImageButton.setOnClickListener(new OnClickListener() {
-											@Override
-												public void onClick(View v) {
-													RemoveCategory(1);
-												}
-											});
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        ToggleButton myToggle = (ToggleButton) v;
+                                                        if (myToggle.isChecked()) {
+                                                            MakePrimary(1);
+                                                        }
+                                                    }
+                                                });
+										mDeleteCategory2.setVisibility(View.VISIBLE);
+										mDeleteCategory2.setOnClickListener(new OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                RemoveCategory(1);
+                                            }
+                                        });
 									} else {
-										myCategoryDeleteImageButton.setVisibility(View.GONE);
-										myCategoryPrimaryToggleButton.setOnClickListener(new OnClickListener() {
-											@Override
-											public void onClick(View v) {
-												ToggleButton myToggle = (ToggleButton)v;
-												myToggle.setChecked(false);
-											}
-										});
+										mDeleteCategory2.setVisibility(View.GONE);
+										mCategoryPrimaryToggle2.setOnClickListener(new OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                ToggleButton myToggle = (ToggleButton) v;
+                                                myToggle.setChecked(false);
+                                            }
+                                        });
 									}
+
+                                    mCategoryName2.setText(categoryName);
+                                    mCategoryPrimaryToggle2.setChecked(false);
+
+                                    if(!categoryIconUrl.equals(""))
+                                        UrlImageViewHelper.setUrlDrawable(mCategoryIcon2, categoryIconUrl, R.drawable.foursquare_generic_category_icon);
+                                    else
+                                        mCategoryIcon2.setImageResource(R.drawable.generic_category_icon);
+
+                                    mCategoryWrapper2.setVisibility(View.VISIBLE);
+
 									secondarySet = true;
 								}
-							}
-
-							if(myCategoryLinearLayout != null) {
-
-								final String categoryName =
-                                        cat.name != null ? cat.name : "";
-								final String categoryIconUrl =
-                                        cat.icon != null ? cat.icon.getFoursquareLegacyImageUrl(FoursquareImage.SIZE_MEDIANO) : "";
-								final Boolean isPrimary =
-                                        cat.primary != null ? cat.primary : false;
-
-								((TextView) myCategoryLinearLayout.getChildAt(2))
-                                        .setText(categoryName);
-								((ToggleButton) myCategoryLinearLayout.getChildAt(0))
-                                        .setChecked(isPrimary);
-
-								final ImageView myCategoryIcon =
-                                        (ImageView)myCategoryLinearLayout.getChildAt(1);
-								if(categoryIconUrl != "")
-									UrlImageViewHelper
-                                            .setUrlDrawable(myCategoryIcon,
-                                                    categoryIconUrl,
-                                                    R.drawable.foursquare_generic_category_icon);
-								else
-									myCategoryIcon
-                                            .setImageResource(R.drawable.generic_category_icon);
-
-								myCategoryLinearLayout.setVisibility(View.VISIBLE);
 							}
 						}
 					}
@@ -326,14 +327,11 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 			}
 
 			if(!primarySet)
-				((LinearLayout)findViewById(R.id.linearLayoutCategoryWrapper1))
-                        .setVisibility(View.GONE);
+				mCategoryWrapper1.setVisibility(View.GONE);
 			if(!secondarySet)
-				((LinearLayout)findViewById(R.id.linearLayoutCategoryWrapper2))
-                        .setVisibility(View.GONE);
+				mCategoryWrapper2.setVisibility(View.GONE);
 			if(!tertiarySet)
-				((LinearLayout)findViewById(R.id.linearLayoutCategoryWrapper3))
-                        .setVisibility(View.GONE);
+				mCategoryWrapper3.setVisibility(View.GONE);
 
 			if(level >= FoursquarePrefs.SUPERUSER.SU1) {
 				if(!primarySet || !secondarySet || !tertiarySet)
@@ -413,10 +411,6 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 		} else {
             for (Category cat : updatedCategories) {
                 if(cat.id.equals(myCategory.id.trim())) {
-//                    Crouton.makeText(this,
-//                            String.format(getString(R.string.edit_category_add_already_added),
-//                                    myCategory.name), Style.ALERT).show();
-
                     Toast.makeText(this,
                             String.format(getString(R.string.edit_category_add_already_added),
                                     myCategory.name), Toast.LENGTH_SHORT).show();

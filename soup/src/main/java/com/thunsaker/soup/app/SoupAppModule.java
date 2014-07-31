@@ -12,11 +12,14 @@ import com.thunsaker.soup.services.FoursquareService;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.thunsaker.soup.services.foursquare.endpoints.VenueEndpoint;
+import com.thunsaker.soup.ui.CheckinHistoryActivity;
+import com.thunsaker.soup.ui.CheckinHistoryFragment;
 import com.thunsaker.soup.ui.FoursquareAuthorizationActivity;
 import com.thunsaker.soup.ui.FoursquareListFragment;
 import com.thunsaker.soup.ui.HistoryActivity;
 import com.thunsaker.soup.ui.ListActivity;
 import com.thunsaker.soup.ui.ListsFragment;
+import com.thunsaker.soup.ui.LocationSelectActivity;
 import com.thunsaker.soup.ui.MainActivity;
 import com.thunsaker.soup.ui.VenueAddCategoryActivity;
 import com.thunsaker.soup.ui.VenueDetailActivity;
@@ -24,6 +27,8 @@ import com.thunsaker.soup.ui.VenueDetailActivityReceiver;
 import com.thunsaker.soup.ui.VenueDetailFragment;
 import com.thunsaker.soup.ui.VenueEditCategoriesActivity;
 import com.thunsaker.soup.ui.VenueEditHoursAddActivity;
+import com.thunsaker.soup.ui.VenueEditLocationFragment;
+import com.thunsaker.soup.ui.VenueEditTabsActivity;
 import com.thunsaker.soup.ui.VenueListFragment;
 import com.thunsaker.soup.ui.VenueSearchActivity;
 
@@ -57,7 +62,12 @@ import static android.content.Context.LOCATION_SERVICE;
                 VenueDetailActivityReceiver.class,
                 VenueAddCategoryActivity.class,
                 VenueEditHoursAddActivity.class,
-                VenueEditCategoriesActivity.class
+                VenueEditCategoriesActivity.class,
+                VenueEditTabsActivity.class,
+                VenueEditLocationFragment.class,
+                LocationSelectActivity.class,
+                CheckinHistoryActivity.class,
+                CheckinHistoryFragment.class
         }
 )
 public class SoupAppModule {
@@ -95,6 +105,7 @@ public class SoupAppModule {
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(FoursquarePrefs.FOURSQUARE_BASE_URL)
+                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
         return restAdapter.create(FoursquareService.class);

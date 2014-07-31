@@ -252,12 +252,23 @@
     <string name="prefs_soup_title_push_summary_off">Push notifications to your device, when venues need more information?</string>
     <string name="prefs_soup_about_version">Build Version</string>
     <string name="prefs_soup_about_rate_title">Rate Soup</string>
-    <string name="prefs_soup_category_title_about">About</string>
+    <string name="prefs_soup_category_title_about">Sobre</string>
     <string name="prefs_soup_about_rate_summary">Rate and comment in the Play Store.</string>
-    <string name="venues_list_loading">Getting Venues...</string>
-    <string name="empty_list">No Results Found :(</string>
+    <string name="venues_list_loading">Cargando Lugares…</string>
+    <string name="empty_list">No Resultados :(</string>
 
     <string name="title_activity_main_map">MainMapActivity</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">Mapa</string>
     <string name="error_map">Error loading map, no location.</string>
+
+    <string name="title_activity_venue">Lugar</string>
+    <string name="venue_detail_not_found">No se encuentra el lugar.</string>
+    <string name="search_view_start">Busca!</string>
+    <string name="title_activity_checkin_history">History</string>
+    <string name="history_title_custom">Fechas…</string>
+    <string name="history_select_date_range">Elige un intervalo de fechas</string>
+    <string name="history_get_checkins">Consigue "check-in"</string>
+    <string name="action_top">Top</string>
+    <string name="error_server">Error: %s</string>
+    <string name="foursquare_server_status">Consulta status.foursquare.com para más info.</string>
 </resources>

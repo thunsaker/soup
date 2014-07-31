@@ -49,11 +49,11 @@ public class VenueEditHoursFragment extends Fragment {
 
         if(VenueEditTabsActivity.originalVenue != null
                 && VenueEditTabsActivity.originalVenue.venueHours != null
-                && VenueEditTabsActivity.originalVenue.venueHours.getTimeFrames() != null
-                && VenueEditTabsActivity.originalVenue.venueHours.getTimeFrames().size() > 0
+                && VenueEditTabsActivity.originalVenue.venueHours.timeFrames != null
+                && VenueEditTabsActivity.originalVenue.venueHours.timeFrames.size() > 0
                 && currentVenueListHours.size() == 0) {
             currentVenueListHours.addAll(
-                    VenueEditTabsActivity.originalVenue.venueHours.getTimeFrames());
+                    VenueEditTabsActivity.originalVenue.venueHours.timeFrames);
         }
 
         currentVenueHoursListAdapter = new VenueHoursListAdapter(
@@ -117,12 +117,12 @@ public class VenueEditHoursFragment extends Fragment {
                 final TextView timeTextView =
                         (TextView)v.findViewById(R.id.textViewVenueEditHoursTime);
 
-                if (time != null && !time.getOpenTimesString().equals("")) {
-                    final String myTimeDays = time.getDaysString() != null
-                            ? time.getDaysString()
+                if (time != null && !time.openTimesString.equals("")) {
+                    final String myTimeDays = time.daysString != null
+                            ? time.daysString
                             : "";
-                    final String myTimeHours = time.getOpenTimesString() != null
-                            ? time.getOpenTimesString()
+                    final String myTimeHours = time.openTimesString != null
+                            ? time.openTimesString
                             : "";
 
                     daysTextView.setText(myTimeDays);

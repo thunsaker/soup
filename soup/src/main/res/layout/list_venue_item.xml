@@ -51,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:gravity="right"
+            android:textColor="@color/body_text"
             android:textIsSelectable="false"
             android:textSize="12sp" />
 

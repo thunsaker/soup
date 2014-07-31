@@ -25,9 +25,9 @@ public class VenueDetailActivityReceiver extends BaseSoupActivity {
 
 	public void handleIntent(Intent intent) {
 		try {
-			String rawVenueUrl = "";
+			String rawVenueUrl;
 			if(Intent.ACTION_SEND.equals(intent.getAction()) || Intent.ACTION_VIEW.equals(intent.getAction())) {
-				String passedString = "";
+				String passedString;
                 if(Intent.ACTION_SEND.equals(intent.getAction()))
 				    passedString = intent.getStringExtra(Intent.EXTRA_TEXT);
                 else

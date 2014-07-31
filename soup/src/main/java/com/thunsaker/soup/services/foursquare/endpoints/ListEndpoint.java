@@ -115,17 +115,17 @@ public class ListEndpoint {
 						}
 						if (!result.getType().equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED)) {
 							if (result.getUser() != null) {
-								if (result.getUser().getPhoto() != null
-										&& result.getUser().getPhoto().getFoursquareImageUrl(FoursquareImage.SIZE_EXTRA_GRANDE) != null) {
+								if (result.getUser().photo != null
+										&& result.getUser().photo.getFoursquareImageUrl(FoursquareImage.SIZE_EXTRA_GRANDE) != null) {
 									UrlImageViewHelper
 											.setUrlDrawable(
 													FoursquareListFragment.mImageViewHeaderProfile,
-													result.getUser().getPhoto()
+													result.getUser().photo
 															.getFoursquareImageUrl(
 																	FoursquareImage.SIZE_EXTRA_GRANDE),
 													R.drawable.list_placeholder_gray_dark_small);
 								} else {
-									if (result.getUser().getType().equals("page")) {
+									if (result.getUser().type.equals("page")) {
 										FoursquareListFragment.mImageViewHeaderProfile
 												.setImageDrawable(myContext
 														.getResources()
@@ -137,23 +137,23 @@ public class ListEndpoint {
 														.getResources()
 														.getDrawable(
 																result.getUser()
-																		.getGender() != null
+																		.gender != null
 																		&& result
 																				.getUser()
-																				.getGender()
+																				.gender
 																				.equals("male") ? R.drawable.profile_boy
 																		: R.drawable.profile_girl));
 									}
 								}
 
-								if (result.getUser().getFirstName() != null) {
-									Boolean isPerson = !(result.getUser().getType() != null &&
-                                            (result.getUser().getType().equals("page")
-                                                    || result.getUser().getType().equals("chain")
-                                                    || result.getUser().getType().equals("celebrity")
-                                                    || result.getUser().getType().equals("venuePage")));
-									String creator = !isPerson ? result.getUser().getFirstName()
-											: result.getUser().getFirstName() + " " + result.getUser().getLastName();
+								if (result.getUser().firstName != null) {
+									Boolean isPerson = !(result.getUser().type != null &&
+                                            (result.getUser().type.equals("page")
+                                                    || result.getUser().type.equals("chain")
+                                                    || result.getUser().type.equals("celebrity")
+                                                    || result.getUser().type.equals("venuePage")));
+									String creator = !isPerson ? result.getUser().firstName
+											: result.getUser().firstName + " " + result.getUser().lastName;
 									FoursquareListFragment.mTextViewHeaderCreator
 											.setText(String.format(
 													myContext.getString(R.string.lists_title_header_creator), creator));

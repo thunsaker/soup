@@ -7,33 +7,25 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.app.BaseSoupListFragment;
-import com.thunsaker.soup.data.api.model.Category;
+import com.thunsaker.soup.adapters.VenueListAdapter;
+import com.thunsaker.soup.app.BaseSoupFragment;
 import com.thunsaker.soup.data.api.model.CompactVenue;
-import com.thunsaker.soup.data.api.model.FoursquareImage;
 import com.thunsaker.soup.data.events.VenueListEvent;
 import com.thunsaker.soup.data.events.VenueSearchEvent;
-import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +39,10 @@ import de.greenrobot.event.EventBus;
 /*
  * Created by @thunsaker
  */
-public class VenueListFragment extends BaseSoupListFragment implements SwipeRefreshLayout.OnRefreshListener {
-
+public class VenueListFragment extends BaseSoupFragment
+        implements SwipeRefreshLayout.OnRefreshListener,
+        AbsListView.OnItemClickListener,
+        AbsListView.OnItemLongClickListener {
     @Inject
     @ForApplication
     Context mContext;
@@ -59,194 +53,137 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
     @Inject
     LocationManager mLocationManager;
 
-    public static VenueListAdapter currentVenueListAdapter;
-    public static List<CompactVenue> currentVenueList;
+    private VenueListAdapter currentVenueListAdapter;
+    private List<CompactVenue> currentVenueList;
 
-    public static VenueListAdapter searchResultsVenueListAdapter;
-    public static List<CompactVenue> searchResultsVenueList;
+    private VenueListAdapter searchResultsVenueListAdapter;
+    private List<CompactVenue> searchResultsVenueList;
 
-    public static VenueListAdapter searchDuplicateResultsVenueListAdapter;
-    public static List<CompactVenue> searchDuplicateResultsVenueList;
+    private VenueListAdapter searchDuplicateResultsVenueListAdapter;
+    private List<CompactVenue> searchDuplicateResultsVenueList;
 
-    public static boolean isRefreshing = false;
+    public boolean isRefreshing = false;
 
-    public static String searchQuery = "";
-    public static String searchQueryLocation = "";
-    public static String duplicateVenueId = "";
-    public static boolean isSearching;
-    public static boolean isDuplicateSearching;
-
-    public RelativeLayout mRelativeLayoutEmptyListView;
+    public String searchQuery = "";
+    public String searchQueryLocation = "";
+    public String duplicateVenueId = "";
+    public boolean isSearching;
+    public boolean isDuplicateSearching;
 
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private static String ARG_SEARCH_QUERY = "query";
+    private static String ARG_SEARCH_QUERY_LOCATION = "queryLocation";
+    private static String ARG_SEARCH_DUPLICATE_VENUE_ID = "queryDuplicateVenueId";
+
+    private static String ARG_LIST_TYPE = "mListType";
+
+    public static int VENUE_LIST_TYPE_DEFAULT = 0;
+    public static int VENUE_LIST_TYPE_SEARCH = 1;
+    public static int VENUE_LIST_TYPE_DUPLICATE = 2;
 
     public static int mActivatedPosition = ListView.INVALID_POSITION;
 
+    private ListView mListView;
+
     @InjectView(R.id.swipeLayoutVenueListContainer) SwipeRefreshLayout mSwipeViewVenueListContainer;
 
-    @Override
-    public void onRefresh() {
-        RefreshVenuesList(searchQuery, searchQueryLocation, duplicateVenueId);
+    private int mListType;
+
+    private OnFragmentInteractionListener mClickListener;
+
+    public interface OnFragmentInteractionListener {
+        public void onVenueListClick(String compactVenueJson);
+        public boolean onVenueListLongClick(String venueId, String venueName);
     }
 
-    public interface Callbacks {
-        public void onItemSelected(String compactVenueJson);
-
-        public boolean onListItemLongClick(String id, String name);
+    /**
+     *
+     * @param venueListType     Either {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_DEFAULT} or
+     *                          {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_SEARCH} or
+     *                          {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_DUPLICATE}
+     * @return
+     */
+    public static VenueListFragment newInstance(int venueListType) {
+        return VenueListFragment.newInstance(null, null, null, venueListType);
     }
 
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected(String id) {
-        }
+    public static VenueListFragment newInstance(String query, String queryLocation, String queryDuplicateVenueId, int venueListType) {
+        VenueListFragment fragment = new VenueListFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_LIST_TYPE, venueListType);
+        if(query != null)
+            args.putString(ARG_SEARCH_QUERY, query);
+        if(queryLocation != null)
+            args.putString(ARG_SEARCH_QUERY_LOCATION, queryLocation);
+        if(queryDuplicateVenueId != null)
+            args.putString(ARG_SEARCH_DUPLICATE_VENUE_ID, queryDuplicateVenueId);
 
-        @Override
-        public boolean onListItemLongClick(String id, String name) {
-            return true;
-        }
-    };
-
-    public VenueListFragment() {
+        fragment.setArguments(args);
+        return fragment;
     }
+
+    public VenueListFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBus.register(this);
+        ClearSearchValues();
 
-        if (!searchQuery.equals("")) {
-            if (isDuplicateSearching) {
-                searchDuplicateResultsVenueListAdapter =
-                        new VenueListAdapter(getActivity().getApplicationContext(),
-                                R.layout.list_venue_item, searchDuplicateResultsVenueList);
+        if(mBus != null && !mBus.isRegistered(this))
+            mBus.register(this);
 
-                searchDuplicateResultsVenueList = null;
-                searchDuplicateResultsVenueListAdapter.notifyDataSetChanged();
-            } else {
-                searchResultsVenueListAdapter =
-                        new VenueListAdapter(getActivity().getApplicationContext(),
-                                R.layout.list_venue_item, searchResultsVenueList);
+        if(getArguments() != null) {
+            mListType = getArguments().getInt(ARG_LIST_TYPE);
 
-                searchResultsVenueList = null;
-                searchResultsVenueListAdapter.notifyDataSetChanged();
-            }
-        } else {
-            currentVenueListAdapter =
-                    new VenueListAdapter(getActivity().getApplicationContext(),
-                            R.layout.list_venue_item, currentVenueList);
-
-            if (currentVenueList != null && currentVenueList.size() > 0) {
-                setListAdapter(currentVenueListAdapter);
-                currentVenueListAdapter.notifyDataSetChanged();
-            }
+            searchQuery =
+                    getArguments().getString(ARG_SEARCH_QUERY) != null
+                            ? getArguments().getString(ARG_SEARCH_QUERY)
+                            : "";
+            searchQueryLocation =
+                    getArguments().getString(ARG_SEARCH_QUERY_LOCATION) != null
+                            ? getArguments().getString(ARG_SEARCH_QUERY_LOCATION)
+                            : "";
+            duplicateVenueId =
+                    getArguments().getString(ARG_SEARCH_DUPLICATE_VENUE_ID) != null
+                            ? getArguments().getString(ARG_SEARCH_DUPLICATE_VENUE_ID)
+                            : "";
+            isDuplicateSearching = duplicateVenueId != null && duplicateVenueId.length() > 0;
         }
 
-        if (PreferencesHelper.getFoursquareConnected(getActivity().getApplicationContext()))
-            BeginUpdates();
+        if (PreferencesHelper.getFoursquareConnected(mContext)) {
+            if (mListType == VENUE_LIST_TYPE_DEFAULT)
+                BeginUpdates();
+            else
+                RefreshVenuesList(searchQuery, searchQueryLocation, duplicateVenueId);
+        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        if (savedInstanceState != null
-                && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-            setActivatedPosition(savedInstanceState
-                    .getInt(STATE_ACTIVATED_POSITION));
-        }
-
         super.onViewCreated(view, savedInstanceState);
 
-        if (getListView() != null) {
-            getListView().setSelector(R.drawable.layout_selector_green);
-            getListView().setEmptyView(View.inflate(mContext, R.layout.list_empty_generic, null));
-
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View myFooter = inflater.inflate(R.layout.list_venue_footer, null);
-            getListView().addFooterView(myFooter);
-            getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent,
-                                               View view,
-                                               int position,
-                                               long id) {
-                    CompactVenue clickedVenue =
-                            (CompactVenue) getListView().getItemAtPosition(position);
-                    return mCallbacks.onListItemLongClick(
-                            clickedVenue != null ? clickedVenue.id : null,
-                            clickedVenue != null ? clickedVenue.name : null);
-                }
-            });
-
-            ViewGroup viewGroup = (ViewGroup) view;
-        }
-
-//        setUpMapIfNeeded(mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER));
-        ButterKnife.inject(this, view);
-
-        if(mSwipeViewVenueListContainer != null) {
-            mSwipeViewVenueListContainer.setOnRefreshListener(this);
-            mSwipeViewVenueListContainer.setColorScheme(R.color.foursquare_green, R.color.foursquare_orange, R.color.foursquare_green, R.color.foursquare_blue);
-        }
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION))
+            setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if (!(activity instanceof Callbacks)) {
-            throw new IllegalStateException(
-                    "Activity must implement fragment's callbacks.");
+        try {
+            mClickListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
-
-        if (!isSearching) {
-            setListAdapter(currentVenueListAdapter);
-        }
-
-        mCallbacks = (Callbacks) activity;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks = sDummyCallbacks;
-    }
-
-    @Override
-    public void onListItemClick(ListView listView, View view, int position, long id) {
-        try {
-            if (getListView().getFooterViewsCount() == 1
-                    && position == getListView().getCount() - 1) {
-                Intent searchActivity =
-                        new Intent(
-                                getActivity().getApplicationContext(),
-                                VenueSearchActivity.class);
-                VenueListFragment.isSearching = true;
-                VenueListFragment.searchQuery = "";
-                VenueListFragment.searchQueryLocation = "";
-                startActivity(searchActivity);
-                return;
-            }
-
-            if (isDuplicateSearching)
-                setActivateOnItemClick(true);
-
-            if (!VenueListFragment.isRefreshing) {
-                CompactVenue clickedVenue =
-                        (CompactVenue) getListView().getItemAtPosition(position);
-                mCallbacks.onItemSelected(clickedVenue != null ? clickedVenue.toString() : null);
-            } else {
-                Toast.makeText(getActivity(), R.string.alert_still_loading,
-                        Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception ex) {
-            Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Location 3",
-                    Toast.LENGTH_SHORT).show();
-            ex.printStackTrace();
-        }
-
-        super.onListItemClick(listView, view, position, id);
+        mClickListener = null;
     }
 
     @Override
@@ -259,7 +196,7 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
     }
 
     public void setActivateOnItemClick(boolean activateOnItemClick) {
-        getListView().setChoiceMode(
+        mListView.setChoiceMode(
                 activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
                         : ListView.CHOICE_MODE_NONE
         );
@@ -267,93 +204,74 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
 
     private void setActivatedPosition(int position) {
         if (position == ListView.INVALID_POSITION) {
-            getListView().setItemChecked(mActivatedPosition, false);
+            mListView.setItemChecked(mActivatedPosition, false);
         } else {
-            getListView().setItemChecked(position, true);
+            mListView.setItemChecked(position, true);
         }
 
         mActivatedPosition = position;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_venue_list, container, false);
-    }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_venue_list, container, false);
 
-    public class VenueListAdapter extends ArrayAdapter<CompactVenue> {
-        public List<CompactVenue> items;
+        mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView.setSelector(R.drawable.layout_selector_green);
+        mListView.setEmptyView(view.findViewById(android.R.id.empty));
 
-        public VenueListAdapter(Context context, int textViewResourceId, List<CompactVenue> items) {
-            super(context, textViewResourceId, items);
-            this.items = items;
+        View myFooter = inflater.inflate(R.layout.list_venue_footer, null);
+        mListView.addFooterView(myFooter);
+        mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
+
+        ButterKnife.inject(this, view);
+
+        if(mSwipeViewVenueListContainer != null) {
+            mSwipeViewVenueListContainer.setOnRefreshListener(this);
+            mSwipeViewVenueListContainer.setColorScheme(
+                    R.color.foursquare_green,
+                    R.color.foursquare_orange,
+                    R.color.foursquare_green,
+                    R.color.foursquare_blue);
+            mSwipeViewVenueListContainer.setRefreshing(true);
         }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View v = convertView;
-            if (v == null) {
-                LayoutInflater viewInflater =
-                        (LayoutInflater) getActivity()
-                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = viewInflater.inflate(R.layout.list_venue_item, null);
-            }
-            try {
-                final CompactVenue venue = items.get(position);
-                if (venue != null) {
-                    final String myVenueName = venue.name != null ? venue.name : "";
-                    final String myVenueAddress = venue.location.address != null
-                            ? venue.location.address : "";
-
-                    final TextView nameTextView = (TextView) v.findViewById(R.id.textViewVenueName);
-                    if (nameTextView != null)
-                        nameTextView.setText(myVenueName);
-
-                    final TextView addressTextView =
-                            (TextView) v.findViewById(R.id.textViewVenueAddress);
-                    if (addressTextView != null)
-                        addressTextView.setText(myVenueAddress);
-
-                    final ImageView primaryCategoryImageView =
-                            (ImageView) v.findViewById(R.id.imageViewVenueCategory);
-                    List<Category> myCategories = venue.categories;
-                    if (myCategories != null) {
-                        Category primaryCategory = myCategories.get(0) != null
-                                ? myCategories.get(0)
-                                : null;
-                        if (primaryCategoryImageView != null && primaryCategory != null) {
-                            String imageUrl =
-                                    primaryCategory.icon
-                                            .getFoursquareLegacyImageUrl(
-                                                    FoursquareImage.SIZE_MEDIANO);
-                            UrlImageViewHelper.setUrlDrawable(
-                                    primaryCategoryImageView,
-                                    imageUrl,
-                                    R.drawable.foursquare_generic_category_icon);
-                        }
-                    } else {
-                        primaryCategoryImageView.setImageResource(
-                                R.drawable.foursquare_generic_category_icon);
-                    }
-
-                    final TextView distanceTextView =
-                            (TextView) v.findViewById(R.id.textViewDistance);
-                    distanceTextView.setText(venue.location.distance + " m");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return v;
+        switch (mListType) {
+            case 1:
+                searchResultsVenueList = new ArrayList<CompactVenue>();
+                searchResultsVenueListAdapter =
+                        new VenueListAdapter(mContext, searchResultsVenueList);
+                searchResultsVenueListAdapter.notifyDataSetChanged();
+                mListView.setAdapter(searchResultsVenueListAdapter);
+                break;
+            case 2:
+                searchDuplicateResultsVenueList = new ArrayList<CompactVenue>();
+                searchDuplicateResultsVenueListAdapter =
+                        new VenueListAdapter(mContext, searchDuplicateResultsVenueList);
+                searchDuplicateResultsVenueListAdapter.notifyDataSetChanged();
+                mListView.setAdapter(searchDuplicateResultsVenueListAdapter);
+                break;
+            default:
+                currentVenueList = new ArrayList<CompactVenue>();
+                currentVenueListAdapter =
+                        new VenueListAdapter(mContext, currentVenueList);
+                currentVenueListAdapter.notifyDataSetChanged();
+                mListView.setAdapter(currentVenueListAdapter);
+                break;
         }
+
+        return view;
     }
 
     private void enableLocationSettings() {
-        getActivity().setProgressBarVisibility(false);
+        if(mSwipeViewVenueListContainer != null)
+            mSwipeViewVenueListContainer.setRefreshing(false);
 
         if (mLocationManager != null)
             mLocationManager.removeUpdates(mLocationListener);
 
-        Toast.makeText(getActivity(), R.string.alert_gps_disabled, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, R.string.alert_gps_disabled, Toast.LENGTH_SHORT).show();
 
         currentVenueList = null;
         currentVenueListAdapter.notifyDataSetChanged();
@@ -366,9 +284,8 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
             LatLng newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             MainActivity.currentLocation = newLatLng;
             if (!isSearching) {
-//                mBus.post(new LocationEvent(true, "", location, newLatLng));
                 RefreshVenuesList("", "", "");
-            } else if (isSearching && (searchQueryLocation != null || searchQueryLocation != "")) {
+            } else if (isSearching && (searchQueryLocation != null || !searchQueryLocation.equals(""))) {
                 mLocationManager = null;
             }
         }
@@ -392,57 +309,7 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
     public void RefreshVenuesList(String query, String location, String duplicateId) {
         if(mSwipeViewVenueListContainer != null)
             mSwipeViewVenueListContainer.setRefreshing(true);
-        mBus.post(new VenueSearchEvent(query, location, duplicateId));
-    }
-
-    @Deprecated
-    public static void RefreshVenueList(VenueListFragment theCaller) {
-        try {
-            if (currentVenueListAdapter == null)
-                currentVenueListAdapter =
-                        theCaller.new VenueListAdapter(theCaller.getActivity()
-                                .getApplicationContext(), R.layout.list_venue_item, null);
-
-            currentVenueListAdapter.notifyDataSetChanged();
-
-            ConnectivityManager connectivityManager =
-                    (ConnectivityManager) theCaller.getActivity()
-                            .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            if (activeNetworkInfo != null) {
-                FoursquareTasks foursquareTasks = new FoursquareTasks((com.thunsaker.soup.app.SoupApp) theCaller.getActivity().getApplication());
-                theCaller.getActivity().setProgressBarVisibility(true);
-                if (searchQuery != null && searchQuery.length() > 0) {
-                    if (searchQueryLocation != null && searchQueryLocation.length() > 0) {
-                        if (isDuplicateSearching) {
-                            String tempId = "venue";
-                            foursquareTasks.new GetClosestVenues(
-                                    theCaller.getActivity().getApplicationContext(),
-                                    theCaller, searchQuery, searchQueryLocation, tempId).execute();
-                        } else
-                            foursquareTasks.new GetClosestVenues(
-                                    theCaller.getActivity().getApplicationContext(), theCaller,
-                                    searchQuery, searchQueryLocation, "").execute();
-                    } else {
-                        foursquareTasks.new GetClosestVenues(
-                                theCaller.getActivity().getApplicationContext(), theCaller,
-                                searchQuery, searchQueryLocation, "").execute();
-                    }
-                } else {
-                    if (!isSearching)
-                        foursquareTasks.new GetClosestVenues(
-                                theCaller.getActivity().getApplicationContext(), theCaller,
-                                "", "", "").execute();
-                }
-            } else {
-//				mPullToRefreshLayout.setRefreshComplete();
-                Toast.makeText(theCaller.getActivity(),
-                        theCaller.getActivity().getString(R.string.alert_no_internet),
-                        Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mBus.post(new VenueSearchEvent(query, location, duplicateId, mListType));
     }
 
     @Override
@@ -453,17 +320,12 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
             mLocationManager.removeUpdates(mLocationListener);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     private void BeginUpdates() {
         try {
-            if (searchQueryLocation.equals("") && !isSearching) {
+            if (searchQueryLocation != null && searchQueryLocation.equals("") && !isSearching) {
                 // Get the current gps position
                 LocationProvider provider = null;
-                Boolean hasLocationProvider = false;
+                Boolean hasLocationProvider;
 
                 mLocationManager =
                         (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -509,15 +371,13 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
                 } else {
                     enableLocationSettings();
                 }
-//            } else {
-//                RefreshVenuesList(searchQuery, searchQueryLocation, duplicateVenueId);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void ClearSearchValues() {
+    public void ClearSearchValues() {
         searchQuery = "";
         searchQueryLocation = "";
         duplicateVenueId = "";
@@ -530,102 +390,78 @@ public class VenueListFragment extends BaseSoupListFragment implements SwipeRefr
         super.onDestroy();
     }
 
-//    public void onEvent(LocationEvent event) {
-//        if (event.result) {
-//            LatLng newLatLng = event.latLng;
-//
-//            if (mMap != null) {
-//                Log.d("LocationActivity", "New location here: " + newLatLng.latitude + ", " + newLatLng.longitude);
-//                MainActivity.currentLocation = newLatLng;
-//                mMap.clear();
-//                mMap.addMarker(new MarkerOptions()
-//                        .position(newLatLng)
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_dot)));
-//                LatLng adjustedCurrentLocation = new LatLng(newLatLng.latitude + MainActivity.markerActionBarAdjustment, newLatLng.longitude);
-//                mMap.moveCamera(CameraUpdateFactory.newLatLng(adjustedCurrentLocation));
-//                // TODO: Move venue list refresh to this method
-////                RefreshVenueList();
-//            } else {
-//                setUpMapIfNeeded(event.location);
-//            }
-//        } else {
-//            // TODO: Handle error with map
-//            Toast.makeText(mContext, R.string.error_map, Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
     public void onEvent(VenueListEvent event) {
         if(mSwipeViewVenueListContainer != null)
             mSwipeViewVenueListContainer.setRefreshing(false);
 
-        List<CompactVenue> updatedList;
-
-        if (event.result) {
-            if (!event.searchQuery.equals("")) {
-                if (!event.duplicateVenueId.equals("")) {
-                    List<CompactVenue> modifiedList = new ArrayList<CompactVenue>();
-                    if (searchDuplicateResultsVenueList == null)
-                        searchDuplicateResultsVenueList = new ArrayList<CompactVenue>();
+        if (event.result && event.resultList != null && event.resultList.size() > 0) {
+            switch (event.resultListType) {
+                case 1: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_SEARCH}
+                    searchResultsVenueList = new ArrayList<CompactVenue>(event.resultList);
+                    searchResultsVenueListAdapter = new VenueListAdapter(mContext, searchResultsVenueList);
+                    searchResultsVenueListAdapter.notifyDataSetChanged();
+                    mListView.setAdapter(searchResultsVenueListAdapter);
+                    break;
+                case 2: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_DUPLICATE}
+                    searchDuplicateResultsVenueList = new ArrayList<CompactVenue>();
 
                     for (CompactVenue c : event.resultList) {
                         String tempId = c.id.trim();
-                        if (!tempId.equals(event.duplicateVenueId.trim()))
-                            modifiedList.add(c);
+                        if (!tempId.equals(event.resultDuplicateVenueId.trim()))
+                            searchDuplicateResultsVenueList.add(c);
                     }
 
-                    searchDuplicateResultsVenueList = modifiedList;
-
-                    if (searchDuplicateResultsVenueListAdapter == null)
-                        searchDuplicateResultsVenueListAdapter = new VenueListAdapter(mContext, R.layout.list_venue_item, null);
-
-                    if (searchDuplicateResultsVenueListAdapter.items == null)
-                        searchDuplicateResultsVenueListAdapter.items = new ArrayList<CompactVenue>();
-
-                    searchDuplicateResultsVenueListAdapter.items.addAll(modifiedList);
+                    searchDuplicateResultsVenueListAdapter = new VenueListAdapter(mContext, searchDuplicateResultsVenueList);
                     searchDuplicateResultsVenueListAdapter.notifyDataSetChanged();
-
-                    updatedList = searchDuplicateResultsVenueList;
-                } else {
-                    if (searchResultsVenueList == null)
-                        searchResultsVenueList = new ArrayList<CompactVenue>();
-
-                    searchResultsVenueList = event.resultList;
-
-                    if (searchResultsVenueListAdapter == null)
-                        searchResultsVenueListAdapter = new VenueListAdapter(mContext, R.layout.list_venue_item, null);
-
-                    if (searchResultsVenueListAdapter.items == null)
-                        searchResultsVenueListAdapter.items = new ArrayList<CompactVenue>();
-
-                    searchResultsVenueListAdapter.items.addAll(event.resultList);
-                    searchResultsVenueListAdapter.notifyDataSetChanged();
-
-                    updatedList = searchResultsVenueList;
-                }
-            } else {
-                if (currentVenueList == null)
-                    currentVenueList = new ArrayList<CompactVenue>();
-
-                currentVenueList = event.resultList;
-
-                if (currentVenueListAdapter.items == null)
-                    currentVenueListAdapter.items = new ArrayList<CompactVenue>();
-
-                currentVenueListAdapter.items.addAll(event.resultList);
-                currentVenueListAdapter.notifyDataSetChanged();
-
-                updatedList = currentVenueList;
+                    mListView.setAdapter(searchDuplicateResultsVenueListAdapter);
+                    break;
+                case 0: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_DEFAULT}
+                    currentVenueList = new ArrayList<CompactVenue>(event.resultList);
+                    currentVenueListAdapter = new VenueListAdapter(mContext, currentVenueList);
+                    currentVenueListAdapter.notifyDataSetChanged();
+                    mListView.setAdapter(currentVenueListAdapter);
+                    break;
             }
-
-            if (updatedList != null) {
-                VenueListAdapter myAdapter = new VenueListAdapter(mContext, R.layout.list_venue_item, updatedList);
-                setListAdapter(myAdapter);
-            }
-        } else if (isSearching && event.searchQuery.equals("")) {
-            searchResultsVenueListAdapter = new VenueListAdapter(mContext, R.layout.list_venue_item, searchResultsVenueList);
-            setListAdapter(searchResultsVenueListAdapter);
-
+        } else {
             Toast.makeText(mContext, mContext.getString(R.string.alert_error_loading_venues) + " - Location 4", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        RefreshVenuesList(searchQuery, searchQueryLocation, duplicateVenueId);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        try {
+            if (mListView.getFooterViewsCount() == 1 && position == mListView.getCount() - 1) {
+                Intent searchActivity =
+                        new Intent(getActivity().getApplicationContext(), VenueSearchActivity.class);
+                startActivity(searchActivity);
+                return;
+            }
+
+            if (isDuplicateSearching)
+                setActivateOnItemClick(true);
+
+            if (!isRefreshing) {
+                CompactVenue clickedVenue =
+                        (CompactVenue) mListView.getItemAtPosition(position);
+                mClickListener.onVenueListClick(clickedVenue.toString());
+            } else {
+                Toast.makeText(getActivity(), R.string.alert_still_loading, Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Location 3", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        CompactVenue clickedVenue =
+                (CompactVenue) mListView.getItemAtPosition(position);
+        return mClickListener.onVenueListLongClick(clickedVenue.id, clickedVenue.name);
     }
 }

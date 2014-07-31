@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -19,7 +18,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,10 +38,12 @@ import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupFragment;
+import com.thunsaker.soup.app.SoupApp;
 import com.thunsaker.soup.data.api.model.Category;
 import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.FoursquareImage;
 import com.thunsaker.soup.data.api.model.Venue;
+import com.thunsaker.soup.data.events.GetVenueEvent;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.thunsaker.soup.services.foursquare.endpoints.VenueEndpoint;
@@ -47,6 +52,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 /*
@@ -54,7 +61,7 @@ import de.greenrobot.event.EventBus;
  */
 /**
  * A fragment representing a single Venue detail screen. This fragment is either
- * contained in a {@link com.thunsaker.soup.ui.VenueListFragment} in two-pane mode (on tablets) or a
+ * contained in a {@link VenueListFragment} in two-pane mode (on tablets) or a
  * {@link com.thunsaker.soup.ui.VenueDetailActivity} on handsets.
  */
 public class VenueDetailFragment extends BaseSoupFragment {
@@ -64,11 +71,27 @@ public class VenueDetailFragment extends BaseSoupFragment {
     @Inject
     EventBus mBus;
 
-	public static final String ARG_ITEM_JSON_STRING = "item_json_string";
+    @InjectView(R.id.textViewVenueName) TextView mName;
+    @InjectView(R.id.textViewVenueAddress) TextView mAddress;
+    @InjectView(R.id.textViewVenueAddressLine2) TextView mAddress2;
+    @InjectView(R.id.textViewVenueCrossStreet) TextView mCrossStreet;
+    @InjectView(R.id.imageViewVenueCategoryPrimary) ImageView mCategoryPrimary;
+    @InjectView(R.id.linearLayoutVenueDescription) LinearLayout mDescriptionWrapper;
+    @InjectView(R.id.progressBarVenueDescription) ProgressBar mDescriptionProgress;
+    @InjectView(R.id.textViewVenueDescription) TextView mDescription;
+    @InjectView(R.id.relativeLayoutVenueDetailError) RelativeLayout mDetailError;
+
+    private static final String ARG_VENUE_ARG_TYPE = "arg_type";
+    private static final String ARG_VENUE_TO_LOAD = "venue_arg";
+
+    public static final int VENUE_TYPE_ID = 0;
+    public static final int VENUE_TYPE_URL = 1;
+    public static final int VENUE_TYPE_JSON = 2;
+
+    public static final String ARG_ITEM_JSON_STRING = "item_json_string";
 	public static final String VENUE_EDIT_EXTRA = "compact_venue_original";
 	protected static final String FLAG_VENUE_DIALOG = "FLAG_VENUE_DIALOG";
 	protected static final String FLAG_DUPLICATE_VENUE_DIALOG = "FLAG_DUPLICATE_VENUE_DIALOG";
-	final static String ORIGINAL_LOCATION_SELECTED_EXTRA = "ORIGINAL_LOCATION_SELECTED_EXTRA";
 
 	public static CompactVenue currentCompactVenue;
 	public static Venue currentVenue;
@@ -78,7 +101,6 @@ public class VenueDetailFragment extends BaseSoupFragment {
 	public final static double mapMarkerAdjustment = 0.0015;
 	protected static final int EDIT_VENUE = 0;
 	protected static final int FLAG_DUPLICATE = 1;
-	protected static final int REQUEST_SIGNIN_TO_EDIT = 3;
 
 	protected static final float MAP_ZOOMED_OUT_LEVEL = 12;
 	protected static final float MAP_DEFAULT_ZOOM_LEVEL = 16;
@@ -90,96 +112,89 @@ public class VenueDetailFragment extends BaseSoupFragment {
 	static boolean showConfirmDialog = false;
 	static boolean zoomedOut = false;
 
-	public VenueDetailFragment() {
-	}
+    public static VenueDetailFragment newInstance(String venueArg, int argType) {
+        VenueDetailFragment fragment = new VenueDetailFragment();
+        Bundle args = new Bundle();
+        if(venueArg != null && argType > -1) {
+            args.putInt(ARG_VENUE_ARG_TYPE, argType);
+            args.putString(ARG_VENUE_TO_LOAD, venueArg);
+        } else
+            args = null;
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+	public VenueDetailFragment() { }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setHasOptionsMenu(true);
-		getActivity().setProgressBarVisibility(false);
+        if(getArguments() != null) {
+            setHasOptionsMenu(true);
+            if(getActivity() != null)
+                getActivity().setProgressBarVisibility(true);
+            FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
 
-		if (VenueDetailActivity.venueIdToLoad.length() > 0) {
-			currentCompactVenue = null;
-			currentVenue = null;
-			getActivity().setProgressBarVisibility(true);
-			new FoursquareTasks.GetVenue(mContext,
-					VenueDetailActivity.venueIdToLoad, getActivity(),
-					FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
-		} else if (getActivity().getIntent().hasExtra(
-				VenueDetailActivity.VENUE_URL_TO_LOAD_EXTRA)) {
-			currentCompactVenue = null;
-			currentVenue = null;
-			getActivity().setProgressBarVisibility(true);
-			String venueUrlLoad = getActivity().getIntent().getStringExtra(
-					VenueDetailActivity.VENUE_URL_TO_LOAD_EXTRA);
-			new FoursquareTasks.GetVenue(mContext,
-					venueUrlLoad, getActivity(),
-					FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT).execute();
-		} else if (getArguments().containsKey(ARG_ITEM_JSON_STRING)) {
-			currentCompactVenue = CompactVenue
-					.GetCompactVenueFromJson(getArguments().getString(
-							ARG_ITEM_JSON_STRING));
-			getActivity().setProgressBarVisibility(true);
-			new FoursquareTasks.GetVenue(mContext,
-					currentCompactVenue.id, getActivity(),
-					FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
-		}
+            if(mBus != null && !mBus.isRegistered(this))
+                mBus.register(this);
+
+            int mType = getArguments().getInt(ARG_VENUE_ARG_TYPE);
+            String mVenueToLoad = getArguments().getString(ARG_VENUE_TO_LOAD);
+            switch (mType) {
+                case 1: // We have a url - from the VenueDetailReceiver (When someone selects "Edit in Soup" from share menu)
+                    currentCompactVenue = null;
+                    currentVenue = null;
+                    mFoursquareTasks.new GetVenue(mVenueToLoad, FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT).execute();
+                    break;
+                case 2: // We have a Compact Venue to parse
+                    if(getActivity() != null)
+                        getActivity().setProgressBarVisibility(false);
+                    currentCompactVenue = CompactVenue.GetCompactVenueFromJson(mVenueToLoad);
+                    Venue mVenue = currentVenue = Venue.ConvertCompactVenueToVenue(currentCompactVenue);
+                    mFoursquareTasks.new GetVenue(mVenue.id, FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
+                    break;
+                default: // We have a venue id
+                    currentCompactVenue = null;
+                    currentVenue = null;
+                    mFoursquareTasks.new GetVenue(mVenueToLoad, FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
+                    break;
+            }
+        }
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_venue_detail,
-				container, false);
-
-		if (currentCompactVenue != null || currentVenue != null) {
-			LoadDetails(rootView, this.getActivity());
-		}
-
+        View rootView;
+        rootView = inflater.inflate(R.layout.fragment_venue_detail, container, false);
+        ButterKnife.inject(this, rootView);
+        if (currentCompactVenue != null || currentVenue != null)
+			loadDetails();
 		return rootView;
 	}
 
-	public static void LoadDetails(View rootView, FragmentActivity theActivity) {
+	public void loadDetails() {
 		try {
 			List<Category> myCategories;
-			TextView nameTextView = (TextView) rootView.findViewById(R.id.textViewVenueName);
 
 			if (currentVenue != null) {
-				nameTextView.setText(currentVenue.name);
-				((TextView) rootView.findViewById(R.id.textViewVenueAddress))
-						.setText(currentVenue.location.address);
-				((TextView) rootView
-						.findViewById(R.id.textViewVenueAddressLine2))
-						.setText(currentVenue.location.getCityStatePostalCode());
-				((TextView) rootView
-						.findViewById(R.id.textViewVenueCrossStreet))
-						.setText(currentVenue.location.crossStreet);
+				mName.setText(currentVenue.name);
+				mAddress.setText(currentVenue.location.address);
+                mAddress2.setText(currentVenue.location.getCityStatePostalCode());
+				mCrossStreet.setText(currentVenue.location.crossStreet);
 				myCategories = currentVenue.categories != null ? currentVenue.categories : null;
 			} else {
-				nameTextView.setText(currentCompactVenue.name);
-				((TextView) rootView.findViewById(R.id.textViewVenueAddress))
-						.setText(currentCompactVenue.location.address);
-				((TextView) rootView
-						.findViewById(R.id.textViewVenueAddressLine2))
-						.setText(currentCompactVenue.location.getCityStatePostalCode());
-				((TextView) rootView
-						.findViewById(R.id.textViewVenueCrossStreet))
-						.setText(currentCompactVenue.location.crossStreet);
+                mName.setText(currentCompactVenue.name);
+				mAddress.setText(currentCompactVenue.location.address);
+				mAddress2.setText(currentCompactVenue.location.getCityStatePostalCode());
+				mCrossStreet.setText(currentCompactVenue.location.crossStreet);
 				myCategories = currentCompactVenue.categories != null ? currentCompactVenue.categories : null;
 			}
 
-			nameTextView.setVisibility(View.GONE);
+            mName.setVisibility(View.GONE);
 
-			final ImageView primaryCategoryImageView = (ImageView) rootView
-					.findViewById(R.id.imageViewVenueCategoryPrimary);
-			final ImageView secondaryCategoryImageView = (ImageView) rootView
-					.findViewById(R.id.imageViewVenueCategorySecondary);
-			final ImageView tertiaryCategoryImageView = (ImageView) rootView
-					.findViewById(R.id.imageViewVenueCategoryTertiary);
-
-			String primaryImageUrl = "";
+			String primaryImageUrl;
 
 			if (myCategories != null) {
 				primaryImageUrl = myCategories.get(0) != null ? myCategories
@@ -189,52 +204,45 @@ public class VenueDetailFragment extends BaseSoupFragment {
 								FoursquareImage.SIZE_MEDIANO) : "";
 
 				if (!primaryImageUrl.equals(""))
-					UrlImageViewHelper.setUrlDrawable(primaryCategoryImageView,
+					UrlImageViewHelper.setUrlDrawable(mCategoryPrimary,
 							primaryImageUrl,
 							R.drawable.foursquare_generic_category_icon);
 				else
-					primaryCategoryImageView
-							.setImageResource(R.drawable.foursquare_generic_category_icon);
-			} else {
-				primaryCategoryImageView
-						.setImageResource(R.drawable.foursquare_generic_category_icon);
-				secondaryCategoryImageView.setVisibility(View.GONE);
-				tertiaryCategoryImageView.setVisibility(View.GONE);
-			}
+					mCategoryPrimary.setImageResource(R.drawable.foursquare_generic_category_icon);
+			} else
+				mCategoryPrimary.setImageResource(R.drawable.foursquare_generic_category_icon);
+
 			String venueName = "";
 			if (currentVenue != null && !currentVenue.name.equals(""))
 				venueName = currentVenue.name;
 			else if (currentCompactVenue != null
 					&& !currentCompactVenue.name.equals(""))
 				venueName = currentCompactVenue.name;
-			if (!venueName.equals(""))
-				theActivity.setTitle(venueName);
+			if (!venueName.equals("")) {
+                if(getActivity() != null)
+                    getActivity().setTitle(venueName);
+            }
 
-			// SetupButtons(rootView, theActivity);
-
-			mMap = null;
-			if (mMap == null) {
-				mMap = ((SupportMapFragment) theActivity
-						.getSupportFragmentManager().findFragmentById(
-								R.id.map_fragment)).getMap();
+//			mMap = null;
+//			if (mMap == null) {
+                if(getActivity() != null)
+				    mMap = ((SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map_fragment)).getMap();
 				if (mMap != null) {
 					LatLng currentLocation = new LatLng(33.44866, -112.06627);
 					mMap.clear();
 					mMap.addMarker(new MarkerOptions()
 							.position(currentLocation)
-							.icon(BitmapDescriptorFactory
-									.fromResource(R.drawable.map_marker_orange_outline)));
+							.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_orange_outline)));
 					mMap.moveCamera(CameraUpdateFactory
 							.newLatLng(currentLocation));
 				}
-			}
+//			}
 
 			if (currentVenue != null && currentVenue.location != null
 					&& currentVenue.location.getLatLng() != null)
-				setUpMap(currentVenue.location.getLatLng(), theActivity);
+				setUpMap(currentVenue.location.getLatLng());
 			else
-				setUpMap(currentCompactVenue.location.getLatLng(),
-						theActivity);
+				setUpMap(currentCompactVenue.location.getLatLng());
 
 			VenueDetailActivity.wasEdited = false;
 		} catch (Exception e) {
@@ -244,21 +252,40 @@ public class VenueDetailFragment extends BaseSoupFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		getActivity().getMenuInflater().inflate(R.menu.activity_venue_detail,
-				menu);
+        if(getActivity() != null)
+		    getActivity().getMenuInflater().inflate(R.menu.activity_venue_detail, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		String myItemToSend = "";
+		String myItemToSend;
 		if (currentVenue != null) {
 			myItemToSend = currentVenue.toString();
-		} else {
+		} else if(currentCompactVenue != null) {
 			myItemToSend = currentCompactVenue.toString();
-		}
+		} else {
+            return false;
+        }
 
 		switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().finish();
+//                switch (VenueDetailActivity.venueDetailsSource) {
+//                    case 1: // Venue Search
+//                        NavUtils.navigateUpTo(getActivity(), new Intent(mContext, VenueSearchActivity.class));
+//                        break;
+//                    case 2: // List
+//                        getActivity().finish();
+//                        break;
+//                    case 3:
+//                        startActivity(new Intent(mContext, MainActivity.class));
+//                        getActivity().finish();
+//                        break;
+//                    default:
+//                        break;
+//                }
+                break;
 		case R.id.action_foursquare:
 			String canonicalUrl = "";
 			if (currentCompactVenue != null
@@ -274,13 +301,7 @@ public class VenueDetailFragment extends BaseSoupFragment {
 				startActivity(new Intent(Intent.ACTION_VIEW,
 						Uri.parse(canonicalUrl)));
 			else
-				// Crouton.makeText(getActivity(),
-				// R.string.alert_error_loading_details,
-				// Style.INFO).show();
-
-				Toast.makeText(getActivity(),
-						R.string.alert_error_loading_details,
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, R.string.alert_error_loading_details, Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.action_edit:
 			if (!PreferencesHelper.getFoursquareConnected(mContext)) {
@@ -294,19 +315,8 @@ public class VenueDetailFragment extends BaseSoupFragment {
 							currentVenue);
 					getActivity().startActivityForResult(editVenueIntent,
 							EDIT_VENUE);
-
-					// Intent editVenueIntent =
-					// new Intent(getActivity().getApplicationContext(),
-					// VenueEditActivity.class);
-					// editVenueIntent.putExtra(VENUE_EDIT_EXTRA, myItemToSend);
-					// VenueEditActivity.originalVenue = new
-					// Venue(currentVenue);
-					// getActivity().startActivityForResult(editVenueIntent,
-					// EDIT_VENUE);
 				} else {
-					// Crouton.makeText(getActivity(),
-					// R.string.alert_still_loading, Style.INFO).show();
-					Toast.makeText(getActivity(), R.string.alert_still_loading,
+					Toast.makeText(mContext, R.string.alert_still_loading,
 							Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -318,15 +328,10 @@ public class VenueDetailFragment extends BaseSoupFragment {
 				if (currentVenue != null) {
 					Intent editVenueCategoriesIntent = new Intent(mContext,
 							VenueEditCategoriesActivity.class);
-					editVenueCategoriesIntent.putExtra(VENUE_EDIT_EXTRA,
-							myItemToSend);
+					editVenueCategoriesIntent.putExtra(VENUE_EDIT_EXTRA, myItemToSend);
 					getActivity().startActivity(editVenueCategoriesIntent);
 				} else {
-					// Crouton.makeText(getActivity(),
-					// R.string.alert_still_loading,
-					// Style.INFO).show();
-					Toast.makeText(getActivity(), R.string.alert_still_loading,
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(mContext, R.string.alert_still_loading, Toast.LENGTH_SHORT).show();
 				}
 			}
 			break;
@@ -339,11 +344,7 @@ public class VenueDetailFragment extends BaseSoupFragment {
 					flagDialog.show(getActivity().getSupportFragmentManager(),
 							FLAG_VENUE_DIALOG);
 				} else {
-					// Crouton.makeText(getActivity(),
-					// R.string.alert_still_loading,
-					// Style.INFO).show();
-
-					Toast.makeText(getActivity(), R.string.alert_still_loading,
+					Toast.makeText(mContext, R.string.alert_still_loading,
 							Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -355,17 +356,14 @@ public class VenueDetailFragment extends BaseSoupFragment {
 				if (currentVenue != null) {
 					OpenSearchDuplicateDialog();
 				} else {
-					// Crouton.makeText(getActivity(),
-					// R.string.alert_still_loading,
-					// Style.INFO).show();
-					Toast.makeText(getActivity(), R.string.alert_still_loading,
+					Toast.makeText(mContext, R.string.alert_still_loading,
 							Toast.LENGTH_SHORT).show();
 				}
 			}
 			break;
 		}
 
-		return super.onOptionsItemSelected(item);
+		return true;
 	}
 
 	private void showWelcomeActivity() {
@@ -388,19 +386,18 @@ public class VenueDetailFragment extends BaseSoupFragment {
 			mySearchForDuplicateIntent.setAction(Intent.ACTION_SEARCH);
 
 			String myVenueName = currentVenue != null ? currentVenue.name : currentCompactVenue.name;
-			VenueListFragment.searchQuery = myVenueName;
 			mySearchForDuplicateIntent.putExtra(SearchManager.QUERY, myVenueName);
 
 			String myVenueLocation =
                     currentVenue != null
                             ? currentVenue.location.getLatLngString()
                             : currentCompactVenue.location.getLatLngString();
-			VenueListFragment.searchQueryLocation = myVenueLocation;
 			mySearchForDuplicateIntent.putExtra(FoursquarePrefs.SEARCH_LOCATION, myVenueLocation);
-
-			VenueListFragment.isDuplicateSearching = true;
 			mySearchForDuplicateIntent.putExtra(FoursquarePrefs.SEARCH_DUPLICATE, true);
-            mySearchForDuplicateIntent.putExtra(FoursquarePrefs.SEARCH_DUPLICATE_VENUE_ID, currentVenue != null ? currentVenue.id : currentCompactVenue.id);
+            mySearchForDuplicateIntent.putExtra(
+                    FoursquarePrefs.SEARCH_DUPLICATE_VENUE_ID, currentVenue != null
+                            ? currentVenue.id
+                            : currentCompactVenue.id);
 
 			startActivityForResult(mySearchForDuplicateIntent,VenueDetailFragment.FLAG_DUPLICATE);
 		} catch (Exception e) {
@@ -408,15 +405,10 @@ public class VenueDetailFragment extends BaseSoupFragment {
 		}
 	}
 
-	private static void setUpMap(LatLng myLatLng, FragmentActivity myActivity) {
+	private void setUpMap(LatLng myLatLng) {
 		try {
-			// final SherlockFragmentActivity theActivity = myActivity;
-			// final RelativeLayout detailLayout =
-			// (RelativeLayout)
-			// theActivity.findViewById(R.id.relativeLayoutVenueDetailsWrapper);
-
 			if (mMap == null) {
-				mMap = ((SupportMapFragment) myActivity
+				mMap = ((SupportMapFragment) getActivity()
 						.getSupportFragmentManager().findFragmentById(R.id.map))
 						.getMap();
 			}
@@ -455,7 +447,7 @@ public class VenueDetailFragment extends BaseSoupFragment {
 		}
 	}
 
-	public static class FlagVenueDialogFragment extends DialogFragment {
+    public static class FlagVenueDialogFragment extends DialogFragment {
 
 		public FlagVenueDialogFragment() {
 		}
@@ -468,9 +460,9 @@ public class VenueDetailFragment extends BaseSoupFragment {
 							R.string.venue_details_dialog_flag_venue,
 							new DialogInterface.OnClickListener() {
 								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									getActivity().setProgressBarVisibility(true);
+								public void onClick(DialogInterface dialog, int which) {
+									if(getActivity() != null)
+                                        getActivity().setProgressBarVisibility(true);
 
 									if (currentVenue != null) {
 										new FoursquareTasks.FlagVenue(getActivity(),
@@ -540,9 +532,9 @@ public class VenueDetailFragment extends BaseSoupFragment {
 					.setPositiveButton(R.string.dialog_yes,
 							new DialogInterface.OnClickListener() {
 								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									getActivity().setProgressBarVisibility(true);
+								public void onClick(DialogInterface dialog, int which) {
+                                    if(getActivity() != null)
+									    getActivity().setProgressBarVisibility(true);
 									new FoursquareTasks.FlagVenue(
 											getActivity()
 													.getApplicationContext(),
@@ -581,6 +573,11 @@ public class VenueDetailFragment extends BaseSoupFragment {
 
 	@Override
 	public void onResume() {
+        super.onResume();
+
+        if(mBus != null && !mBus.isRegistered(this))
+            mBus.register(this);
+
 		if (showConfirmDialog) {
 			if (duplicateResultVenue != null && originalId != null
 					&& duplicateId != null) {
@@ -591,14 +588,12 @@ public class VenueDetailFragment extends BaseSoupFragment {
 			}
 			showConfirmDialog = false;
 		} else {
+            FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
 			if (currentCompactVenue != null) {
-				new FoursquareTasks.GetVenue(mContext, currentCompactVenue.id,
-						getActivity(), FoursquarePrefs.CALLER_SOURCE_DETAILS)
+				mFoursquareTasks.new GetVenue(currentCompactVenue.id, FoursquarePrefs.CALLER_SOURCE_DETAILS)
 						.execute();
 			} else if (VenueDetailActivity.venueIdToLoad.length() > 0) {
-				new FoursquareTasks.GetVenue(mContext,
-						VenueDetailActivity.venueIdToLoad, getActivity(),
-						FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
+				mFoursquareTasks.new GetVenue(VenueDetailActivity.venueIdToLoad, FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
 			}
 		}
 
@@ -616,8 +611,6 @@ public class VenueDetailFragment extends BaseSoupFragment {
 			startActivity(mailerIntent);
 			VenueEditTabsActivity.mDebugString = null;
 		}
-
-		super.onResume();
 	}
 
 	@Override
@@ -629,36 +622,15 @@ public class VenueDetailFragment extends BaseSoupFragment {
 			case Activity.RESULT_OK:
 				String resultData = null;
 				if (data.hasExtra(VenueEditTabsActivity.EDIT_VENUE_RESULT))
-					resultData = data
-							.getStringExtra(VenueEditTabsActivity.EDIT_VENUE_RESULT);
+					resultData = data.getStringExtra(VenueEditTabsActivity.EDIT_VENUE_RESULT);
 
-				if (resultData.equals(FoursquarePrefs.SUCCESS)) {
-					new FoursquareTasks.GetVenue(mContext,
-							currentCompactVenue.id, getActivity(),
+                assert resultData != null;
+                if (resultData.equals(FoursquarePrefs.SUCCESS)) {
+                    FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
+					mFoursquareTasks.new GetVenue(
+							currentCompactVenue.id,
 							FoursquarePrefs.CALLER_SOURCE_DETAILS).execute();
 				}
-				/*
-				 * Crouton.makeText(getActivity(), canEdit ?
-				 * myContext.getString(R.string.edit_venue_success) :
-				 * getString(R.string.edit_venue_success_propose),
-				 * Style.ALERT).show(); Crouton.makeText(getActivity(),
-				 * getString(R.string.edit_venue_success), Style.INFO).show();
-				 * Toast.makeText(getActivity().getApplicationContext(),
-				 * getString(R.string.edit_venue_success),
-				 * Toast.LENGTH_SHORT).show(); } else if(resultData ==
-				 * FoursquarePrefs.FAIL_UNAUTHORIZED) {
-				 * Crouton.makeText(getActivity(),
-				 * getString(R.string.edit_venue_fail_unauthorized),
-				 * Style.ALERT).show();
-				 * Toast.makeText(getActivity().getApplicationContext(),
-				 * getString(R.string.edit_venue_fail_unauthorized),
-				 * Toast.LENGTH_SHORT).show(); } else {
-				 * Crouton.makeText(getActivity(),
-				 * getString(R.string.edit_venue_fail), Style.ALERT).show();
-				 * Toast.makeText(getActivity().getApplicationContext(),
-				 * getString(R.string.edit_venue_fail),
-				 * Toast.LENGTH_SHORT).show(); }
-				 */
 				break;
 			default:
 				break;
@@ -715,6 +687,50 @@ public class VenueDetailFragment extends BaseSoupFragment {
 		duplicateId = "";
 		duplicateResultType = 0;
 		duplicateResultVenue = null;
-		VenueListFragment.isDuplicateSearching = false;
 	}
+
+    public void onEvent(GetVenueEvent event) {
+        if(getActivity() != null)
+            getActivity().setProgressBarVisibility(false);
+
+        boolean error = false;
+        if(event != null) {
+            if(event.resultVenue != null) {
+                currentVenue = event.resultVenue;
+                loadDetails();
+                if(event.resultVenue.description != null) {
+                    if (mDescription != null) {
+                        mDescriptionProgress.setVisibility(View.GONE);
+                        mDescription.setText(event.resultVenue.description);
+                        mDescription.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                TextView text = (TextView) v;
+                                text.setMaxLines(Integer.MAX_VALUE);
+                                text.setBackgroundDrawable(null);
+                                text.setOnClickListener(null);
+                            }
+                        });
+
+                        mDescriptionWrapper.setVisibility(View.VISIBLE);
+                        mDescriptionWrapper.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.abc_fade_in));
+                    }
+                } else {
+                    if (mDescription != null) {
+                        mDescriptionProgress.setVisibility(View.GONE);
+                        mDescriptionWrapper.setVisibility(View.GONE);
+                    }
+                }
+            } else {
+                error = true;
+            }
+        } else {
+            error = true;
+        }
+
+        if(error)
+            mDetailError.setVisibility(View.VISIBLE);
+        else
+            mDetailError.setVisibility(View.GONE);
+    }
 }

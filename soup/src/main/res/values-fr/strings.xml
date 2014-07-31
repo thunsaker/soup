@@ -253,10 +253,21 @@
     <string name="prefs_soup_about_rate_title">Rate Soup</string>
     <string name="prefs_soup_category_title_about">About</string>
     <string name="prefs_soup_about_rate_summary">Rate and comment in the Play Store.</string>
-    <string name="venues_list_loading">Getting Venues...</string>
+    <string name="venues_list_loading">Getting Venues…</string>
     <string name="empty_list">No Results Found :(</string>
 
     <string name="title_activity_main_map">MainMapActivity</string>
     <string name="title_activity_maps">Map</string>
     <string name="error_map">Error loading map, no location.</string>
+
+    <string name="title_activity_venue">Venue</string>
+    <string name="venue_detail_not_found">Venue not found.</string>
+    <string name="search_view_start">Search for something!</string>
+    <string name="title_activity_checkin_history">History</string>
+    <string name="history_title_custom">Custom Date…</string>
+    <string name="history_select_date_range">Select Date Range</string>
+    <string name="history_get_checkins">Get Checkins</string>
+    <string name="action_top">Top</string>
+    <string name="error_server">Server Error: %s</string>
+    <string name="foursquare_server_status">Check status.foursquare.com for more info</string>
 </resources>

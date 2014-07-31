@@ -1,6 +1,8 @@
 package com.thunsaker.soup.data.api.model;
 
-public class BaseCountClass {
+import java.util.List;
+
+public class BaseCountClass<T> {
     public int count;
-    public Object[] items;
+    public List<T> items;
 }

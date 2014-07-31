@@ -1,0 +1,125 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayoutHistoryLastMonthWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarStyle="outsideOverlay"
+    android:background="@color/now_background"
+    tools:context="com.thunsaker.soup.ui.CheckinHistoryActivity$PlaceholderFragment">
+
+    <LinearLayout
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_gravity="center_horizontal|center_vertical">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:gravity="center_vertical|center_horizontal"
+            style="?android:attr/progressBarStyleLarge"
+            android:indeterminate="true" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutHistoryDateRangeWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+        <LinearLayout
+            android:id="@+id/linearLayoutHistoryDateRangeCalendarWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/material_padding_double"
+            android:paddingRight="@dimen/material_padding_double"
+            android:paddingTop="@dimen/material_padding"
+            android:paddingBottom="@dimen/material_padding"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/linearLayoutHistoryDateRangeBarWrapper"
+            android:background="@color/white"
+            android:visibility="visible" >
+            <com.squareup.timessquare.CalendarPickerView
+                xmlns:cal="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/calendarHistoryDateRange"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                cal:dayBackground="@drawable/custom_calendar_bg_selector"
+                cal:dayTextColor="@color/custom_calendar_text_selector"
+                cal:dividerColor="@color/cal_default_border"
+                cal:titleTextColor="@color/custom_calendar_text_selector"
+                cal:headerTextColor="@color/header_text" />
+            <Button
+                android:id="@+id/buttonHistoryGetCheckins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:textColor="@color/white"
+                android:padding="@dimen/material_padding"
+                android:layout_marginTop="@dimen/material_padding"
+                android:layout_marginBottom="@dimen/material_padding"
+                android:background="@drawable/default_layout_selector_blue_base"
+                android:text="@string/history_get_checkins" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayoutHistoryDateRangeBarWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/material_padding_double"
+            android:paddingRight="@dimen/material_padding_double"
+            android:paddingTop="@dimen/material_padding"
+            android:paddingBottom="@dimen/material_padding">
+            <TextView
+                android:id="@+id/textViewHistoryDateRange"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:textSize="@dimen/material_type_med"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:text="@string/history_select_date_range"/>
+            <ImageView
+                android:id="@+id/imageViewHistoryDateRangeExpand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_unfold_more"
+                android:contentDescription="@string/history_select_date_range" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayoutCheckinHistoryContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/relativeLayoutHistoryDateRangeWrapper"
+        android:layout_alignWithParentIfMissing="true">
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fastScrollEnabled="true"
+            android:orientation="vertical"
+            android:paddingTop="5dp"
+            android:divider="@null" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/textViewHistoryNoCheckins"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/now_border_outline"
+        android:text="@string/history_section_no_history"
+        android:textColor="@color/body_text"
+        android:gravity="center_vertical|center_horizontal"
+        android:textIsSelectable="false"
+        android:visibility="gone"
+        tools:ignore="UnusedAttribute" />
+</RelativeLayout>

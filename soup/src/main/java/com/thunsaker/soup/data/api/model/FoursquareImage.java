@@ -11,63 +11,21 @@ public class FoursquareImage {
 	public static String IMAGE_SIZE_PLACEHOLDER = "%sx%s";
 
 	public String id;
+    public long createdAt;
+    public FoursquareSource source;
 	public String prefix;
 	public String suffix;
-	public Integer height;
-	public Integer width;
-	public String visibility;
+	public int height;
+	public int width;
+    public CompactFoursquareUser user;
+    public String visibility;
 
-	public FoursquareImage() {
-
-	}
+	public FoursquareImage() { }
 
 	public FoursquareImage(String prefix, String suffix) {
 		this.prefix = prefix;
 		this.suffix = suffix;
 	}
-
-//	public String getId() {
-//		return Id;
-//	}
-//	public void setId(String id) {
-//		Id = id;
-//	}
-//
-//	public String getPrefix() {
-//		return Prefix;
-//	}
-//	public void setPrefix(String prefix) {
-//		Prefix = prefix;
-//	}
-//
-//	public String getSuffix() {
-//		return Suffix;
-//	}
-//	public void setSuffix(String suffix) {
-//		Suffix = suffix;
-//	}
-//
-//	public Integer getHeight() {
-//		return Height;
-//	}
-//	public void setHeight(Integer height) {
-//		Height = height;
-//	}
-//
-//	public Integer getWidth() {
-//		return Width;
-//	}
-//	public void setWidth(Integer width) {
-//		Width = width;
-//	}
-//
-//	public String getVisibility() {
-//		return Visibility;
-//	}
-//
-//	public void setVisibility(String visibility) {
-//		Visibility = visibility;
-//	}
 
 	@Override
 	public String toString() {

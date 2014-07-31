@@ -9,15 +9,16 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.thunsaker.android.common.annotations.ForApplication;
@@ -37,8 +38,9 @@ import butterknife.InjectView;
 /*
  * Created by @thunsaker
  */
-public class ListsFragment extends BaseSoupFragment implements
-        SwipeRefreshLayout.OnRefreshListener {
+public class ListsFragment extends BaseSoupFragment
+        implements SwipeRefreshLayout.OnRefreshListener,
+        AbsListView.OnItemClickListener {
 
     @Inject
     @ForApplication
@@ -51,7 +53,6 @@ public class ListsFragment extends BaseSoupFragment implements
 
 	public static List<FoursquareList> currentListsList;
 
-	private Callbacks mCallbacks = sDummyCallbacks;
 	public static int mActivatedPosition = ListView.INVALID_POSITION;
 
     @InjectView(R.id.swipeLayoutListsContainer) SwipeRefreshLayout mSwipeViewListsContainer;
@@ -60,23 +61,18 @@ public class ListsFragment extends BaseSoupFragment implements
 
 	public static GridView mGridViewLists;
 
+    private OnFragmentInteractionListener mClickListener;
+
+    public interface OnFragmentInteractionListener {
+        public void onFoursquareListClick(String listId);
+    }
+
+    public ListsFragment() { }
+
     @Override
     public void onRefresh() {
         RefreshLists(this);
     }
-
-    public interface Callbacks {
-		public void onItemSelected(String listJson);
-	}
-
-	private static Callbacks sDummyCallbacks = new Callbacks() {
-		@Override
-		public void onItemSelected(String id) {
-		}
-	};
-
-	public ListsFragment() {
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -128,13 +124,19 @@ public class ListsFragment extends BaseSoupFragment implements
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		if (!(activity instanceof Callbacks)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
-		}
-
-		mCallbacks = (Callbacks) activity;
+        try {
+            mClickListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
 	}
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mClickListener = null;
+    }
 
 	public void RefreshLists(ListsFragment theCaller) {
         if(mSwipeViewListsContainer != null)
@@ -182,10 +184,8 @@ public class ListsFragment extends BaseSoupFragment implements
 			try {
 				final FoursquareList list = items.get(position);
 				if (list != null) {
-					final String myListId = list.getId() != null
-							? list.getId() : "";
-					final String myListName = list.getName() != null
-							? list.getName() : "";
+					final String myListId = list.getId() != null ? list.getId() : "";
+					final String myListName = list.getName() != null ? list.getName() : "";
 					final TextView nameTextView = (TextView) v.findViewById(R.id.textViewListName);
 					if (nameTextView != null)
 						nameTextView.setText(myListName);
@@ -193,7 +193,7 @@ public class ListsFragment extends BaseSoupFragment implements
 					final Integer myVenueCount = list.getVenueCount();
 					final TextView countTextView = (TextView) v.findViewById(R.id.textViewListCount);
 					countTextView.setText(String.format(getResources().getQuantityString(R.plurals.venue_count, myVenueCount), myVenueCount));
-                    final LinearLayout textWrapper = (LinearLayout) v.findViewById(R.id.linearLayoutTextWrapper);
+//                    final LinearLayout textWrapper = (LinearLayout) v.findViewById(R.id.linearLayoutTextWrapper);
 
 					final ImageView myImageViewPhoto = (ImageView) v.findViewById(R.id.imageViewListPhoto);
 					if(position == 0) {
@@ -205,11 +205,7 @@ public class ListsFragment extends BaseSoupFragment implements
 						final String myPhotoUrl = list.getPhoto() != null
 								? list.getPhoto().getFoursquareImageUrl() : "";
 
-						if (myPhotoUrl != "") {
-//                            UrlImageViewHelper.setUrlDrawable(myImageViewPhoto,
-//                                    myPhotoUrl,
-//                                    R.drawable.list_placeholder_gray_dark_small);
-
+						if (!myPhotoUrl.equals("")) {
                             mPicasso.load(myPhotoUrl)
                                     .placeholder(mContext.getResources().getDrawable(R.drawable.list_placeholder_orange_small))
                                     .error(mContext.getResources().getDrawable(R.drawable.list_placeholder_gray_dark_small))
@@ -252,29 +248,20 @@ public class ListsFragment extends BaseSoupFragment implements
 						myImageViewIsPublic.setVisibility(View.GONE);
 					}
 
-					final ImageView myImageViewListIsFollowed = (ImageView)v.findViewById(R.id.imageViewListIsFollowed);
+					final ImageView myImageViewListIsFollowed = (ImageView)v.findViewById(R.id.imageViewListFollowing);
 					if(list.getType().equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED)) {
 						myImageViewListIsFollowed.setVisibility(View.VISIBLE);
 					} else {
 						myImageViewListIsFollowed.setVisibility(View.GONE);
 					}
 
-					final Button myViewOverlay = (Button)v.findViewById(R.id.buttonListActivityOverlay);
-					myViewOverlay.setOnClickListener(new OnClickListener() {
+					final FrameLayout myViewOverlay = (FrameLayout)v.findViewById(R.id.frameLayoutListOverlay);
+					myViewOverlay.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View v) {
-								Intent myListIntent = new Intent(getActivity()
-										.getApplicationContext(),
-										ListActivity.class);
-								myListIntent.putExtra(
-										ListActivity.LIST_TO_LOAD_EXTRA,
-										myListId);
+								Intent myListIntent = new Intent(getActivity().getApplicationContext(), ListActivity.class);
+								myListIntent.putExtra(ListActivity.LIST_TO_LOAD_EXTRA, myListId);
 								getActivity().startActivity(myListIntent);
-//							} else {
-//								Toast.makeText(getActivity(),
-//										R.string.alert_still_loading,
-//										Toast.LENGTH_SHORT).show();
-//							}
 						}
 					});
 				}
@@ -284,4 +271,16 @@ public class ListsFragment extends BaseSoupFragment implements
 			return v;
 		}
 	}
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        try {
+            FoursquareList list =
+                    (FoursquareList) mGridViewLists.getItemAtPosition(position);
+            mClickListener.onFoursquareListClick(list.getId());
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Location 8", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
 }

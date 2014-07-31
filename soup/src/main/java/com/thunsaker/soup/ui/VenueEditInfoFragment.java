@@ -1,5 +1,6 @@
 package com.thunsaker.soup.ui;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,14 +13,22 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
+import com.thunsaker.soup.app.SoupApp;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
+
+import javax.inject.Inject;
 
 /*
  * Created by thunsaker on 7/19/13.
  */
 public class VenueEditInfoFragment extends Fragment {
+    @Inject
+    @ForApplication
+    Context mContext;
+
     public static final String ARG_OBJECT = "object";
 
     private LinearLayout mMainInfoLinearLayout;
@@ -89,9 +98,8 @@ public class VenueEditInfoFragment extends Fragment {
                 mDescriptionProgressBar.setVisibility(View.VISIBLE);
 
                 getActivity().setProgressBarVisibility(true);
-                new FoursquareTasks.GetVenue(getActivity().getApplicationContext(),
-                        VenueEditTabsActivity.venueToEdit.id, this.getActivity(),
-                        FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
+                FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
+                mFoursquareTasks.new GetVenue(VenueEditTabsActivity.venueToEdit.id, FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
 
                 name = VenueEditTabsActivity.venueToEdit.name;
                 phone = VenueEditTabsActivity.venueToEdit.contact.phone != null
