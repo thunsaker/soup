@@ -36,6 +36,7 @@ public class ListActivity extends BaseSoupActivity
         ab.setDisplayHomeAsUpEnabled(true);
 		ab.setDisplayUseLogoEnabled(false);
 		ab.setDisplayShowHomeEnabled(false);
+        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
             ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent)));

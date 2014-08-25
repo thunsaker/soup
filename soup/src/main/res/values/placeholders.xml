@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="placeholder_venue_name"/>
+
+    <string name="placeholder_category" />
+    <string name="placeholder_category_primary" />
+    <string name="placeholder_category_secondary" />
+    <string name="placeholder_category_tertiary" />
+
+    <string name="placeholder_hours_day_short" />
+    <string name="placeholder_hours_time_span_24_hour" />
+
+    <string name="placeholder_hours_day" />
+    <string name="placeholder_hours_time" />
+</resources>

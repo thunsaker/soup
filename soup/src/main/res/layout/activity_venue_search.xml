@@ -3,40 +3,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".VenueSearchActivity"
     android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+	android:layout_height="fill_parent"
+    android:background="@color/white">
 	<LinearLayout
 	    android:id="@+id/linearLayoutVenueSearchWrapperOuter"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:background="@drawable/border_bottom_gray"
 	    android:orientation="vertical">
 		<LinearLayout
 		    android:id="@+id/linearLayoutVenueSearchWrapperInner"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
-		    android:paddingTop="5dp"
-			android:paddingRight="@dimen/activity_horizontal_margin"
-			android:paddingLeft="@dimen/activity_horizontal_margin"
-			android:layout_marginLeft="2dp"
+			android:paddingRight="@dimen/material_padding_double"
+			android:paddingLeft="@dimen/material_padding_double"
 		    android:orientation="horizontal"
 		    android:baselineAligned="false">
 
-			<TextView
-			    android:id="@+id/textViewSearchVenueLocation"
-			    android:layout_width="wrap_content"
-			    android:layout_height="40dp"
-			    android:layout_marginTop="2dp"
-			    android:layout_marginLeft="5dp"
-			    android:layout_marginRight="5dp"
-			    android:gravity="center_vertical"
-			    android:text="@string/search_location_label" />
+			<!--<TextView-->
+			    <!--android:id="@+id/textViewSearchVenueLocation"-->
+			    <!--android:layout_width="wrap_content"-->
+			    <!--android:layout_height="40dp"-->
+			    <!--android:layout_marginTop="2dp"-->
+			    <!--android:layout_marginLeft="5dp"-->
+			    <!--android:layout_marginRight="5dp"-->
+			    <!--android:gravity="center_vertical"-->
+			    <!--android:text="@string/search_location_label" />-->
 
 			<EditText
 			    android:id="@+id/editTextSearchVenueLocation"
 			    android:layout_width="0dp"
-			    android:layout_height="wrap_content"
+			    android:layout_height="48dp"
 			    android:layout_weight="0.6"
 			    android:hint="@string/search_location_hint"
+                android:layout_marginTop="@dimen/material_padding"
 			    android:inputType="text|textPostalAddress"
 			    android:imeOptions="actionSearch"
 			    android:selectAllOnFocus="true"
@@ -44,29 +43,36 @@
 
 		    <ImageButton
 		        android:id="@+id/imageButtonSearchVenueLocationPick"
-		        android:layout_height="40dp"
-		        android:layout_width="40dp"
-		        android:layout_marginLeft="5dp"
+		        android:layout_height="56dp"
+		        android:layout_width="56dp"
 		        android:src="@drawable/map_marker_button"
-		        android:background="@null"
+                android:scaleType="fitCenter"
+                android:layout_marginTop="@dimen/material_padding"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+		        android:background="@drawable/layout_selector_blue"
 		        android:contentDescription="@string/image_description_search_pick_location" />
 		</LinearLayout>
 		<TextView
 		    android:id="@+id/textViewSearchVenueLocationNote"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:paddingBottom="7dp"
+            android:layout_marginTop="-8dp"
+		    android:paddingBottom="@dimen/material_padding_half"
 		    android:gravity="center"
-		    android:textSize="12sp"
+		    android:textSize="@dimen/material_type_micro"
 		    android:text="@string/search_location_hint_blank" />
+        <View
+            android:id="@+id/viewSearchDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_off" />
 	</LinearLayout>
-
     <RelativeLayout
         android:id="@+id/relativeLayoutVenueSearchContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/linearLayoutVenueSearchWrapperOuter"
-        android:background="@color/now_background"
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true">
 
@@ -79,7 +85,7 @@
             android:adjustViewBounds="true"
             android:layout_above="@+id/textViewSearchEmpty"
             android:contentDescription="@string/app_name"
-            android:tint="@color/white"
+            android:tint="@color/soup_blue_dark_translucent"
             android:src="@drawable/bowl_gray_single_color" />
         <TextView
             android:id="@+id/textViewSearchEmpty"
@@ -148,7 +154,7 @@
 
     <FrameLayout
 	    android:id="@+id/frameLayoutSearchInstructionalOverlay"
-	    android:background="@color/black_super_transparent"
+	    android:background="@color/white_super_transparent"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
         android:visibility="gone"

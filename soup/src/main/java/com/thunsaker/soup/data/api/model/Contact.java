@@ -7,6 +7,14 @@ public class Contact {
 	public String formattedPhone;
 	public String twitter;
 
+    public Contact() { }
+
+    public Contact(String phone, String formattedPhone, String twitter) {
+        this.phone = phone;
+        this.formattedPhone = formattedPhone;
+        this.twitter = twitter;
+    }
+
 	public static Contact GetContactFromJson(JsonObject jsonObject) {
 		try {
 			Contact myContact = new Contact();

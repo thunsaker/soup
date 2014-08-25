@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayoutAddFabWrapper"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/fab_icon_padding"
+    android:layout_marginBottom="@dimen/fab_icon_padding">
+    <ImageView
+        android:layout_width="@dimen/fab_size_shadow"
+        android:layout_height="@dimen/fab_size_shadow"
+        android:src="@drawable/shadow_fab"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:contentDescription="@string/venue_details_edit_button" />
+
+    <ImageButton
+        android:id="@+id/fabAdd"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:src="@drawable/ic_mat_plus_small"
+        android:scaleType="centerCrop"
+        android:tint="@color/white"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:padding="@dimen/fab_icon_padding"
+        android:background="@drawable/circle_layout_selector_red"
+        android:contentDescription="@string/venue_details_edit_button" />
+</FrameLayout>

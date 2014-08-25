@@ -158,6 +158,7 @@ public class LocationSelectActivity extends BaseSoupActivity {
 		ab.setDisplayHomeAsUpEnabled(showHomeUp);
 		ab.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#aa000000")));
         ab.setSplitBackgroundDrawable(new ColorDrawable(Color.parseColor("#aa000000")));
+        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
 	}
 
 	@Override

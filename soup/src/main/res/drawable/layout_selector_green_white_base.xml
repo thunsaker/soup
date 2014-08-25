@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" >
+    <item android:state_focused="true" android:drawable="@color/soup_green_translucent" />
+    <item android:state_pressed="true" android:drawable="@color/soup_green_translucent_pressed" />
+    <item android:state_activated="true" android:drawable="@color/soup_green" tools:ignore="UnusedAttribute" />
+    <item android:state_selected="true" android:drawable="@color/soup_green_translucent" />
+    <item android:drawable="@color/white" />
+ </selector>

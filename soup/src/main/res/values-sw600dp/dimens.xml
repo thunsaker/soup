@@ -11,4 +11,5 @@
     <dimen name="nexus_frame_margin_side">108dp</dimen>
 
     <dimen name="action_bar_height">56dp</dimen>
+    <dimen name="material_action_bar_height">64dp</dimen>
 </resources>

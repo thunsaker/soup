@@ -39,6 +39,7 @@ public class WelcomeActivity extends ActionBarActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(showHomeUp);
         ab.setDisplayUseLogoEnabled(useLogo);
+        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
     }
 
     @Override

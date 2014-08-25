@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayoutTimeSegmentWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <View
+        android:layout_height="1dp"
+        android:layout_width="fill_parent"
+        android:background="@color/gray_light_super" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutTimeSegmentWrapperInner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/material_padding_double"
+        android:paddingBottom="@dimen/material_padding_double"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutOpenTimeWrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/layout_selector_blue">
+
+            <TextView
+                android:id="@+id/textViewOpenTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@drawable/text_blue_white_selector"
+                android:text="@string/time_segment_empty"
+                android:textSize="@dimen/material_type_large"
+                android:gravity="right" />
+
+            <TextView
+                android:id="@+id/textViewOpenTimeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/material_type_micro"
+                android:textColor="@drawable/text_gray_white_selector"
+                android:text="@string/edit_venue_hours_open" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/editTextVenueEditTimeHyphen"
+            android:layout_width="16dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/soup_blue_light" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutCloseTimeWrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/layout_selector_blue"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textViewCloseTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_segment_empty"
+                android:textColor="@drawable/text_blue_white_selector"
+                android:textSize="@dimen/material_type_large"
+                android:gravity="right" />
+
+            <TextView
+                android:id="@+id/textViewCloseTimeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/material_type_micro"
+                android:textColor="@drawable/text_gray_white_selector"
+                android:text="@string/edit_venue_hours_close" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

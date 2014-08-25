@@ -288,14 +288,13 @@ public class UserEndpoint {
 		@Override
 		protected void onPreExecute() {
 			myCaller.getActivity().setProgressBarVisibility(true);
-//            ListsFragment.mPullToRefreshLayout.setRefreshing(true);
 			super.onPreExecute();
 		}
 
 		@Override
 		protected List<FoursquareList> doInBackground(Void... params) {
 			try {
-				myAccessToken = PreferencesHelper.getFoursquareToken(myContext) != "" ? PreferencesHelper.getFoursquareToken(myContext) : "";
+				myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("") ? PreferencesHelper.getFoursquareToken(myContext) : "";
 				myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
 				myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
 

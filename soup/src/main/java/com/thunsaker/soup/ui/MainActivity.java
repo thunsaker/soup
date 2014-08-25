@@ -1,6 +1,5 @@
 package com.thunsaker.soup.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
@@ -94,9 +93,6 @@ public class MainActivity extends BaseSoupActivity implements
 	protected static final String LISTS_PREVIEW_DIALOG = "LISTS_PREVIEW_DIALOG";
 	protected static final String CHECKIN_CONFIRMATION_DIALOG = "CHECKIN_CONFIRMATION_DIALOG";
 
-	static String longPressedVenueId = "";
-	static String longPressedVenueName = "";
-
 	public static Intent genericIntent;
 	public static PendingIntent genericPendingIntent;
 
@@ -161,7 +157,6 @@ public class MainActivity extends BaseSoupActivity implements
                 hideAds();
 
                 ab.setTitle(R.string.app_name_pro);
-                ab.setLogo(R.drawable.ic_launcher_pro);
             } else {
                 showAds();
             }
@@ -228,8 +223,7 @@ public class MainActivity extends BaseSoupActivity implements
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setHomeButtonEnabled(true);
-//        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent))); // Set the background color
-        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
+        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
         return ab;
     }
 
@@ -320,20 +314,16 @@ public class MainActivity extends BaseSoupActivity implements
 	}
 
 	public void handleIntent(Intent intent) {
-		if (intent.hasExtra(VENUE_ID_CHECKIN_EXTRA)) {
-			longPressedVenueId = intent.getStringExtra(VENUE_ID_CHECKIN_EXTRA);
+        String checkinVenueId = "";
+		if (intent.hasExtra(VENUE_ID_CHECKIN_EXTRA))
+            checkinVenueId = intent.getStringExtra(VENUE_ID_CHECKIN_EXTRA);
 
-			if (intent.hasExtra(VENUE_NAME_CHECKIN_EXTRA)) {
-				longPressedVenueName = intent
-						.getStringExtra(VENUE_NAME_CHECKIN_EXTRA);
-			}
+        String checkinVenueName = "";
+        if (intent.hasExtra(VENUE_NAME_CHECKIN_EXTRA))
+            checkinVenueId = intent.getStringExtra(VENUE_NAME_CHECKIN_EXTRA);
 
-			if (longPressedVenueId != null && longPressedVenueId.length() > 0
-					&& longPressedVenueName != null
-					&& longPressedVenueName.length() > 0)
-				CheckinUser(longPressedVenueId, longPressedVenueName,
-						MainActivity.this);
-		}
+        if (!checkinVenueId.equals("") && !checkinVenueName.equals(""))
+            CheckinUser(checkinVenueId, checkinVenueName);
 	}
 
 	@Override
@@ -367,13 +357,8 @@ public class MainActivity extends BaseSoupActivity implements
 
 	@Override
     public boolean onVenueListLongClick(String venueId, String venueName) {
-		longPressedVenueId = venueId;
-		longPressedVenueName = venueName;
-
-		DialogFragment checkinDialog = new CheckinDialogFragment();
-		checkinDialog.show(getSupportFragmentManager(),
-				CHECKIN_CONFIRMATION_DIALOG);
-
+		CheckinDialogFragment checkinDialog = CheckinDialogFragment.newInstance(venueId, venueName);
+		checkinDialog.show(getSupportFragmentManager(), CHECKIN_CONFIRMATION_DIALOG);
 		return true;
 	}
 
@@ -441,30 +426,34 @@ public class MainActivity extends BaseSoupActivity implements
 	}
 
 	public static class CheckinDialogFragment extends DialogFragment {
+        public static CheckinDialogFragment newInstance(String id, String name) {
+            CheckinDialogFragment fragment = new CheckinDialogFragment();
+            Bundle args = new Bundle();
+            args.putString(VENUE_ID_CHECKIN_EXTRA, id);
+            args.putString(VENUE_NAME_CHECKIN_EXTRA, name);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			if (longPressedVenueId != null && longPressedVenueId.length() > 0
-					&& longPressedVenueName != null
-					&& longPressedVenueName.length() > 0) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						getActivity());
-				builder.setMessage(
-						String.format(
-								getString(R.string.dialog_checkin_confirmation),
-								longPressedVenueName))
-						.setPositiveButton(getString(R.string.dialog_yes),
+			if (getArguments() != null) {
+                final String venueId = getArguments().getString(VENUE_ID_CHECKIN_EXTRA);
+                final String venueName = getArguments().getString(VENUE_NAME_CHECKIN_EXTRA);
+				return new AlertDialog.Builder(getActivity())
+                        .setMessage(
+                                String.format(getString(R.string.dialog_checkin_confirmation), venueName))
+						.setPositiveButton(
+                                getString(R.string.dialog_yes),
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										MainActivity.CheckinUser(
-												longPressedVenueId,
-												longPressedVenueName,
-												getActivity());
+                                        ((MainActivity)getActivity()).CheckinUser(venueId, venueName);
 									}
 								})
-						.setNegativeButton(getString(R.string.dialog_no), null);
-				return builder.create();
+						.setNegativeButton(getString(R.string.dialog_no), null)
+                        .create();
 			} else {
 				return null;
 			}
@@ -477,8 +466,8 @@ public class MainActivity extends BaseSoupActivity implements
         if (Util.IsProInstalled(getApplicationContext()))
             hideAds();
 
-        if (isFoursquareConnected)
-            selectItem(0);
+//        if (isFoursquareConnected)
+//            selectItem(0);
 	}
 
     @Override
@@ -587,12 +576,9 @@ public class MainActivity extends BaseSoupActivity implements
 		mDrawerLayout.closeDrawer(mDrawerList);
 	}
 
-	public static void CheckinUser(String id, String name, Activity activity) {
-		new CheckinEndpoint.PostUserCheckin(activity.getApplicationContext(),
-				currentLocation, id, name, "").execute();
-		longPressedVenueId = "";
-		longPressedVenueName = "";
-		activity.finish();
+	public void CheckinUser(String id, String name) {
+		new CheckinEndpoint.PostUserCheckin(mContext, currentLocation, id, name, "").execute();
+        finish();
 	}
 
     public void onEvent(VenueSearchEvent event) {

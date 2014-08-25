@@ -7,6 +7,7 @@ public class FoursquareImage {
 	public static Integer SIZE_GRANDE = 64;
 	public static Integer SIZE_MEDIANO = 44;
 	public static Integer SIZE_PEQUENO = 32;
+    public static String BACKGROUND_PREFIX = "bg_";
 	public static String IMAGE_SIZE_PREFIX = "bg_%s";
 	public static String IMAGE_SIZE_PLACEHOLDER = "%sx%s";
 
@@ -40,8 +41,8 @@ public class FoursquareImage {
 		return String.format("%s%s%s", prefix, String.format(IMAGE_SIZE_PLACEHOLDER, height, width), suffix);
 	}
 
-	public String getFoursquareLegacyImageUrl(Integer size) {
-		return String.format("%s%s%s", prefix, String.format(IMAGE_SIZE_PREFIX, size), suffix);
+	public String getFoursquareLegacyImageUrl(Integer size, Boolean background) {
+		return String.format("%s" + (background ? BACKGROUND_PREFIX : "") + "%s%s", prefix, size, suffix);
 	}
 
 	public static FoursquareImage GetFoursquareImageFromJson(JsonObject jsonObject) {

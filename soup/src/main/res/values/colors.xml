@@ -3,8 +3,10 @@
     <color name="black">#ff000000</color>
     <color name="black_transparent">#aa000000</color>
     <color name="black_super_transparent">#55000000</color>
+    <color name="black_transparent_almost_invisible">#11000000</color>
 
     <color name="white">#ffffffff</color>
+    <color name="white_off">#ffeeeeee</color>
     <color name="white_transparent">#aaffffff</color>
     <color name="white_super_transparent">#55ffffff</color>
     <color name="white_super_duper_transparent">#22ffffff</color>
@@ -37,4 +39,5 @@
     <color name="cal_default_background_today">#ff778088</color>
     <color name="cal_default_border">#ffdadcdd</color>
     <color name="cal_default_text_color_day">#ffa7aeb4</color>
+    <color name="foursquare_category_icon_gray">#ffC4C3BC</color>
 </resources>

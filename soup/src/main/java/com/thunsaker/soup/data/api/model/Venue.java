@@ -1,5 +1,6 @@
 package com.thunsaker.soup.data.api.model;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -80,5 +81,20 @@ public class Venue extends CompactVenue {
         venueHours.timeFrames =
                 TimeFrame.ParseVenueHourFromJson(timesArray, venueHours.timeFrames);
         return venueHours;
+    }
+
+    @Override
+    public String toString() {
+        return toJson(this);
+    }
+
+    public static String toJson(Venue myVenue) {
+        Gson gson = new Gson();
+        return myVenue != null ? gson.toJson(myVenue, Venue.class) : "";
+    }
+
+    public static Venue GetVenueFromJson(String jsonString) {
+        Gson gson = new Gson();
+        return jsonString != null ? gson.fromJson(jsonString, Venue.class) : null;
     }
 }

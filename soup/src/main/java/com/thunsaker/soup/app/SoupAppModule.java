@@ -16,7 +16,6 @@ import com.thunsaker.soup.ui.CheckinHistoryActivity;
 import com.thunsaker.soup.ui.CheckinHistoryFragment;
 import com.thunsaker.soup.ui.FoursquareAuthorizationActivity;
 import com.thunsaker.soup.ui.FoursquareListFragment;
-import com.thunsaker.soup.ui.HistoryActivity;
 import com.thunsaker.soup.ui.ListActivity;
 import com.thunsaker.soup.ui.ListsFragment;
 import com.thunsaker.soup.ui.LocationSelectActivity;
@@ -57,7 +56,6 @@ import static android.content.Context.LOCATION_SERVICE;
                 ListsFragment.class,
                 FoursquareListFragment.class,
                 ListActivity.class,
-                HistoryActivity.class,
                 VenueDetailActivity.class,
                 VenueDetailActivityReceiver.class,
                 VenueAddCategoryActivity.class,
@@ -77,7 +75,8 @@ public class SoupAppModule {
     Picasso providesPicasso(@ForApplication Context context) {
         Picasso picasso = Picasso.with(context);
 
-        picasso.setDebugging(BuildConfig.DEBUG);
+        picasso.setDebugging(false);
+//        picasso.setDebugging(BuildConfig.DEBUG);
         return picasso;
     }
 
@@ -108,6 +107,7 @@ public class SoupAppModule {
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
+
         return restAdapter.create(FoursquareService.class);
     }
 }

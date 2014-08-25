@@ -58,6 +58,9 @@ public class UserEndpoint {
 
 										Integer superuserLevel = jObjectUser.get("superuser") != null ? jObjectUser.get("superuser").getAsInt() : 0;
 										PreferencesHelper.setFoursquareSuperuserLevel(myContext, superuserLevel);
+
+                                        String homeCity = jObjectUser.get("homeCity") != null ? jObjectUser.get("homeCity").getAsString() : "";
+                                        PreferencesHelper.setFoursquareHomeCity(myContext, homeCity);
 										return true;
 									} else {
 										Log.e("UserEndpoint", "Failed to parse the user json");
@@ -284,7 +287,6 @@ public class UserEndpoint {
 		@Override
 		protected void onPreExecute() {
 			myCaller.getActivity().setProgressBarVisibility(true);
-//            ListsFragment.mPullToRefreshLayout.setRefreshing(true);
 			super.onPreExecute();
 		}
 

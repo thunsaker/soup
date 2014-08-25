@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Soup</string>
-	<string name="app_name_pro">Soup Pro</string>
-    <string name="app_name_dev">Soup Dev</string>
-    <string name="app_version">2.0.5</string>
-    <string name="app_version_long">Soup v.2.0.5</string>
+	<string name="app_name" translatable="false">Soup</string>
+	<string name="app_name_pro" translatable="false">Soup Pro</string>
+    <string name="app_name_dev" translatable="false">Soup Dev</string>
+    <string name="app_version" translatable="false">2.5</string>
+    <string name="app_version_long" translatable="false">Soup v.2.5</string>
 
-    <string name="prefs_foursquare_connected">soup_foursquare_connected</string>
-    <string name="prefs_foursquare_token">soup_foursquare_token</string>
-    <string name="prefs_foursquare_apikey">soup_foursquare_apikey</string>
-    <string name="prefs_foursquare_categories">soup_foursquare_categories</string>
-    <string name="prefs_foursquare_user_id">soup_foursquare_user_id</string>
-    <string name="prefs_foursquare_superuser_level">soup_foursquare_superuser_level</string>
-    <string name="prefs_foursquare_search_overlay">soup_foursquare_shown_search_overlay</string>
+    <string name="prefs_foursquare_connected" translatable="false">soup_foursquare_connected</string>
+    <string name="prefs_foursquare_token" translatable="false">soup_foursquare_token</string>
+    <string name="prefs_foursquare_apikey" translatable="false">soup_foursquare_apikey</string>
+    <string name="prefs_foursquare_categories" translatable="false">soup_foursquare_categories</string>
+    <string name="prefs_foursquare_user_id" translatable="false">soup_foursquare_user_id</string>
+    <string name="prefs_foursquare_superuser_level" translatable="false">soup_foursquare_superuser_level</string>
+    <string name="prefs_foursquare_search_overlay" translatable="false">soup_foursquare_shown_search_overlay</string>
+    <string name="prefs_foursquare_home_city" translatable="false">soup_foursquare_home_city</string>
 
-    <string name="foursquare">Foursquare</string>
-    <string name="welcome_learn_more_url">http://support.foursquare.com/entries/422534-Becoming-a-superuser-SU</string>
+    <string name="foursquare" translatable="false">Foursquare</string>
+    <string name="welcome_learn_more_url" translatable="false">http://support.foursquare.com/entries/422534-Becoming-a-superuser-SU</string>
 
-	<string name="edit_venue_address_hint">123 N Main St</string>
+	<string name="edit_venue_address_hint" translatable="false">123 N Main St</string>
     <string name="edit_venue_cross_street_hint">btw Center Ave &#38; City St</string>
-    <string name="edit_venue_zip_hint">12345</string>
-	<string name="edit_venue_phone_hint">415&#8211;867&#8211;5309</string>
-    <string name="edit_venue_lat_lng_hint">0.00,0.00</string>
-    <string name="edit_venue_url_hint">http://url.com</string>
+    <string name="edit_venue_zip_hint" translatable="false">12345</string>
+	<string name="edit_venue_phone_hint" translatable="false">415&#8211;867&#8211;5309</string>
+    <string name="edit_venue_lat_lng_hint" translatable="false">0.00,0.00</string>
+    <string name="edit_venue_url_hint" translatable="false">http://url.com</string>
 
-    <string name="count_zero">0</string>
+    <string name="count_zero" translatable="false">0</string>
 
-    <string name="prefs_soup_connected">soup_connected</string>
-    <string name="prefs_soup_distance_units">soup_distance_units</string>
-    <string name="prefs_soup_push">soup_connected</string>
-    <string name="prefs_soup_about_rate">soup_connected</string>
-    <string name="prefs_soup_nav_drawer">soup_show_nav</string>
+    <string name="prefs_soup_connected" translatable="false">soup_connected</string>
+    <string name="prefs_soup_distance_units" translatable="false">soup_distance_units</string>
+    <string name="prefs_soup_push" translatable="false">soup_connected</string>
+    <string name="prefs_soup_about_rate" translatable="false">soup_connected</string>
+    <string name="prefs_soup_nav_drawer" translatable="false">soup_show_nav</string>
+    <string name="twitter_url_base" translatable="false">https://twitter.com/%s</string>
+    <string name="time_segment_empty" translatable="false">&#8211;:&#8211;&#8211;</string>
 </resources>

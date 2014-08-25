@@ -4,86 +4,33 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonObject;
 
 public class Location {
-	public String address;
-	public String crossStreet;
-	public double latitude;
-	public double longitude;
-	public Integer distance;
-	public String postalCode;
-	public String city;
-	public String state;
-	public String country;
-	public String countryCode;
+    public String address;
+    public String crossStreet;
+    public double latitude;
+    public double longitude;
+    public Integer distance;
+    public String postalCode;
+    public String city;
+    public String state;
+    public String country;
+    public String countryCode;
+    public String[] formattedAddress;
 
-//	public String getAddress() {
-//		return Address;
-//	}
-//	public void setAddress(String address) {
-//		Address = address;
-//	}
-//
-//	public String getCrossStreet() {
-//		return CrossStreet;
-//	}
-//	public void setCrossStreet(String crossStreet) {
-//		CrossStreet = crossStreet;
-//	}
-//
-//	public double getLat() {
-//		return Lat;
-//	}
-//	public void setLat(Double lat) {
-//		Lat = lat;
-//	}
-//
-//	public Double getLng() {
-//		return Lng;
-//	}
-//	public void setLng(Double lng) {
-//		Lng = lng;
-//	}
-//
-//	public Integer getDistance() {
-//		return Distance;
-//	}
-//	public void setDistance(Integer distance) {
-//		Distance = distance;
-//	}
-//
-//	public String getPostalCode() {
-//		return PostalCode;
-//	}
-//	public void setPostalCode(String postalCode) {
-//		PostalCode = postalCode;
-//	}
-//
-//	public String getCity() {
-//		return City;
-//	}
-//	public void setCity(String city) {
-//		City = city;
-//	}
-//
-//	public String getState() {
-//		return State;
-//	}
-//	public void setState(String state) {
-//		State = state;
-//	}
-//
-//	public String getCountry() {
-//		return Country;
-//	}
-//	public void setCountry(String country) {
-//		Country = country;
-//	}
-//
-//	public String getCountryCode() {
-//		return CountryCode;
-//	}
-//	public void setCountryCode(String countryCode) {
-//		CountryCode = countryCode;
-//	}
+    public Location() {}
+
+    public Location(String address, String crossStreet, double latitude, double longitude, Integer distance, String postalCode, String city, String state, String country, String countryCode, String[] formattedAddress) {
+        this.address = address;
+        this.crossStreet = crossStreet;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.distance = distance;
+        this.postalCode = postalCode;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.countryCode = countryCode;
+        this.formattedAddress = formattedAddress;
+    }
 
 	public static Location GetLocationFromJson(JsonObject jsonObject) {
 		Location myLocation = new Location();

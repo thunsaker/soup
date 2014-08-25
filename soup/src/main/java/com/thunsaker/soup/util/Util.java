@@ -8,10 +8,12 @@ import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.thunsaker.soup.BuildConfig;
+import com.thunsaker.soup.R;
 import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.Location;
 
@@ -218,10 +220,13 @@ public class Util {
 	 * from: http://stackoverflow.com/a/9563438/339820
 	 */
 	public static float convertDpToPixel(float dp,Context context){
-	    Resources resources = context.getResources();
-	    DisplayMetrics metrics = resources.getDisplayMetrics();
-	    float px = dp * (metrics.densityDpi/160f);
-	    return px;
+//      Resources resources = context.getResources();
+//	    DisplayMetrics metrics = resources.getDisplayMetrics();
+//	    float px = dp * (metrics.densityDpi/160f);
+//	    return px;
+
+        Resources r = context.getResources();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
 	}
 
 	/**
@@ -238,7 +243,6 @@ public class Util {
 	    DisplayMetrics metrics = resources.getDisplayMetrics();
 	    float dp = px / (metrics.densityDpi / 160f);
 	    return dp;
-
 	}
 
 	public static long getCurrentTimeInSeconds() {
@@ -293,4 +297,29 @@ public class Util {
 			return null;
 		}
 	}
+
+    public static int GetCategoryColor(Character mChar, Context mContext) {
+        int color;
+        switch (Character.getNumericValue(mChar) % 5) {
+            case 0:
+                color = mContext.getResources().getColor(R.color.category_travel);
+                break;
+            case 1:
+                color = mContext.getResources().getColor(R.color.category_art);
+                break;
+            case 2:
+                color = mContext.getResources().getColor(R.color.category_night);
+                break;
+            case 3:
+                color = mContext.getResources().getColor(R.color.category_school);
+                break;
+            case 4:
+                color = mContext.getResources().getColor(R.color.category_food);
+                break;
+            default:
+                color = mContext.getResources().getColor(R.color.category_event);
+                break;
+        }
+        return color;
+    }
 }

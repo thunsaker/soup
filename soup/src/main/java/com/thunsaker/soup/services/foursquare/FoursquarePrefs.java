@@ -4,8 +4,8 @@ package com.thunsaker.soup.services.foursquare;
  * Created by @thunsaker
  */
 public class FoursquarePrefs {
-    public static final int DEFAULT_SEARCH_LIMIT = 20;
-    public static final int DEFAULT_SEARCH_RADIUS = 5000;
+    public static final int DEFAULT_SEARCH_LIMIT = 30;
+    public static final int DEFAULT_SEARCH_RADIUS = 10000;
 
     public static String FOURSQUARE_BASE_URL = "https://api.foursquare.com/v2";
     public static String FOURSQUARE_BASE_URL_MULTI =

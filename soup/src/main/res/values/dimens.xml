@@ -19,8 +19,11 @@
 
     <dimen name="action_bar_height">48dp</dimen>
 
+    <dimen name="material_action_bar_height">56dp</dimen>
+
     <dimen name="material_padding_half">4dp</dimen>
     <dimen name="material_padding">8dp</dimen>
+    <dimen name="material_padding_and_a_half">12dp</dimen>
     <dimen name="material_padding_double">16dp</dimen>
     <dimen name="material_padding_triple">24dp</dimen>
     <dimen name="material_padding_quadruple">32dp</dimen>
@@ -30,4 +33,15 @@
     <dimen name="material_type_med">24sp</dimen>
     <dimen name="material_type_small">16sp</dimen>
     <dimen name="material_type_micro">13sp</dimen>
+
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_size_shadow">65dp</dimen>
+    <dimen name="fab_size_mini">56dp</dimen>
+    <dimen name="fab_icon_padding">10dp</dimen>
+    <dimen name="fab_side_margin">16dp</dimen>
+
+    <dimen name="material_keyline_1">16dp</dimen>
+    <dimen name="material_keyline_1_offset">12dp</dimen>
+    <dimen name="material_keyline_2">72dp</dimen>
+    <dimen name="material_keyline_2_offset">68dp</dimen>
 </resources>

@@ -50,6 +50,7 @@ public class FoursquareAuthorizationActivity extends BaseSoupActivity {
             ab.setDisplayHomeAsUpEnabled(showHomeUp);
             boolean useLogo = true;
             ab.setDisplayUseLogoEnabled(useLogo);
+            ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
 
 			loadingDialog = ProgressDialog.show(
 				FoursquareAuthorizationActivity.this,

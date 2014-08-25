@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/material_padding_double"
+    android:paddingBottom="@dimen/material_padding_double">
+    <TextView
+        android:id="@+id/textViewVenueDetailsHoursDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Theme.Soup.Text.Small"
+        android:textStyle="bold"
+        android:text="@string/placeholder_hours_day_short"/>
+
+    <TextView
+        android:id="@+id/textViewVenueDetailsHoursTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/material_padding_half"
+        style="@style/Theme.Soup.Text.Small"
+        android:text="@string/placeholder_hours_time_span_24_hour"/>
+</LinearLayout>

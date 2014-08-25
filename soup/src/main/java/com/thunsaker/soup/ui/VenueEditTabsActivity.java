@@ -24,7 +24,6 @@ import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.Contact;
 import com.thunsaker.soup.data.api.model.Hours;
 import com.thunsaker.soup.data.api.model.Location;
-import com.thunsaker.soup.data.api.model.TimeFrame;
 import com.thunsaker.soup.data.api.model.Venue;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.viewpagerindicator.TitlePageIndicator;
@@ -64,9 +63,14 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
                 getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setBackgroundColor(getResources().getColor(R.color.soup_green));
         mViewPager.setAdapter(mVenueEditPagerAdapter);
-        TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
-        titleIndicator.setViewPager(mViewPager);
+        TitlePageIndicator indicator = (TitlePageIndicator)findViewById(R.id.titles);
+        indicator.setViewPager(mViewPager);
+//        indicator.setTextColor(getResources().getColor(R.color.white));
+//        indicator.setSelectedBold(true);
+//        indicator.setFooterIndicatorStyle(TitlePageIndicator.IndicatorStyle.Underline);
+//        indicator.setFooterColor(getResources().getColor(R.color.white));
 
         level = PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext());
 
@@ -85,6 +89,7 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
         ab.setDisplayHomeAsUpEnabled(showHomeUp);
         boolean useLogo = true;
         ab.setDisplayUseLogoEnabled(useLogo);
+        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
 
         setProgressBarVisibility(false);
         setProgressBarIndeterminate(true);
@@ -154,15 +159,6 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
             Hours myVenueHours = new Hours();
             myVenueHours.timeFrames = VenueEditHoursFragment.currentVenueListHours;
             modifiedVenue.venueHours = myVenueHours;
-        }
-
-        if(modifiedVenue.venueHours != null &&
-                modifiedVenue.venueHours.timeFrames != null &&
-                    modifiedVenue.venueHours.timeFrames.size() > 0) {
-            for (TimeFrame t : modifiedVenue.venueHours.timeFrames) {
-                t.setFoursquareApiString(
-                        TimeFrame.createFoursquareApiString(getApplicationContext(), t));
-            }
         }
 
         if(VenueEditLocationFragment.mAddressEditText != null) {
@@ -317,5 +313,49 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
                     });
             return builder.create();
         }
+    }
+
+    public static class ConfirmDeleteDialogFragment extends DialogFragment {
+        private static String ITEM_TO_DELETE = "ITEM_TO_DELETE";
+
+        public static ConfirmDeleteDialogFragment newInstance(int item) {
+            ConfirmDeleteDialogFragment fragment = new ConfirmDeleteDialogFragment();
+            Bundle args = new Bundle();
+            args.putInt(ITEM_TO_DELETE, item);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            if (getArguments() != null) {
+                final int mItem = getArguments().getInt(ITEM_TO_DELETE);
+
+                return new AlertDialog.Builder(getActivity())
+                        .setMessage(String.format(getString(R.string.dialog_hour_segment_delete_confirm)))
+                        .setPositiveButton(
+                                getString(R.string.dialog_yes),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ((VenueEditTabsActivity) getActivity()).doRemoveSegment(mItem);
+                                    }
+                                }
+                        )
+                        .setNegativeButton(getString(R.string.dialog_no), null)
+                        .create();
+            } else
+                return null;
+        }
+    }
+
+    public void doRemoveSegment(int item) {
+        RemoveSegment(item);
+    }
+
+    private void RemoveSegment(int item) {
+        VenueEditHoursFragment.currentVenueListHours.remove(item);
+        VenueEditHoursFragment.currentVenueHoursListAdapter.notifyDataSetChanged();
+        VenueEditTabsActivity.ShowRevertOption(this);
     }
 }

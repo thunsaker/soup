@@ -143,15 +143,13 @@ public class VenueEditInfoFragment extends Fragment {
      *
      */
     private final TextWatcher mEditTextWatcher = new TextWatcher() {
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             VenueEditTabsActivity.ShowRevertOption(getActivity());
         }
 
-        public void afterTextChanged(Editable s) {
-        }
+        public void afterTextChanged(Editable s) { }
     };
 
 
@@ -160,11 +158,12 @@ public class VenueEditInfoFragment extends Fragment {
      *
      */
     private final TextWatcher mDescriptionEditTextWatcher = new TextWatcher() {
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             try {
+                mDescriptionTextViewCount.setVisibility(View.VISIBLE);
+
                 if(mDescriptionProgressBar.getVisibility() == View.VISIBLE)
                     mDescriptionProgressBar.setVisibility(View.GONE);
             } catch (Exception e) {
@@ -175,8 +174,7 @@ public class VenueEditInfoFragment extends Fragment {
             updateCharacterCount();
         }
 
-        public void afterTextChanged(Editable s) {
-        }
+        public void afterTextChanged(Editable s) { }
     };
 
     private void updateCharacterCount() {

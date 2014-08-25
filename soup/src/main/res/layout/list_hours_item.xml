@@ -1,85 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="4dp"
-            android:paddingBottom="2dp"
-            android:background="@drawable/now_border"
-            android:gravity="center">
+    android:id="@+id/linearLayoutVenueEditHoursItemWrapper"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:background="@drawable/layout_selector_blue"
+    android:orientation="vertical">
 
-        <LinearLayout
-                android:id="@+id/linearLayoutVenueEditHoursItemWrapper"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:gravity="center"
-                android:background="@drawable/layout_selector_green">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:id="@+id/textViewVenueEditHoursDays"
-                    android:layout_marginRight="10dp"
-                    android:textSize="15dp"
-                    android:textColor="@drawable/text_dark_gray_white_selector"
-                    android:layout_gravity="right|center_vertical"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@drawable/text_blue_white_selector"
-                    android:id="@+id/textViewVenueEditHoursTime"
-                    android:layout_gravity="left|center_vertical"/>
-        </LinearLayout>
-        <LinearLayout
-                android:id="@+id/linearLayoutVenueEditButtonsWrapper"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-            <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="2dp"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/border_top_gray" />
-            <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <Button android:id="@+id/buttonVenueEditTimeFrameDeleteCancel"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.5"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="2dp"
-                        android:paddingLeft="20dp"
-                        android:paddingBottom="2dp"
-                        android:text="@string/edit_venue_hours_delete"
-                        android:gravity="left|center_vertical"
-                        android:textColor="@drawable/text_blue_white_selector"
-                        android:background="@drawable/selectable_background_soup_green" />
-                <Button android:id="@+id/buttonVenueEditTimeFrameAddEditSave"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.5"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="2dp"
-                        android:paddingRight="20dp"
-                        android:paddingBottom="2dp"
-                        android:text="@string/edit_venue_hours_edit"
-                        android:gravity="right|center_vertical"
-                        android:textColor="@drawable/text_blue_white_selector"
-                        android:background="@drawable/selectable_background_soup_green"/>
-            </LinearLayout>
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/material_padding_double"
+        android:paddingBottom="@dimen/material_padding_double"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/textViewVenueEditHoursDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_hours_day"
+            android:textSize="@dimen/material_type_small"
+            android:textColor="@drawable/text_dark_gray_white_selector"
+            android:layout_gravity="right|center_vertical"/>
+        <TextView
+            android:id="@+id/textViewVenueEditHoursTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_hours_time"
+            android:textColor="@drawable/text_blue_white_selector"
+            android:textSize="@dimen/material_type_med"
+            android:layout_gravity="left|center_vertical"/>
     </LinearLayout>
+
+    <View
+        android:layout_height="1dp"
+        android:layout_width="fill_parent"
+        android:background="@color/gray_light_super" />
 </LinearLayout>

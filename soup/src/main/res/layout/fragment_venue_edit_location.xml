@@ -1,158 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white">
     <ScrollView
-            android:id="@+id/scrollViewEditVenueLocationWrapper"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="0dp"
-            android:background="@drawable/now_border_flat_bottom"
-            tools:context=".Venue" >
+        android:id="@+id/scrollViewEditVenueLocationWrapper"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/now_border_flat_bottom">
 
+        <LinearLayout
+            android:id="@+id/linearLayoutEditVenueLocationWrapper"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/material_padding_double">
             <LinearLayout
-                    android:id="@+id/linearLayoutEditVenueLocationWrapper"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="vertical">
-            <LinearLayout
-                    android:id="@+id/linearLayoutEditVenueLocationMapContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="125dp"
-                    android:orientation="vertical">
+                android:id="@+id/linearLayoutEditVenueLocationMapContainer"
+                android:layout_width="match_parent"
+                android:layout_height="125dp"
+                android:orientation="vertical">
                 <include
-                        android:id="@+id/map_venue_edit_location"
-                        android:layout_width="match_parent"
-                        android:layout_height="fill_parent"
-                        layout="@layout/fragment_map_venue_edit_location" />
+                    android:id="@+id/map_venue_edit_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    layout="@layout/fragment_map_venue_edit_location" />
             </LinearLayout>
 
             <LinearLayout
-                    android:id="@+id/linearLayoutEditVenueLocationWrapperInner"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="@dimen/activity_vertical_margin"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingBottom="@dimen/activity_vertical_margin"
-                    android:orientation="vertical"
-                    tools:context=".Venue" >
+                android:id="@+id/linearLayoutEditVenueLocationWrapperInner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/material_keyline_1"
+                android:layout_marginRight="@dimen/material_keyline_1"
+                android:orientation="vertical"
+                tools:context=".Venue" >
                 <TextView
-                        android:id="@+id/textViewEditVenueLocationAddress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/edit_venue_address_title" />
+                    android:id="@+id/textViewEditVenueLocationAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/material_padding_double"
+                    android:textColor="@color/gray_light"
+                    android:textSize="@dimen/material_type_small"
+                    android:text="@string/edit_venue_address_title" />
                 <EditText
-                        android:id="@+id/editTextEditVenueLocationAddress"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:hint="@string/edit_venue_address_hint" />
+                    android:id="@+id/editTextEditVenueLocationAddress"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/material_type_small"
+                    android:inputType="textCapWords"
+                    android:hint="@string/edit_venue_address_hint" />
 
                 <TextView
-                        android:id="@+id/textViewEditVenueLocationCrossStreet"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/edit_venue_cross_street_title" />
+                    android:id="@+id/textViewEditVenueLocationCrossStreet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/material_padding_double"
+                    android:textColor="@color/gray_light"
+                    android:textSize="@dimen/material_type_small"
+                    android:text="@string/edit_venue_cross_street_title" />
                 <EditText
-                        android:id="@+id/editTextEditVenueLocationCrossStreet"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:hint="@string/edit_venue_cross_street_hint" />
+                    android:id="@+id/editTextEditVenueLocationCrossStreet"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/material_type_small"
+                    android:inputType="textCapWords"
+                    android:hint="@string/edit_venue_cross_street_hint" />
 
                 <TextView
-                        android:id="@+id/textViewEditVenueLocationCity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/edit_venue_city_title" />
+                    android:id="@+id/textViewEditVenueLocationCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/material_padding_double"
+                    android:textColor="@color/gray_light"
+                    android:textSize="@dimen/material_type_small"
+                    android:text="@string/edit_venue_city_title" />
                 <EditText
-                        android:id="@+id/editTextEditVenueLocationCity"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:hint="@string/edit_venue_city_hint"/>
+                    android:id="@+id/editTextEditVenueLocationCity"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/material_type_small"
+                    android:inputType="textCapWords"
+                    android:hint="@string/edit_venue_city_hint"/>
 
                 <LinearLayout
-                        android:id="@+id/linearLayoutVenueEditLocationStateZipLabels"
-                        android:layout_width="fill_parent"
+                    android:id="@+id/linearLayoutVenueEditLocationStateZipLabels"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/material_padding_double"
+                    android:orientation="horizontal" >
+                    <TextView
+                        android:id="@+id/textViewEditVenueLocationState"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal" >
+                        android:layout_weight="0.5"
+                        android:textColor="@color/gray_light"
+                        android:textSize="@dimen/material_type_small"
+                        android:text="@string/edit_venue_state_title" />
                     <TextView
-                            android:id="@+id/textViewEditVenueLocationState"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:text="@string/edit_venue_state_title" />
-                    <TextView
-                            android:id="@+id/textViewEditVenueLocationZip"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:gravity="left"
-                            android:text="@string/edit_venue_zip_title" />
+                        android:id="@+id/textViewEditVenueLocationZip"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/gray_light"
+                        android:textSize="@dimen/material_type_small"
+                        android:gravity="left"
+                        android:text="@string/edit_venue_zip_title" />
                 </LinearLayout>
                 <LinearLayout
-                        android:id="@+id/linearLayoutVenueEditLocationStateZipEditTexts"
-                        android:layout_width="fill_parent"
+                    android:id="@+id/linearLayoutVenueEditLocationStateZipEditTexts"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+                    <EditText
+                        android:id="@+id/editTextEditVenueLocationState"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal" >
+                        android:layout_weight="0.5"
+                        android:textSize="@dimen/material_type_small"
+                        android:inputType="textCapWords"
+                        android:hint="@string/edit_venue_state_hint"/>
                     <EditText
-                            android:id="@+id/editTextEditVenueLocationState"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:inputType="textCapWords"
-                            android:hint="@string/edit_venue_state_hint"/>
-                    <EditText
-                            android:id="@+id/editTextEditVenueLocationZip"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:inputType="textNoSuggestions"
-                            android:hint="@string/edit_venue_zip_hint"/>
+                        android:id="@+id/editTextEditVenueLocationZip"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:textSize="@dimen/material_type_small"
+                        android:inputType="textNoSuggestions"
+                        android:hint="@string/edit_venue_zip_hint"/>
                 </LinearLayout>
 
                 <LinearLayout
-                        android:id="@+id/linearLayoutEditVenueLocationSuperuserSection"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" >
+                    android:id="@+id/linearLayoutEditVenueLocationSuperuserSection"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
 
-                    <TextView
+                    <LinearLayout
+                        android:id="@+id/linearLayoutLatLngLocationWrapper"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        android:orientation="vertical">
+
+                        <TextView
                             android:id="@+id/textViewEditVenueLocationLatLng"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/material_padding_double"
+                            android:textColor="@color/gray_light"
+                            android:textSize="@dimen/material_type_small"
                             android:text="@string/edit_venue_lat_lng_title" />
 
-                    <LinearLayout
-                            android:id="@+id/linearLayoutLatLngLocationWrapper"
+                        <EditText
+                            android:id="@+id/editTextEditVenueLocationLatLng"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                        <EditText
-                                android:id="@+id/editTextEditVenueLocationLatLng"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.9"
-                                android:inputType="number"
-                                android:hint="@string/edit_venue_lat_lng_hint" />
-                        <ImageButton
-                                android:id="@+id/imageButtonEditVenueLocationPickLocation"
-                                android:layout_height="wrap_content"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.1"
-                                android:src="@drawable/map_marker_button"
-                                android:background="@null"
-                                android:contentDescription="@string/image_description_search_pick_location" />
+                            android:textSize="@dimen/material_type_small"
+                            android:inputType="number"
+                            android:hint="@string/edit_venue_lat_lng_hint" />
                     </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/imageButtonEditVenueLocationPickLocation"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.1"
+                        android:layout_marginTop="@dimen/material_padding"
+                        android:src="@drawable/map_marker_button"
+                        android:background="@null"
+                        android:contentDescription="@string/image_description_search_pick_location" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

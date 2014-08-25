@@ -17,56 +17,23 @@ public class Category {
     public boolean primary;
     public List<Category> subcategories;
 
-//	public String getId() {
-//		return Id;
-//	}
-//	public void setId(String id) {
-//		Id = id;
-//	}
-//
-//	public String getName() {
-//		return Name;
-//	}
-//	public void setName(String name) {
-//		Name = name;
-//	}
-//
-//	public String getPluralName() {
-//		return PluralName;
-//	}
-//	public void setPluralName(String pluralName) {
-//		PluralName = pluralName;
-//	}
-//
-//	public String getShortName() {
-//		return ShortName;
-//	}
-//	public void setShortName(String shortName) {
-//		ShortName = shortName;
-//	}
-//
-//	public FoursquareImage getIcon() {
-//		return Icon;
-//	}
-//	public void setIcon(FoursquareImage icon) {
-//		Icon = icon;
-//	}
-//
-//	public Boolean getPrimary() {
-//		return Primary;
-//	}
-//	public void setPrimary(Boolean primary) {
-//		Primary = primary;
-//	}
-//
-//	public List<Category> getSubcategories() {
-//		return Subcategories;
-//	}
-//	public void setSubcategories(List<Category> subcategories) {
-//		Subcategories = subcategories;
-//	}
+    public Category() {}
 
-	@Override
+    public Category(String id, String name, String pluralName, String shortName, FoursquareImage icon, boolean primary) {
+        this(id, name, pluralName, shortName, icon, primary, null);
+    }
+
+    public Category(String id, String name, String pluralName, String shortName, FoursquareImage icon, boolean primary, List<Category> subcategories) {
+        this.id = id;
+        this.name = name;
+        this.pluralName = pluralName;
+        this.shortName = shortName;
+        this.icon = icon;
+        this.primary = primary;
+        this.subcategories = subcategories;
+    }
+
+    @Override
 	public String toString() {
 		Gson myGson = new Gson();
 		return myGson.toJson(this);

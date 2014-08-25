@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true" android:drawable="@color/foursquare_blue_transparent" />
-    <item android:state_pressed="true" android:drawable="@color/foursquare_blue_transparent" />
-    <item android:state_activated="true" android:drawable="@color/foursquare_blue_transparent" />
-    <item android:state_selected="true" android:drawable="@color/foursquare_blue_transparent" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <item android:state_focused="true" android:drawable="@color/soup_blue_translucent" />
+    <item android:state_pressed="true" android:drawable="@color/soup_blue_translucent_pressed" />
+    <item android:state_activated="true" android:drawable="@color/soup_blue" tools:ignore="UnusedAttribute" />
+    <item android:state_selected="true" android:drawable="@color/soup_blue_translucent" />
     <item android:drawable="@android:color/transparent" />
  </selector>

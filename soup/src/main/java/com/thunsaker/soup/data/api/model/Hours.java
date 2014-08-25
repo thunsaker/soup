@@ -32,7 +32,7 @@ public class Hours {
         }
     }
 
-    public static Hours ConvertVenueHoursResponseToHours(GetVenueHoursResponse.VenueHoursResponse response) {
+    public static Hours ConvertVenueHoursResponseToHours(GetVenueHoursResponse.GetVenueResponseHours response) {
         Hours hours = new Hours();
         hours.isOpen = response.isOpen;
         hours.status = response.status;

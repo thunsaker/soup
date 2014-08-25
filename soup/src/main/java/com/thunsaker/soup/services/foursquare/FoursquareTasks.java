@@ -19,11 +19,15 @@ import com.thunsaker.soup.data.api.model.FoursquareCompactVenueResponse;
 import com.thunsaker.soup.data.api.model.FoursquareResponse;
 import com.thunsaker.soup.data.api.model.FoursquareVenueResponse;
 import com.thunsaker.soup.data.api.model.GetUserCheckinHistoryResponse;
+import com.thunsaker.soup.data.api.model.GetVenueHoursResponse;
 import com.thunsaker.soup.data.api.model.GetVenueResponse;
+import com.thunsaker.soup.data.api.model.PostVenueEditResponse;
+import com.thunsaker.soup.data.api.model.TimeFrame;
 import com.thunsaker.soup.data.api.model.Venue;
 import com.thunsaker.soup.data.api.model.VenueSearchResponse;
 import com.thunsaker.soup.data.events.CheckinHistoryEvent;
 import com.thunsaker.soup.data.events.GetVenueEvent;
+import com.thunsaker.soup.data.events.GetVenueHoursEvent;
 import com.thunsaker.soup.data.events.VenueListEvent;
 import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.services.FoursquareService;
@@ -36,7 +40,9 @@ import com.thunsaker.soup.util.Util;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -77,12 +83,6 @@ public class FoursquareTasks {
         @Override
         protected List<CompactVenue> doInBackground(Void... params) {
             try {
-                // TODO: Why are we returning null here? is it to prevent a list from being displayed?
-//                if (VenueListFragment.isSearching && mySearchQuery.equals("")) {
-//                    VenueListFragment.searchResultsVenueList = new ArrayList<CompactVenue>();
-//                    return null;
-//                }
-
                 List<CompactVenue> nearbyVenues = new ArrayList<CompactVenue>();
 
                 String mAccessToken = PreferencesHelper.getFoursquareToken(mContext);
@@ -148,6 +148,100 @@ public class FoursquareTasks {
                 ),
                 Toast.LENGTH_SHORT
         ).show();
+    }
+
+    public class EditVenueNew extends AsyncTask<Void, Integer, PostVenueEditResponse> {
+        String mVenueId;
+        Venue mModifiedVenue;
+
+        String mAccessToken;
+        String mClientId;
+        String mClientSecret;
+        boolean canEdit;
+        boolean modifiedDescription;
+        int source;
+
+        public EditVenueNew(String theVenueToModifyId,
+                         Venue theModifiedVenue,
+                         Boolean modifiedDescription,
+                         int theSource) {
+            mVenueId = theVenueToModifyId;
+            mModifiedVenue = theModifiedVenue;
+            this.modifiedDescription = modifiedDescription;
+            this.source = theSource;
+        }
+
+        @Override
+        protected PostVenueEditResponse doInBackground(Void... params) {
+            try {
+                mAccessToken = PreferencesHelper.getFoursquareToken(mContext);
+
+                mClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
+                mClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
+
+                int mSuperuserLevel = PreferencesHelper.getFoursquareSuperuserLevel(mContext);
+
+                canEdit = mSuperuserLevel > 0;
+
+                Map<String, String> queryParams = new HashMap<String, String>();
+
+                return mFoursquareService.postVenueEdit(mVenueId, mAccessToken, queryParams);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(PostVenueEditResponse result) {
+            super.onPostExecute(result);
+
+            // TODO: Post response to event bus...
+
+            try {
+//                myCaller.setProgressBarVisibility(false);
+//                VenueDetailActivity.wasEdited = true;
+//
+//                // DEBUG EMAIL
+//                if (SEND_DEBUG_EMAIL && result.startsWith("DEBUG: ")) {
+//                    Toast.makeText(
+//                            myCaller.getApplicationContext(),
+//                            "The editing failed. "
+//                                    + "Trying to send an email to the developer to help debug.",
+//                            Toast.LENGTH_SHORT).show();
+//                    VenueEditTabsActivity.mDebugString = result;
+//                } else {
+//                    if (result.equals(FoursquarePrefs.SUCCESS)) {
+//                        Toast.makeText(
+//                                myCaller.getApplicationContext(),
+//                                canEdit ? myContext
+//                                        .getString(R.string.edit_venue_success)
+//                                        : myContext
+//                                        .getString(R.string.edit_venue_success_propose),
+//                                Toast.LENGTH_SHORT).show();
+//                        myCaller.setResult(Activity.RESULT_OK);
+//                    } else if (result
+//                            .equals(FoursquarePrefs.FAIL_UNAUTHORIZED)) {
+//                        Toast.makeText(
+//                                myCaller.getApplicationContext(),
+//                                myContext
+//                                        .getString(modifiedDescription ? R.string.edit_venue_fail_unauthorized_description
+//                                                : R.string.edit_venue_fail_unauthorized),
+//                                Toast.LENGTH_SHORT).show();
+//                        myCaller.setResult(Activity.RESULT_CANCELED);
+//                    } else {
+//                        Toast.makeText(myCaller.getApplicationContext(),
+//                                myContext.getString(R.string.edit_venue_fail),
+//                                Toast.LENGTH_SHORT).show();
+//                        myCaller.setResult(Activity.RESULT_CANCELED);
+//                    }
+//                }
+//
+//                myCaller.finish();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static class EditVenue extends AsyncTask<Void, Integer, String> {
@@ -264,6 +358,7 @@ public class FoursquareTasks {
         String myVenueId;
         Integer mySource;
         String myAccessToken;
+        Boolean withHours;
 
         /**
          *
@@ -274,8 +369,13 @@ public class FoursquareTasks {
                                 {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT}
          */
         public GetVenue(String theVenueId, Integer theSource) {
+            this(theVenueId, theSource, false);
+        }
+
+        public GetVenue(String theVenueId, Integer theSource, Boolean withHours) {
             myVenueId = theVenueId;
             mySource = theSource;
+            this.withHours = withHours;
         }
 
         @Override
@@ -308,18 +408,23 @@ public class FoursquareTasks {
                     }
                 }
 
-                GetVenueResponse response = mFoursquareService.getVenue(myVenueId, myAccessToken);
+                if(myVenueId != null && myVenueId.length() > 0) {
+                    GetVenueResponse response = mFoursquareService.getVenue(myVenueId, myAccessToken);
 
-                if(response != null) {
-                    if(response.meta.code == 200 && response.response.venue != null) {
-                        resultVenue = FoursquareVenueResponse.ConvertFoursquareVenueResponseToVenue(response.response.venue);
-                    } else if (response.meta.code == 503) {
-                        ShowServerErrorToast(response.meta);
+                    if(withHours)
+                        new GetVenueHours(myVenueId, mySource).execute();
+
+                    if (response != null) {
+                        if (response.meta.code == 200 && response.response.venue != null) {
+                            resultVenue = FoursquareVenueResponse.ConvertFoursquareVenueResponseToVenue(response.response.venue);
+                        } else if (response.meta.code == 503) {
+                            ShowServerErrorToast(response.meta);
+                        } else {
+                            Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                        }
                     } else {
-                        Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                        Log.i("FoursquareTasks", "Failure :( GetVenue call");
                     }
-                } else {
-                    Log.i("FoursquareTasks", "Failure :( GetVenue call");
                 }
 
                 return resultVenue;
@@ -343,78 +448,76 @@ public class FoursquareTasks {
                     Toast.makeText(mContext, R.string.alert_error_loading_details, Toast.LENGTH_SHORT).show();
                     mBus.post(new GetVenueEvent(false, "", null, mySource));
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-//                    VenueEditTabsActivity.originalVenue = result;
-//                    VenueDetailFragment.currentVenue = result;
-//                    if (mySource == 3)
-//                        mySource = 2;
-//                    switch (mySource) {
-//                        case 0: // CALLER_SOURCE_EDIT_VENUE
-//                            LinearLayout myLinearLayout = (LinearLayout) myCaller
-//                                    .findViewById(R.id.linearLayoutProgressBarLoadingVenueInfoDescriptionWrapper);
-//                            EditText myEditText = (EditText) myCaller
-//                                    .findViewById(R.id.editTextEditVenueInfoDescription);
-//                            myEditText.setVisibility(View.VISIBLE);
-//                            myEditText.setText(result.description);
-//                            myLinearLayout.setVisibility(View.GONE);
-//                            myCaller.setProgressBarVisibility(false);
-//                            myCaller.supportInvalidateOptionsMenu();
-//                            break;
-//                        case 1: // CALLER_SOURCE_EDIT_CATEGORIES
-//                            VenueEditCategoriesActivity.currentVenue = result;
-//                            VenueEditCategoriesActivity myCategoryCaller = (VenueEditCategoriesActivity) myCaller;
-//                            VenueEditCategoriesActivity.originalCategories = new ArrayList<Category>();
-//                            VenueEditCategoriesActivity.originalCategories.addAll(result.categories);
-//                            myCategoryCaller.LoadCurrentCategories(null);
-//                            myCategoryCaller.setProgressBarVisibility(false);
-//                            break;
-//                        case 2: // CALLER_SOURCE_DETAILS
-//                            myVenueDetailCaller = (VenueDetailActivity) myCaller;
-//                            myVenueDetailCaller.setProgressBarVisibility(false);
-//
-//                            if (VenueDetailFragment.currentCompactVenue == null) {
-//                                VenueDetailFragment.LoadDetails(
-//                                        myVenueDetailCaller.findViewById(R.id.relativeLayoutVenueWrapperOuter),
-//                                        myVenueDetailCaller
-//                                );
-//                            }
-//
-//                            if (myVenueDetailCaller.findViewById(
-//                                    R.id.relativeLayoutVenueWrapperOuter).isShown()) {
-//                                if (result.description != null
-//                                        && result.description.length() > 0) {
-//                                    LinearLayout myDescriptionLinearLayout = (LinearLayout) myVenueDetailCaller
-//                                            .findViewById(R.id.linearLayoutVenueDescriptionBackground);
-//
-//                                    myDescriptionLinearLayout
-//                                            .setVisibility(View.VISIBLE);
-//                                    TextView myDescriptionTextView = (TextView) myVenueDetailCaller
-//                                            .findViewById(R.id.textViewVenueDescription);
-//                                    myDescriptionTextView.setText(result
-//                                            .description);
-//                                    myDescriptionTextView
-//                                            .setOnClickListener(new View.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(View v) {
-//                                                    TextView text = (TextView) v;
-//                                                    text.setMaxLines(Integer.MAX_VALUE);
-//                                                    text.setBackgroundDrawable(null);
-//                                                    text.setOnClickListener(null);
-//                                                }
-//                                            });
-//                                }
-//                                myVenueDetailCaller.findViewById(
-//                                        R.id.progressBarVenueDescription)
-//                                        .setVisibility(View.GONE);
-//                            }
-//
-//                            if (VenueDetailActivity.wasEdited)
-//                                VenueDetailFragment.LoadDetails(myVenueDetailCaller
-//                                                .findViewById(R.id.venue_detail_container),
-//                                        myVenueDetailCaller
-//                                );
-//                            break;
-//                    }
+    public class GetVenueHours extends AsyncTask<Void, Integer, List<TimeFrame>> {
+        String myVenueId;
+        Integer mySource;
+        String myAccessToken;
+
+        /**
+         *
+         * @param theVenueId
+         * @param theSource     Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE} or
+        {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES) or
+        {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS} or
+        {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT}
+         */
+        public GetVenueHours(String theVenueId, Integer theSource) {
+            myVenueId = theVenueId;
+            mySource = theSource;
+        }
+
+        @Override
+        protected List<TimeFrame> doInBackground(Void... params) {
+            try {
+                List<TimeFrame> resultHours = new ArrayList<TimeFrame>();
+
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                                ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+                if(myVenueId != null && myVenueId.length() > 0) {
+                    GetVenueHoursResponse response = mFoursquareService.getVenueHours(myVenueId, myAccessToken);
+
+                    if (response != null) {
+                        if (response.meta.code == 200 && response.response.hours != null && response.response.hours.timeframes != null) {
+                            resultHours = TimeFrame.ConvertVenueHoursTimeFrameResponseDayListToTimeFrameList(response.response.hours.timeframes);
+                        } else if (response.meta.code == 503) {
+                            ShowServerErrorToast(response.meta);
+                        } else {
+                            Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                        }
+                    } else {
+                        Log.i("FoursquareTasks", "Failure :( GetVenueHours call");
+                    }
+                }
+
+                return resultHours;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<TimeFrame> result) {
+            super.onPostExecute(result);
+
+            try {
+                if (mySource == 3)
+                    mySource = 2;
+
+                if(result != null) {
+                    mBus.post(new GetVenueHoursEvent(true, "", result, 2));
+                } else {
+                    Toast.makeText(mContext, R.string.alert_error_loading_details, Toast.LENGTH_SHORT).show();
+                    mBus.post(new GetVenueHoursEvent(false, "", null, mySource));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -459,7 +562,6 @@ public class FoursquareTasks {
             }
         }
 
-        @SuppressWarnings("all") // There is a bug with inspection of calendar resources something: https://code.google.com/p/android/issues/detail?id=68894
         @Override
         protected void onPostExecute(List<Category> result) {
             super.onPostExecute(result);
@@ -510,11 +612,6 @@ public class FoursquareTasks {
                 myDuplicateId = theDuplicateId;
             }
             myCaller = FragmentActivity;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
         }
 
         @Override
