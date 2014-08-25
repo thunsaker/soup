@@ -1,1 +1,1 @@
-include ':soup', ':soup-pro', ':foursquareoauthlibrary', ':Android-ViewPagerIndicator', ':android-clockseekbar'
+include ':soup', ':soup-pro', ':foursquareoauthlibrary', ':Android-ViewPagerIndicator'
