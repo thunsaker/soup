@@ -1,60 +1,87 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayoutVenueItemWrapper"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="72dp"
     android:orientation="horizontal"
-    android:padding="10dp"
+    android:paddingTop="@dimen/material_padding_double"
+    android:paddingRight="@dimen/material_padding_double"
+    android:paddingLeft="@dimen/material_padding_double"
+    android:paddingBottom="@dimen/material_padding_double"
     android:baselineAligned="false"
-    android:background="@drawable/layout_selector_green">
+    android:background="@drawable/layout_selector_green_white_base">
+
+    <FrameLayout
+        android:id="@+id/frameLayoutVenueCategoryWrapper"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="@dimen/material_padding_double"
+        android:layout_marginTop="@dimen/material_padding_half">
+        <ImageView
+            android:id="@+id/imageViewVenueCategory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:contentDescription="@string/image_description_category_icon"
+            android:background="@color/gray_light_super"
+            android:src="@drawable/foursquare_generic_category_icon" />
+    </FrameLayout>
+
     <LinearLayout
         android:id="@+id/linearLayoutVenueItemTextWrapper"
-        android:layout_width="0dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="0.8">
+        android:layout_toRightOf="@id/frameLayoutVenueCategoryWrapper"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical">
         <TextView
             android:id="@+id/textViewVenueName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/body_text"
-            android:textSize="@dimen/list_venue_item_title"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="top"
+            android:layout_gravity="center_vertical"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="@dimen/material_type_med"
             android:textIsSelectable="false"
-            android:paddingBottom="5dp" />
+            tools:ignore="UnusedAttribute" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutVenueItemAddressTextWrapper"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/material_padding_half"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/textViewVenueDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/material_padding_half"
+            android:textColor="@color/body_text"
+            android:textSize="@dimen/material_type_micro"
+            android:textStyle="bold"
+            android:textIsSelectable="false"
+            tools:ignore="UnusedAttribute" />
+
         <TextView
             android:id="@+id/textViewVenueAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textIsSelectable="false"
             android:textColor="@color/body_text"
-            android:textSize="12sp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
-        android:gravity="right"
-        android:layout_weight="0.2"
-        android:orientation="vertical" >
-        <ImageView
-            android:id="@+id/imageViewVenueCategory"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="3dp"
-            android:scaleType="fitCenter"
-            android:layout_gravity="right"
-            android:contentDescription="@string/image_description_category_icon"
-            android:src="@drawable/foursquare_generic_category_icon" />
-
-        <TextView
-            android:id="@+id/textViewDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:gravity="right"
-            android:textColor="@color/body_text"
+            android:textSize="@dimen/material_type_micro"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textIsSelectable="false"
-            android:textSize="12sp" />
-
+            tools:ignore="UnusedAttribute" />
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

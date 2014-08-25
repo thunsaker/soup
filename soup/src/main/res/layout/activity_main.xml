@@ -32,7 +32,7 @@
         android:layout_gravity="start"
         android:background="@color/white"
         android:choiceMode="singleChoice"
-        android:divider="@color/foursquare_green_transparent"
+        android:divider="@color/soup_green"
         android:dividerHeight="0.5dp"
         android:fitsSystemWindows="true" />
 

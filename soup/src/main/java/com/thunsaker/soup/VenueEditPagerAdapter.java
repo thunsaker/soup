@@ -63,6 +63,5 @@ public class VenueEditPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return VenueEditPagerAdapter.CONTENT[position];
-//        return super.getPageTitle(position);
     }
 }

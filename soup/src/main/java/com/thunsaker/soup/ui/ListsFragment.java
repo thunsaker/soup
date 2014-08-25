@@ -107,7 +107,11 @@ public class ListsFragment extends BaseSoupFragment
         ButterKnife.inject(this, view);
         if(mSwipeViewListsContainer != null) {
             mSwipeViewListsContainer.setOnRefreshListener(this);
-            mSwipeViewListsContainer.setColorScheme(R.color.foursquare_green, R.color.foursquare_orange, R.color.foursquare_green, R.color.foursquare_blue);
+            mSwipeViewListsContainer.setColorScheme(
+                    R.color.soup_green,
+                    R.color.soup_blue,
+                    R.color.soup_green,
+                    R.color.soup_red);
         }
 	}
 
@@ -279,7 +283,7 @@ public class ListsFragment extends BaseSoupFragment
                     (FoursquareList) mGridViewLists.getItemAtPosition(position);
             mClickListener.onFoursquareListClick(list.getId());
         } catch (Exception e) {
-            Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Location 8", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Error 8", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }

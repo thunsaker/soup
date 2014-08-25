@@ -10,7 +10,6 @@ import com.thunsaker.soup.util.Util;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 /*
@@ -22,51 +21,53 @@ public class TimeFrame {
     public List<Integer> daysList;
     public boolean includesToday;
     public String openTimesString;
-    public String openTime;
-    public String closeTime;
-    public String FoursquareApiString;
+    public List<String> openTime;
+    public List<String> closeTime;
     public boolean is24Hours;
+    public String label;
 
     public TimeFrame(){
-        this.daysString = null;
+        this.daysString = "";
         this.daysList = new ArrayList<Integer>();
         this.openTimesString = "";
-        this.includesToday = false;
-        this.openTime = "";
-        this.closeTime = "";
+        this.openTime = new ArrayList<String>();
+        this.closeTime = new ArrayList<String>();
+        this.label = "";
     }
 
     public TimeFrame(String openTimes, String daysString) {
         this.openTimesString = openTimes;
         this.daysString = daysString;
-
         this.daysList = new ArrayList<Integer>();
         this.includesToday = false;
     }
 
-    public TimeFrame(Context CurrentContext, List<Integer> days, String StartTime, String EndTime) {
-        // Get Min day
-        Collections.sort(days);
-        Integer min = Collections.min(days);
-        String minString = TimeFrame.ConvertIntegerDayToLocalizedDayString(CurrentContext, min);
+//    public TimeFrame(Context CurrentContext, List<Integer> days, String StartTime, String EndTime) {
+//        // Get Min day
+//        Collections.sort(days);
+//        Integer min = Collections.min(days);
+//        String minString = TimeFrame.ConvertIntegerDayToLocalizedDayString(CurrentContext, min);
+//
+//        // Get Max day
+//        Integer max = Collections.max(days);
+//        String maxString = TimeFrame.ConvertIntegerDayToLocalizedDayString(CurrentContext, max);
+//
+//        // Translate into String
+//        this.daysString = String.format("%s-%s", minString, maxString);
+//        this.daysList = days;
+//
+//        setFoursquareApiString(createFoursquareApiString(this));
+//    }
 
-        // Get Max day
-        Integer max = Collections.max(days);
-        String maxString = TimeFrame.ConvertIntegerDayToLocalizedDayString(CurrentContext, max);
-
-        // Translate into String
-        this.daysString = String.format("%s-%s", minString, maxString);
-        this.daysList = days;
-
-        setFoursquareApiString(createFoursquareApiString(CurrentContext, this));
-    }
-
-    public String getFoursquareApiString() {
-        return FoursquareApiString;
-    }
-
-    public void setFoursquareApiString(String foursquareApiString) {
-        FoursquareApiString = foursquareApiString;
+    public TimeFrame(String daysString, List<Integer> daysList, boolean includesToday, String openTimesString, List<String> openTime, List<String> closeTime, String foursquareApiString, boolean is24Hours, String label) {
+        this.daysString = daysString;
+        this.daysList = daysList;
+        this.includesToday = includesToday;
+        this.openTimesString = openTimesString;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+        this.is24Hours = is24Hours;
+        this.label = label;
     }
 
 	public static List<TimeFrame> ParseVenueHourFromJson(JsonArray jsonArray,
@@ -94,15 +95,26 @@ public class TimeFrame {
                         JsonObject jObjectOpen = myOpenTimeArray.get(0).getAsJsonObject() != null
                                 ? myOpenTimeArray.get(0).getAsJsonObject()
                                 : null;
-                        String openTime = null;
+                        List<String> openTimes = new ArrayList<String>();
+                        List<String> closeTimes = new ArrayList<String>();
                         if (jObjectOpen != null) {
-                            openTime = jObjectOpen.get("start").getAsString();
+                            JsonArray myOpenTimesArray = jObjectOpen.get("start").getAsJsonArray();
+                            if(myOpenTimesArray != null) {
+                                for (JsonElement openTimeElement : myOpenTimesArray)
+                                    openTimes.add(openTimeElement.getAsString());
+                            }
+                            stringTimeFrames.get(t).openTime = openTimes;
+
+                            JsonArray myCloseTimesArray = jObjectOpen.get("end").getAsJsonArray();
+                            if(myCloseTimesArray != null) {
+                                for (JsonElement closeTimeElement : myCloseTimesArray)
+                                    closeTimes.add(closeTimeElement.getAsString());
+                            }
+                            stringTimeFrames.get(t).closeTime = closeTimes;
+
+                            if(openTimes.get(0) != null && closeTimes.get(0) != null)
+                                stringTimeFrames.get(t).is24Hours = openTimes.get(0).equals("0000") && closeTimes.get(0).equals("+0000");
                         }
-                        stringTimeFrames.get(t).openTime = openTime;
-                        assert jObjectOpen != null;
-                        String closeTime = jObjectOpen.get("end").getAsString();
-                        stringTimeFrames.get(t).closeTime = closeTime;
-                        stringTimeFrames.get(t).is24Hours = openTime.equals("0000") && closeTime.equals("+0000");
                     }
                 }
             } else {
@@ -141,19 +153,19 @@ public class TimeFrame {
                                 ? myOpenTimeArray.getAsJsonObject()
                                 : null;
                         if (jObjectOpen != null) {
-                            myTimeFrame.openTime =
-                                    jObjectOpen.get("start").getAsString();
+                            myTimeFrame.openTime.add(
+                                    jObjectOpen.get("start").getAsJsonArray().get(0).getAsString());
                         }
                         if (jObjectOpen != null) {
-                            myTimeFrame.closeTime =
-                                    jObjectOpen.get("end").getAsString();
+                            myTimeFrame.closeTime.add(
+                                    jObjectOpen.get("end").getAsJsonArray().get(0).getAsString());
                         }
 
                         assert jObjectOpen != null;
                         String openTime = jObjectOpen.get("start").getAsString();
-                        myTimeFrame.openTime = openTime;
+                        myTimeFrame.openTime.add(openTime);
                         String closeTime = jObjectOpen.get("end").getAsString();
-                        myTimeFrame.closeTime = closeTime;
+                        myTimeFrame.closeTime.add(closeTime);
                         myTimeFrame.is24Hours = openTime.equals("0000") && closeTime.equals("+0000");
                     }
                 }
@@ -230,11 +242,11 @@ public class TimeFrame {
         }
     }
 
-    public static String createFoursquareApiString(Context CurrentContext, TimeFrame t) {
-        String StartTime = t.openTime;
+    public static String createFoursquareApiString(TimeFrame t) {
+        String StartTime = t.openTime.get(0);
         Calendar myStartDate = Calendar.getInstance();
 
-        String EndTime = t.closeTime;
+        String EndTime = t.closeTime.get(0);
         Calendar myEndDate = Calendar.getInstance();
 
         if(t.is24Hours) {
@@ -259,29 +271,31 @@ public class TimeFrame {
         StartTime = StartTime.replace("+", "");
         EndTime = EndTime.replace("+", "");
 
-        Integer apiFormattedStart =
-                Integer.parseInt(StartTime);
-        Integer apiFormattedEnd =
-                Integer.parseInt(EndTime);
+        Integer apiFormattedStart = !t.is24Hours ? StartTime.length() > 0 ? Integer.parseInt(StartTime) : 0 : 0;
+        Integer apiFormattedEnd = !t.is24Hours ? EndTime.length() > 0 ? Integer.parseInt(EndTime) : 0 : 0;
 
         StringBuilder apiStringBuilder = new StringBuilder();
         List<Integer> days = new ArrayList<Integer>();
         days.addAll(t.daysList);
         String urlEncodedSemiColon = Util.Encode(";");
-        String urlEncodedAddition = Util.Encode("+");
+//        String urlEncodedAddition = Util.Encode("+");
         for (Integer day : days) {
         	apiStringBuilder.append(String.format("%s,", day));
 
 			if (t.is24Hours) {
-				apiStringBuilder.append(String.format("0000,%s0000", urlEncodedAddition));
+                apiStringBuilder.append("0000,+0000");
+//				apiStringBuilder.append(String.format("0000,%s0000", urlEncodedAddition));
 			} else {
 				apiStringBuilder
 						.append(String
 								.format("%s,%s%s",
 										apiFormattedStart < 100 ? "00" + apiFormattedStart.toString() : apiFormattedStart < 1000 ? "0" + apiFormattedStart.toString() : apiFormattedStart.toString(),
-										apiFormattedEnd < apiFormattedStart ? urlEncodedAddition : "",
+										apiFormattedEnd < apiFormattedStart ? "+" : "",
 										apiFormattedEnd < 100 ? "00" + apiFormattedEnd.toString() : apiFormattedEnd < 1000 ? "0" + apiFormattedEnd.toString() : apiFormattedEnd.toString()));
 			}
+
+            if(t.label != null && t.label.length() > 0)
+                apiStringBuilder.append(String.format(",%s", Util.Encode(t.label)));
 
 			apiStringBuilder.append(urlEncodedSemiColon);
         }
@@ -302,5 +316,73 @@ public class TimeFrame {
             list.add(t);
         }
         return list;
+    }
+
+    public static List<TimeFrame> ConvertVenueHoursTimeFrameResponseDayListToTimeFrameList(List<GetVenueHoursResponse.VenueHoursTimeFrameResponseDayList> timeFramesResponse) {
+        List<TimeFrame> list = new ArrayList<TimeFrame>();
+        if(timeFramesResponse != null && timeFramesResponse.size() > 0) {
+            for (GetVenueHoursResponse.VenueHoursTimeFrameResponseDayList h : timeFramesResponse) {
+                TimeFrame t = new TimeFrame();
+                t.daysList = h.days;
+                t.includesToday = h.includesToday;
+                if (t.openTime == null)
+                    t.openTime = new ArrayList<String>();
+                if (t.closeTime == null)
+                    t.closeTime = new ArrayList<String>();
+                for (GetVenueHoursResponse.VenueHoursTimeFrameOpen openTimes : h.open) {
+                    t.openTime.add(openTimes.start);
+                    t.closeTime.add(openTimes.end);
+//                t.openTimesString += t.openTimesString.length() > 0 ? ", " + openTimes.renderedTime : openTimes.renderedTime;
+                }
+                list.add(t);
+            }
+        }
+
+        return list;
+    }
+
+    public static List<TimeFrame> MergeVenueHoursTimeFrames(List<TimeFrame> original, List<TimeFrame> updated, Context context) {
+        List<TimeFrame> timeFrames = new ArrayList<TimeFrame>();
+
+        if(original.size() == updated.size()) {
+            for (int i = 0; i < original.size(); i++) {
+                TimeFrame t = new TimeFrame();
+                TimeFrame tu = updated.get(0);
+                t.openTime = new ArrayList<String>();
+                t.openTime = tu.openTime;
+                t.closeTime = new ArrayList<String>();
+                t.closeTime = tu.closeTime;
+                t.daysList = tu.daysList;
+
+                TimeFrame to = original.get(0);
+                t.daysString = to.daysString;
+                t.openTimesString = to.openTimesString;
+                t.includesToday = to.includesToday;
+                timeFrames.add(t);
+            }
+        } else {
+            for (int i = 0; i < updated.size(); i++) {
+                TimeFrame t = new TimeFrame();
+                TimeFrame tu = updated.get(i);
+                t.openTime = new ArrayList<String>();
+                t.openTime = tu.openTime;
+                t.closeTime = new ArrayList<String>();
+                t.closeTime = tu.closeTime;
+                t.daysList = tu.daysList;
+
+                t.daysString = TimeFrame.GetStringSegmentFormat(ConvertIntegerDayToLocalizedDayString(context, tu.daysList.get(0)), ConvertIntegerDayToLocalizedDayString(context, tu.daysList.get(tu.daysList.size() - 1)));
+
+                for (int j = 0; j < t.openTime.size(); j++) {
+                    t.openTimesString += t.openTimesString.length() > 0 ? ", " + TimeFrame.GetStringSegmentFormat(t.openTime.get(i), t.closeTime.get(i)) : TimeFrame.GetStringSegmentFormat(t.openTime.get(i), t.closeTime.get(i));
+                }
+                timeFrames.add(t);
+            }
+        }
+
+        return timeFrames;
+    }
+
+    public static String GetStringSegmentFormat(String open, String close) {
+        return String.format("%s—%s", open, close);
     }
 }

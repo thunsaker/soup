@@ -42,6 +42,7 @@ public class CheckinHistoryActivity extends BaseSoupActivity
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
 
         actionBar.setListNavigationCallbacks(
                 new ArrayAdapter<String>(

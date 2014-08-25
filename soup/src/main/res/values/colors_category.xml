@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:category="http://schemas.android.com/apk/res-auto">
+    <!--category colors-->
+    <color name="category_art" category:id="4d4b7104d754a06370d81259">#ff5CCCC6</color>
+    <color name="category_school" category:id="4d4b7105d754a06372d81259">#ffFF9600</color>
+    <color name="category_event" category:id="4d4b7105d754a06373d81259">#fff94877</color>
+    <color name="category_food" category:id="4d4b7105d754a06374d81259">#ffE6092C</color>
+    <color name="category_night" category:id="4d4b7105d754a06376d81259">#ffC300E0</color>
+    <color name="category_out" category:id="4d4b7105d754a06377d81259">#ff73CF42</color>
+    <color name="category_work" category:id="4d4b7105d754a06375d81259">#ff959B9E</color>
+    <color name="category_house" category:id="4e67e38e036454776db1fb3a">#ffFFC800</color>
+    <color name="category_shop" category:id="4d4b7105d754a06378d81259">#ff7E00E0</color>
+    <color name="category_travel" category:id="4d4b7105d754a06379d81259">#ff0F70F4</color>
+</resources>

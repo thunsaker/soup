@@ -18,7 +18,7 @@ public class FoursquareVenueResponse extends FoursquareCompactVenueResponse {
     public String shortUrl;
     public String timeZone;
     public VenuePageUpdates pageUpdates;
-    public GetVenueHoursResponse.VenueHoursResponse hours;
+    public GetVenueHoursResponse.GetVenueResponseHours hours;
 
     public static Venue ConvertFoursquareVenueResponseToVenue(FoursquareVenueResponse venue) {
         return Venue.ConvertVenueResponseToVenue(venue);

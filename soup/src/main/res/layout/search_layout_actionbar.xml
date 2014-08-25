@@ -9,7 +9,7 @@
         android:layout_weight="0.85"
         android:layout_height="fill_parent"
         android:gravity="fill_horizontal" />
-    <ImageButton 
+    <ImageButton
         android:id="@+id/imageButtonSearch"
         android:layout_width="0dp"
         android:layout_weight="0.15"
@@ -29,7 +29,7 @@
         android:layout_height="fill_parent"
         android:gravity="fill_horizontal"
         android:layout_alignParentLeft="true" />
-    <ImageButton 
+    <ImageButton
         android:id="@+id/imageButtonSearch"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="placeholder_venue_name" translatable="false">Mos Eisley Cantina</string>
+
+    <string name="placeholder_category" translatable="false">Generic Category</string>
+    <string name="placeholder_category_primary" translatable="false">Primary Category</string>
+    <string name="placeholder_category_secondary" translatable="false">Secondary Category</string>
+    <string name="placeholder_category_tertiary" translatable="false">Tertiary Category</string>
+
+    <string name="placeholder_hours_day_short" translatable="false">M—W</string>
+    <string name="placeholder_hours_time_span_24_hour" translatable="false">800—1700</string>
+
+    <string name="placeholder_hours_day" translatable="false">Mon-Thu</string>
+    <string name="placeholder_hours_time" translatable="false">8:00pm-10:00pm</string>
+</resources>

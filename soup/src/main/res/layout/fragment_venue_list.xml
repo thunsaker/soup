@@ -1,47 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/linearLayoutVenueListMapHeaderWrapper"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:visibility="gone">-->
-        <!--<include-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--layout="@layout/fragment_map_header" />-->
-    <!--</LinearLayout>-->
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swipeLayoutVenueListContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ListView
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:drawSelectorOnTop="false"
-            android:clipToPadding="false"
-            android:scrollbarStyle="outsideOverlay" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-    <LinearLayout
-        android:id="@android:id/empty"
+    <RelativeLayout
+        android:id="@+id/relativeLayoutVenueListWrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_gravity="center_horizontal|center_vertical">
+        android:background="@color/white"
+        tools:ignore="UselessParent">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
+        <!--<fragment-->
+            <!--android:id="@+id/mapFragmentVenueList"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:name="com.google.android.gms.maps.SupportMapFragment"-->
+            <!--xmlns:tools="http://schemas.android.com/tools"-->
+            <!--tools:ignore="MissingPrefix"-->
+            <!--xmlns:map="http://schemas.android.com/apk/res-auto"-->
+            <!--map:cameraZoom="16"-->
+            <!--map:mapType="normal"-->
+            <!--map:uiCompass="true"-->
+            <!--map:uiRotateGestures="true"-->
+            <!--map:uiScrollGestures="true"-->
+            <!--map:uiTiltGestures="true"-->
+            <!--map:uiZoomControls="false"-->
+            <!--map:uiZoomGestures="true" />-->
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeLayoutVenueListContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+           <ListView
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:drawSelectorOnTop="false"
+                android:clipToPadding="false"
+                android:scrollbarStyle="outsideOverlay" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <RelativeLayout
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center_vertical|center_horizontal"
-            style="?android:attr/progressBarStyleLarge"
-            android:indeterminate="true" />
-    </LinearLayout>
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progressEmptyVenueList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                style="?android:attr/progressBarStyleLarge"
+                android:indeterminate="true" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/frameLayoutEmptyVenueListMessageContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutEmptyVenueListMessageContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/default_layout_selector_red">
+                <ImageView
+                    android:id="@+id/imageViewVenueListImage"
+                    android:layout_width="100dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:layout_above="@+id/textViewVenueList"
+                    android:contentDescription="@string/app_name"
+                    android:tint="@color/soup_red_dark"
+                    android:rotation="-130.00"
+                    android:src="@drawable/bowl_gray_single_color"
+                    tools:ignore="UnusedAttribute" />
+                <TextView
+                    android:id="@+id/textViewVenueList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/material_padding"
+                    android:layout_centerInParent="true"
+                    android:textSize="@dimen/material_type_med"
+                    android:text="@string/alert_current_location_unknown"/>
+
+            </RelativeLayout>
+        </FrameLayout>
+    </RelativeLayout>
 </FrameLayout>

@@ -1,179 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical"
-              android:background="@color/now_background"
-              android:layout_gravity="center_horizontal">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_gravity="center_horizontal">
+
     <LinearLayout
-            android:id="@+id/linearLayoutEditVenueHoursWrapper"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:orientation="vertical"
-            android:gravity="center">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/material_padding_double"
+        android:orientation="vertical" >
 
         <LinearLayout
-                android:layout_width="fill_parent"
+            android:id="@+id/linearLayoutVenueEditSelectDaysWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/material_padding"
+            android:layout_marginBottom="@dimen/material_padding_double"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/linearLayoutVenueEditSelectDays1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
-            <LinearLayout
-                    android:id="@+id/linearLayoutVenueEditSelectDaysWrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingTop="@dimen/activity_vertical_margin"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                <LinearLayout
-                        android:id="@+id/linearLayoutVenueEditSelectDays1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center">
+                android:orientation="horizontal"
+                android:gravity="center">
 
-                    <ToggleButton
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            style="@style/Toggle.Day"
-                            android:textOn="@string/day_of_week_sunday_short"
-                            android:textOff="@string/day_of_week_sunday_short"
-                            android:textAllCaps="true"
-                            android:id="@+id/toggleButtonSun" />
-                    <ToggleButton
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            style="@style/Toggle.Day"
-                            android:textAllCaps="true"
-                            android:textOn="@string/day_of_week_tuesday_short"
-                            android:textOff="@string/day_of_week_tuesday_short"
-                            android:id="@+id/toggleButtonTue" />
-                    <ToggleButton
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            style="@style/Toggle.Day"
-                            android:textAllCaps="true"
-                            android:textOn="@string/day_of_week_thursday_short"
-                            android:textOff="@string/day_of_week_thursday_short"
-                            android:id="@+id/toggleButtonThu" />
-                    <ToggleButton
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            style="@style/Toggle.Day"
-                            android:textAllCaps="true"
-                            android:textOn="@string/day_of_week_saturday_short"
-                            android:textOff="@string/day_of_week_saturday_short"
-                            android:id="@+id/toggleButtonSat" />
-                </LinearLayout>
-                <LinearLayout
-                        android:id="@+id/linearLayoutVenueEditSelectDays2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-                    <ToggleButton
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            style="@style/Toggle.Day"
-                            android:textAllCaps="true"
-                            android:textOn="@string/day_of_week_monday_short"
-                            android:textOff="@string/day_of_week_monday_short"
-                            android:id="@+id/toggleButtonMon" />
-                    <ToggleButton
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            style="@style/Toggle.Day"
-                            android:textAllCaps="true"
-                            android:textOn="@string/day_of_week_wednesday_short"
-                            android:textOff="@string/day_of_week_wednesday_short"
-                            android:id="@+id/toggleButtonWed" />
-                    <ToggleButton
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            style="@style/Toggle.Day"
-                            android:textAllCaps="true"
-                            android:textOn="@string/day_of_week_friday_short"
-                            android:textOff="@string/day_of_week_friday_short"
-                            android:id="@+id/toggleButtonFri" />
-                </LinearLayout>
+                <ToggleButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    style="@style/Toggle_Day"
+                    android:layout_marginLeft="@dimen/material_padding"
+                    android:layout_marginRight="@dimen/material_padding"
+                    android:textOn="@string/day_of_week_sunday_short"
+                    android:textOff="@string/day_of_week_sunday_short"
+                    android:id="@+id/toggleButtonSun" />
+
+                <ToggleButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    style="@style/Toggle_Day"
+                    android:layout_marginLeft="@dimen/material_padding"
+                    android:layout_marginRight="@dimen/material_padding"
+                    android:textOn="@string/day_of_week_tuesday_short"
+                    android:textOff="@string/day_of_week_tuesday_short"
+                    android:id="@+id/toggleButtonTue" />
+                <ToggleButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    style="@style/Toggle_Day"
+                    android:layout_marginLeft="@dimen/material_padding"
+                    android:layout_marginRight="@dimen/material_padding"
+                    android:textOn="@string/day_of_week_thursday_short"
+                    android:textOff="@string/day_of_week_thursday_short"
+                    android:id="@+id/toggleButtonThu" />
+                <ToggleButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    style="@style/Toggle_Day"
+                    android:layout_marginLeft="@dimen/material_padding"
+                    android:layout_marginRight="@dimen/material_padding"
+                    android:textOn="@string/day_of_week_saturday_short"
+                    android:textOff="@string/day_of_week_saturday_short"
+                    android:id="@+id/toggleButtonSat" />
             </LinearLayout>
+
             <LinearLayout
-                    android:id="@+id/linearLayoutVenueEditTimeWrapper"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_vertical_margin"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-
-                <LinearLayout
-                        android:id="@+id/linearLayoutVenueEditTimeStart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:orientation="vertical"
-                        android:gravity="center">
-                    <TextView
-                            android:id="@+id/textViewVenueEditTimeStartLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20dp"
-                            android:textColor="@color/header_text"
-                            android:text="@string/edit_venue_hours_open" />
-
-                    <TextView
-                            android:id="@+id/textViewVenueEditTimeStart"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="-:--"
-                            android:textSize="35sp"
-                            android:gravity="right" />
-                </LinearLayout>
-
-                <View
-                        android:id="@+id/editTextVenueEditTimeHyphen"
-                        android:layout_width="20dp"
-                        android:layout_height="5dp"
-                        android:layout_marginTop="13dp"
-                        android:background="@drawable/time_hyphen"/>
-
-                <LinearLayout
-                        android:id="@+id/linearLayoutVenueEditTimeEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="center">
-
-                    <TextView
-                            android:id="@+id/textViewVenueEditTimeEndLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:textColor="@color/header_text"
-                            android:text="@string/edit_venue_hours_close" />
-
-                    <TextView
-                            android:id="@+id/textViewVenueEditTimeEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="-:--"
-                            android:textSize="35sp"
-                            android:gravity="right" />
-                </LinearLayout>
+                android:id="@+id/linearLayoutVenueEditSelectDays2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <ToggleButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    style="@style/Toggle_Day"
+                    android:layout_marginLeft="@dimen/material_padding"
+                    android:layout_marginRight="@dimen/material_padding"
+                    android:textOn="@string/day_of_week_monday_short"
+                    android:textOff="@string/day_of_week_monday_short"
+                    android:id="@+id/toggleButtonMon" />
+                <ToggleButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    style="@style/Toggle_Day"
+                    android:layout_marginLeft="@dimen/material_padding"
+                    android:layout_marginRight="@dimen/material_padding"
+                    android:textOn="@string/day_of_week_wednesday_short"
+                    android:textOff="@string/day_of_week_wednesday_short"
+                    android:id="@+id/toggleButtonWed" />
+                <ToggleButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    style="@style/Toggle_Day"
+                    android:layout_marginLeft="@dimen/material_padding"
+                    android:layout_marginRight="@dimen/material_padding"
+                    android:textOn="@string/day_of_week_friday_short"
+                    android:textOff="@string/day_of_week_friday_short"
+                    android:id="@+id/toggleButtonFri" />
             </LinearLayout>
-            <ToggleButton
-                android:id="@+id/toggleButton24Hours"
+        </LinearLayout>
+
+        <View
+            android:id="@+id/seamDays"
+            android:layout_height="1dp"
+            android:layout_width="fill_parent"
+            android:background="@color/gray_light_super" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout24HoursWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:background="@drawable/layout_selector_blue">
+
+            <TextView
+                android:id="@+id/textView24HoursTitle"
+                android:layout_width="0dp"
+                android:layout_height="72dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/material_padding_double"
+                android:paddingBottom="@dimen/material_padding_double"
+                android:paddingLeft="@dimen/material_keyline_1"
+                android:textIsSelectable="false"
+                android:text="@string/edit_venue_hours_24_hours"
+                android:gravity="center_vertical"
+                style="@style/Theme.Soup.Text.Small" />
+
+            <CheckBox
+                android:id="@+id/checkBox24Hours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOn="@string/edit_venue_hours_24_hours"
-                android:textOff="@string/edit_venue_hours_24_hours"
-                android:layout_gravity="center_horizontal"
-                style="@style/Toggle.TwentyFourHourTime" />
+                android:layout_marginRight="@dimen/material_keyline_1"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutTimeSegmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <View
+            android:id="@+id/seamList"
+            android:layout_height="1dp"
+            android:layout_width="fill_parent"
+            android:background="@color/gray_light_super" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutHoursAddWrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="72dp"
+            android:gravity="center_horizontal"
+            android:background="@drawable/layout_selector_blue"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/imageViewHoursAdd"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="@dimen/material_keyline_1"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_mat_plus"
+                android:scaleType="fitCenter"
+                android:tint="@color/soup_blue"
+                android:contentDescription="@string/edit_venue_hours_add" />
+            <TextView
+                android:id="@+id/textViewHoursAddTitle"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:paddingTop="@dimen/material_padding_double"
+                android:paddingBottom="@dimen/material_padding_double"
+                android:paddingLeft="@dimen/material_keyline_2"
+                android:textIsSelectable="false"
+                android:text="@string/edit_venue_hours_add"
+                android:gravity="center_vertical"
+                style="@style/Theme.Soup.Text.Small" />
+        </RelativeLayout>
+
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

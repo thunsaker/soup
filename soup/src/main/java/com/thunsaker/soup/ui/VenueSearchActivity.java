@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
@@ -93,7 +92,7 @@ public class VenueSearchActivity extends BaseSoupActivity implements
         ab.setCustomView(R.layout.search_layout_actionbar);
         ab.setDisplayShowCustomEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
-        ab.setDisplayUseLogoEnabled(true);
+//        ab.setDisplayUseLogoEnabled(true);
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
 
@@ -374,9 +373,7 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 
 	@Override
     public boolean onVenueListLongClick(String venueId, String venueName) {
-		MainActivity.longPressedVenueId = venueId;
-		MainActivity.longPressedVenueName = venueName;
-		DialogFragment checkinDialog = new CheckinDialogFragment();
+        CheckinDialogFragment checkinDialog = CheckinDialogFragment.newInstance(venueId, venueName);
 		checkinDialog.show(getSupportFragmentManager(), MainActivity.CHECKIN_CONFIRMATION_DIALOG);
 		return true;
 	}

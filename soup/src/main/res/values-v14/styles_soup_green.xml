@@ -18,8 +18,7 @@
 -->
 
 <resources>
-
-    <style name="Theme.Soup_green" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.Soup" parent="@style/_Theme.Soup">
         <item name="android:actionBarItemBackground">@drawable/selectable_background_soup_green</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Soup_green</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Soup_green</item>
@@ -29,6 +28,7 @@
         <item name="android:actionModeBackground">@drawable/cab_background_top_soup_green</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_soup_green</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Soup_green</item>
+        <item name="android:windowContentOverlay">@null</item>
 
                 <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.Soup_green.Widget</item>
@@ -37,6 +37,7 @@
 
     <style name="ActionBar.Solid.Soup_green" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@drawable/ab_solid_soup_green</item>
+        <item name="background">@drawable/ab_solid_soup_green</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_soup_green</item>
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_soup_green</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Soup_green</item>

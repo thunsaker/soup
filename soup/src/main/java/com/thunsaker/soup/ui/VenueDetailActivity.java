@@ -45,7 +45,9 @@ public class VenueDetailActivity extends BaseSoupActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayUseLogoEnabled(true);
-        ab.setDisplayShowHomeEnabled(false);
+        ab.setDisplayShowHomeEnabled(true);
+        ab.setTitle(null);
+        ab.setIcon(R.drawable.transparent_square);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
             ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent)));

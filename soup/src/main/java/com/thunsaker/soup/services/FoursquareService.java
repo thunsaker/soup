@@ -3,13 +3,17 @@ package com.thunsaker.soup.services;
 import com.thunsaker.soup.data.api.model.GetUserCheckinHistoryResponse;
 import com.thunsaker.soup.data.api.model.GetVenueHoursResponse;
 import com.thunsaker.soup.data.api.model.GetVenueResponse;
+import com.thunsaker.soup.data.api.model.PostVenueEditResponse;
 import com.thunsaker.soup.data.api.model.VenueSearchResponse;
 
+import java.util.Map;
 import java.util.UUID;
 
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import retrofit.http.QueryMap;
 
 public interface FoursquareService {
 
@@ -109,4 +113,10 @@ public interface FoursquareService {
             @Query("limit") String limit,
             @Query("offset") int offset,
             @Query("sort") String sortOrder);
+
+    @POST("/venue/{venueId}/edit")
+    PostVenueEditResponse postVenueEdit(
+            @Path("venueId") String venueId,
+            @Query("oauth_token") String oauth_token,
+            @QueryMap Map<String, String> edits);
 }

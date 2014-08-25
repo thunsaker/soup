@@ -9,9 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.thunsaker.soup.R;
@@ -26,7 +26,7 @@ import java.util.List;
 public class VenueEditHoursFragment extends Fragment {
     public static final String ARG_OBJECT = "object";
 
-    public static String DIALOG_CONFIRM_DELETE = "DIALOG_CONFIRM_DELETE";
+    protected static final String TIME_SEGMENT_DELETE_CONFIRMATION_DIALOG = "TIME_SEGMENT_DELETE_CONFIRMATION_DIALOG";
     public Integer confirmDeletePosition = -1;
 
     public static VenueHoursListAdapter currentVenueHoursListAdapter;
@@ -61,16 +61,16 @@ public class VenueEditHoursFragment extends Fragment {
                 R.layout.list_hours_item,
                 currentVenueListHours);
 
-        LinearLayout mLinearLayoutAdd =
-                (LinearLayout) inflater.inflate(R.layout.list_hours_item_add, null);
-        mLinearLayoutAdd.setOnClickListener(new View.OnClickListener() {
+        RelativeLayout mRelativeLayoutAdd =
+                (RelativeLayout) inflater.inflate(R.layout.list_hours_item_add, null);
+        mRelativeLayoutAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ShowAddHours();
             }
         });
 
-        mListViewHours.addFooterView(mLinearLayoutAdd);
+        mListViewHours.addFooterView(mRelativeLayoutAdd);
         mListViewHours.setAdapter(currentVenueHoursListAdapter);
 
         currentVenueHoursListAdapter.notifyDataSetChanged();
@@ -102,16 +102,8 @@ public class VenueEditHoursFragment extends Fragment {
             try {
                 final LinearLayout layoutTimeWrapper =
                         (LinearLayout) v.findViewById(R.id.linearLayoutVenueEditHoursItemWrapper);
-                final LinearLayout layoutButtonWrapper =
-                        (LinearLayout) v.findViewById(R.id.linearLayoutVenueEditButtonsWrapper);
-
-                final Button buttonAddEditSave =
-                        (Button) v.findViewById(R.id.buttonVenueEditTimeFrameAddEditSave);
-                final Button buttonDeleteCancel =
-                        (Button) v.findViewById(R.id.buttonVenueEditTimeFrameDeleteCancel);
 
                 final TimeFrame time = items.get(pos);
-
                 final TextView daysTextView =
                         (TextView)v.findViewById(R.id.textViewVenueEditHoursDays);
                 final TextView timeTextView =
@@ -127,40 +119,24 @@ public class VenueEditHoursFragment extends Fragment {
 
                     daysTextView.setText(myTimeDays);
                     timeTextView.setText(myTimeHours);
-
-                    buttonDeleteCancel.setVisibility(View.VISIBLE);
-                    buttonDeleteCancel.setText(getString(R.string.edit_venue_hours_delete));
-
-                    buttonAddEditSave.setVisibility(View.VISIBLE);
-                    buttonAddEditSave.setText(getString(R.string.edit_venue_hours_edit));
                 }
 
                 layoutTimeWrapper.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(layoutButtonWrapper.getVisibility() == View.GONE)
-                            layoutButtonWrapper.setVisibility(View.VISIBLE);
-                        else
-                            layoutButtonWrapper.setVisibility(View.GONE);
+                        ShowAddEditHours(pos, time);
                     }
                 });
 
-                View.OnClickListener venueHoursButtonsListener = new View.OnClickListener() {
+                layoutTimeWrapper.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        Button myView = (Button) view;
-                        if(myView.getText() == getString(R.string.edit_venue_hours_edit)) {
-                            ShowAddEditHours(pos, time);
-                        } else if (myView.getText() ==
-                                getString(R.string.edit_venue_hours_delete)) {
-                            currentVenueListHours.remove(pos);
-                            currentVenueHoursListAdapter.notifyDataSetChanged();
-                            VenueEditTabsActivity.ShowRevertOption(getActivity());
-                        }
+                    public boolean onLongClick(View v) {
+                        VenueEditTabsActivity.ConfirmDeleteDialogFragment confirmDeleteDialogFragment =
+                                VenueEditTabsActivity.ConfirmDeleteDialogFragment.newInstance(pos);
+                        confirmDeleteDialogFragment.show(getFragmentManager(), TIME_SEGMENT_DELETE_CONFIRMATION_DIALOG);
+                        return true;
                     }
-                };
-                buttonAddEditSave.setOnClickListener(venueHoursButtonsListener);
-                buttonDeleteCancel.setOnClickListener(venueHoursButtonsListener);
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -206,31 +182,5 @@ public class VenueEditHoursFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
     }
-
-//    public class DeleteTimeFrameDialogFragment extends DialogFragment {
-//        @Override
-//        public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//            builder.setMessage(R.string.edit_venue_delete_hours_dialog)
-//                    .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            if(currentVenueListHours.size() > 0 &&
-//                                confirmDeletePosition < currentVenueListHours.size()) {
-//                                currentVenueListHours.remove(confirmDeletePosition);
-//                                currentVenueHoursListAdapter.notifyDataSetChanged();
-//                                VenueEditTabsActivity.ShowRevertOption(getSherlockActivity());
-//                            }
-//                            confirmDeletePosition = -1;
-//                        }
-//                    })
-//                    .setNegativeButton(R.string.dialog_no, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            confirmDeletePosition = -1;
-//                        }
-//                    });
-//            return builder.create();
-//        }
-//    }
 }

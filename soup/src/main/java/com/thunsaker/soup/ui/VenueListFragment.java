@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /*
@@ -85,8 +87,11 @@ public class VenueListFragment extends BaseSoupFragment
     public static int mActivatedPosition = ListView.INVALID_POSITION;
 
     private ListView mListView;
+//    private SupportMapFragment mMapVenueList;
+//    private static GoogleMap mMap;
 
     @InjectView(R.id.swipeLayoutVenueListContainer) SwipeRefreshLayout mSwipeViewVenueListContainer;
+    @InjectView(R.id.frameLayoutEmptyVenueListMessageContainer) FrameLayout mEmptyListMessage;
 
     private int mListType;
 
@@ -217,6 +222,7 @@ public class VenueListFragment extends BaseSoupFragment
         View view = inflater.inflate(R.layout.fragment_venue_list, container, false);
 
         mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView.setVisibility(View.VISIBLE);
         mListView.setSelector(R.drawable.layout_selector_green);
         mListView.setEmptyView(view.findViewById(android.R.id.empty));
 
@@ -230,10 +236,10 @@ public class VenueListFragment extends BaseSoupFragment
         if(mSwipeViewVenueListContainer != null) {
             mSwipeViewVenueListContainer.setOnRefreshListener(this);
             mSwipeViewVenueListContainer.setColorScheme(
-                    R.color.foursquare_green,
-                    R.color.foursquare_orange,
-                    R.color.foursquare_green,
-                    R.color.foursquare_blue);
+                    R.color.soup_green,
+                    R.color.soup_blue,
+                    R.color.soup_green,
+                    R.color.soup_red);
             mSwipeViewVenueListContainer.setRefreshing(true);
         }
 
@@ -261,20 +267,62 @@ public class VenueListFragment extends BaseSoupFragment
                 break;
         }
 
+        // TODO: Add a map view?
+//        mMapVenueList = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.mapFragmentVenueList);
+//        mMap = mMapVenueList.getMap();
+//        if(mMap != null) {
+//            mMap.clear();
+//            mMap.addMarker(new MarkerOptions()
+//                .position(MainActivity.currentLocation)
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_dot)));
+//            LatLng offsetCamera = new LatLng(MainActivity.currentLocation.latitude, MainActivity.currentLocation.longitude - 0.012);
+//            mMap.moveCamera(CameraUpdateFactory
+//                    .newLatLng(offsetCamera));
+//        }
+
         return view;
     }
 
-    private void enableLocationSettings() {
+    private void hideProgress() {
         if(mSwipeViewVenueListContainer != null)
             mSwipeViewVenueListContainer.setRefreshing(false);
+    }
+
+    private void showProgress() {
+        if(mSwipeViewVenueListContainer != null)
+            mSwipeViewVenueListContainer.setRefreshing(true);
+    }
+
+    private void clearCurrentVenueList() {
+        if(currentVenueListAdapter != null) {
+            currentVenueList = null;
+            currentVenueListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void hideSadMessage() {
+        if(mListView != null)
+            mListView.setVisibility(View.VISIBLE);
+        if(mEmptyListMessage != null)
+            mEmptyListMessage.setVisibility(View.GONE);
+    }
+
+    private void showSadMessage() {
+        if(mListView != null)
+            mListView.setVisibility(View.GONE);
+        if(mEmptyListMessage != null)
+            mEmptyListMessage.setVisibility(View.VISIBLE);
+    }
+
+    private void enableLocationSettings() {
+        hideProgress();
 
         if (mLocationManager != null)
             mLocationManager.removeUpdates(mLocationListener);
 
         Toast.makeText(mContext, R.string.alert_gps_disabled, Toast.LENGTH_SHORT).show();
 
-        currentVenueList = null;
-        currentVenueListAdapter.notifyDataSetChanged();
+        clearCurrentVenueList();
     }
 
     public final LocationListener mLocationListener = new LocationListener() {
@@ -307,8 +355,8 @@ public class VenueListFragment extends BaseSoupFragment
     };
 
     public void RefreshVenuesList(String query, String location, String duplicateId) {
-        if(mSwipeViewVenueListContainer != null)
-            mSwipeViewVenueListContainer.setRefreshing(true);
+        hideSadMessage();
+        showProgress();
         mBus.post(new VenueSearchEvent(query, location, duplicateId, mListType));
     }
 
@@ -327,49 +375,53 @@ public class VenueListFragment extends BaseSoupFragment
                 LocationProvider provider = null;
                 Boolean hasLocationProvider;
 
-                mLocationManager =
-                        (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                Location lastKnown = mLocationManager != null ? mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER) : null;
+                double lat = lastKnown != null ? lastKnown.getLatitude() : 0.00;
+                double lon = lastKnown != null ? lastKnown.getLongitude() : 0.00;
+
                 // Use network provider first
-                LocationProvider networkProvider =
-                        mLocationManager.getProvider(
-                                LocationManager.NETWORK_PROVIDER);
+                LocationProvider networkProvider = mLocationManager != null ? mLocationManager.getProvider(LocationManager.NETWORK_PROVIDER) : null;
+                final boolean networkEnabled = mLocationManager != null && networkProvider != null && mLocationManager.isProviderEnabled(networkProvider.getName());
 
-                Location lastKnown =
-                        mLocationManager.getLastKnownLocation(
-                                LocationManager.PASSIVE_PROVIDER);
-                double lat = lastKnown.getLatitude();
-                double lon = lastKnown.getLongitude();
-                MainActivity.currentLocation = new LatLng(lat, lon);
-
-                final boolean networkEnabled =
-                        mLocationManager.isProviderEnabled(networkProvider.getName());
-                LocationProvider gpsProvider =
-                        mLocationManager.getProvider(
-                                LocationManager.NETWORK_PROVIDER);
-                final boolean gpsEnabled =
-                        mLocationManager.isProviderEnabled(gpsProvider.getName());
+                LocationProvider gpsProvider = mLocationManager != null ? mLocationManager.getProvider(LocationManager.GPS_PROVIDER) : null;
+                final boolean gpsEnabled = mLocationManager != null && gpsProvider != null && mLocationManager.isProviderEnabled(gpsProvider.getName());
                 if (gpsEnabled) {
+                    Location lastKnownGps = mLocationManager != null ? mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) : null;
+                    if(lat == 0.00)
+                        lat = lastKnownGps != null ? lastKnownGps.getLatitude() : 0.00;
+                    if(lon == 0.00)
+                        lon = lastKnownGps != null ? lastKnownGps.getLongitude() : 0.00;
                     provider = gpsProvider;
                     hasLocationProvider = true;
                 } else if (networkEnabled) {
+                    Location lastKnownNetwork = mLocationManager != null ? mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) : null;
+                    if(lat == 0.00)
+                        lat = lastKnownNetwork != null ? lastKnownNetwork.getLatitude() : 0.00;
+                    if(lon == 0.00)
+                        lon = lastKnownNetwork != null ? lastKnownNetwork.getLongitude() : 0.00;
                     provider = networkProvider;
                     hasLocationProvider = true;
                 } else {
                     hasLocationProvider = false;
                 }
 
+                MainActivity.currentLocation = new LatLng(lat, lon);
+
                 if (hasLocationProvider) {
                     // Update every 5 minutes or ~1 mile
-                    mLocationManager.requestLocationUpdates(
-                            provider.getName(), 300000, 1709, mLocationListener);
-                    if (MainActivity.currentLocation != null)
+                    mLocationManager.requestLocationUpdates(provider.getName(), 300000, 1709, mLocationListener);
+                    if (MainActivity.currentLocation != null && MainActivity.currentLocation.latitude != 0.00 && MainActivity.currentLocation.longitude != 0.00)
                         RefreshVenuesList(searchQuery, searchQueryLocation, duplicateVenueId);
                     else {
-                        Toast.makeText(getActivity(), R.string.alert_current_location_unknown,
-                                Toast.LENGTH_SHORT).show();
+                        clearCurrentVenueList();
+                        hideProgress();
+                        Toast.makeText(getActivity(), R.string.alert_current_location_unknown, Toast.LENGTH_SHORT).show();
+                        showSadMessage();
                     }
                 } else {
                     enableLocationSettings();
+                    showSadMessage();
                 }
             }
         } catch (Exception e) {
@@ -391,10 +443,10 @@ public class VenueListFragment extends BaseSoupFragment
     }
 
     public void onEvent(VenueListEvent event) {
-        if(mSwipeViewVenueListContainer != null)
-            mSwipeViewVenueListContainer.setRefreshing(false);
+        hideProgress();
 
         if (event.result && event.resultList != null && event.resultList.size() > 0) {
+            hideSadMessage();
             switch (event.resultListType) {
                 case 1: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_SEARCH}
                     searchResultsVenueList = new ArrayList<CompactVenue>(event.resultList);
@@ -423,7 +475,10 @@ public class VenueListFragment extends BaseSoupFragment
                     break;
             }
         } else {
-            Toast.makeText(mContext, mContext.getString(R.string.alert_error_loading_venues) + " - Location 4", Toast.LENGTH_SHORT).show();
+            if(mLocationManager == null)
+                enableLocationSettings();
+            else
+                Toast.makeText(mContext, mContext.getString(R.string.alert_error_loading_venues) + " - Error 4", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -453,15 +508,19 @@ public class VenueListFragment extends BaseSoupFragment
                 Toast.makeText(getActivity(), R.string.alert_still_loading, Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Location 3", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Error 3", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        CompactVenue clickedVenue =
-                (CompactVenue) mListView.getItemAtPosition(position);
+        CompactVenue clickedVenue = (CompactVenue) mListView.getItemAtPosition(position);
         return mClickListener.onVenueListLongClick(clickedVenue.id, clickedVenue.name);
+    }
+
+    @OnClick(R.id.frameLayoutEmptyVenueListMessageContainer)
+    public void sadMessageClick() {
+        RefreshVenuesList("", "", "");
     }
 }

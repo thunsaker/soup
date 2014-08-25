@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:state_pressed="false" android:drawable="@drawable/star_checked" />
-    <item android:state_checked="true" android:state_pressed="true" android:drawable="@drawable/star_unchecked_filled" />
-    <item android:state_checked="false" android:state_pressed="true" android:drawable="@drawable/star_unchecked_filled" />
-    <item android:state_checked="false" android:state_pressed="false" android:drawable="@drawable/star_unchecked" />
+    <item android:state_checked="true" android:state_pressed="false" android:drawable="@drawable/ic_mat_star_on" />
+    <item android:state_checked="true" android:state_pressed="true" android:drawable="@drawable/ic_mat_star_off"  />
+    <item android:state_checked="false" android:state_pressed="true" android:drawable="@drawable/ic_mat_star_on" />
+    <item android:state_checked="false" android:state_pressed="false" android:drawable="@drawable/ic_mat_star_off" />
 </selector>

@@ -86,6 +86,21 @@ public class PreferencesHelper {
         prefsEditor.apply();
     }
 
+    public static String getFoursquareHomeCity(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getString(
+                context.getString(R.string.prefs_foursquare_home_city),
+                "");
+    }
+    public static void setFoursquareHomeCity(Context context, String newValue) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        Editor prefsEditor = prefs.edit();
+        prefsEditor.putString(
+                context.getString(R.string.prefs_foursquare_home_city),
+                newValue);
+        prefsEditor.apply();
+    }
+
     public static boolean getShownSearchOverlay(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         return prefs.getBoolean(

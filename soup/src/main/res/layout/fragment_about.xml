@@ -1,108 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/now_background"
-    android:fitsSystemWindows="true">
-    <ScrollView
+    android:paddingTop="@dimen/material_padding"
+    android:background="@color/white">
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/action_bar_height"
-        android:background="@color/now_background">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/material_padding_double"
+            android:paddingRight="@dimen/material_padding_double"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingTop="@dimen/material_padding" >
+
+            <TextView
+                android:id="@+id/about_text_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_version_long"
+                android:textSize="@dimen/material_type_large" />
+
+            <TextView
+                android:id="@+id/about_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_padding"
+                android:textSize="@dimen/material_type_small"
+                android:text="@string/about_message" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_off" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/material_padding"
+            android:paddingLeft="@dimen/material_padding_double"
+            android:paddingRight="@dimen/material_padding_double" >
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/about_foursquare"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/image_description_powered_by_foursquare"
+                android:src="@drawable/foursquare_powered" />
+
+            <TextView
+                android:id="@+id/about_text_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin" >
+                android:gravity="center"
+                android:textSize="@dimen/material_type_micro"
+                android:text="@string/about_developer" />
 
-                <TextView
-                    android:id="@+id/about_text_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_version_long"
-                    android:textSize="30sp" />
-
-                <TextView
-                    android:id="@+id/about_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/about_message" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/white_transparent" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/about_follow"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin" >
+                android:layout_marginTop="@dimen/material_padding_double"
+                android:background="@drawable/default_layout_selector_red"
+                android:paddingBottom="@dimen/material_padding"
+                android:paddingLeft="@dimen/material_padding_double"
+                android:paddingRight="@dimen/material_padding_double"
+                android:paddingTop="@dimen/material_padding"
+                android:text="@string/about_follow_me"
+                android:textSize="@dimen/material_type_small"
+                android:textColor="@color/soup_red" />
 
-                <ImageView
-                    android:id="@+id/about_foursquare"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/image_description_powered_by_foursquare"
-                    android:src="@drawable/foursquare_powered" />
-
-                <TextView
-                    android:id="@+id/about_text_author"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/about_developer" />
-
-                <Button
-                    android:id="@+id/about_follow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/plus_button_background"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingTop="10dp"
-                    android:text="@string/about_follow_me"
-                    android:textColor="@color/white" />
-
-                <Button
-                    android:id="@+id/about_other_apps"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/plus_button_black_background"
-                    android:drawableLeft="@drawable/play_icon"
-                    android:drawablePadding="15dp"
-                    android:maxWidth="400dp"
-                    android:paddingBottom="15dp"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingTop="15dp"
-                    android:text="@string/about_other_apps"
-                    android:textColor="@color/white" />
-            </LinearLayout>
+            <Button
+                android:id="@+id/about_other_apps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_padding_double"
+                android:background="@drawable/default_layout_selector_red"
+                android:drawableLeft="@drawable/play_icon"
+                android:drawablePadding="@dimen/material_padding"
+                android:maxWidth="400dp"
+                android:paddingBottom="@dimen/material_padding"
+                android:paddingLeft="@dimen/material_padding_double"
+                android:paddingRight="@dimen/material_padding_double"
+                android:paddingTop="@dimen/material_padding"
+                android:text="@string/about_other_apps"
+                android:textSize="@dimen/material_type_small"
+                android:textColor="@color/soup_blue" />
         </LinearLayout>
-
-    </ScrollView>
-</FrameLayout>
+    </LinearLayout>
+</ScrollView>

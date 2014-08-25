@@ -139,7 +139,11 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
         ButterKnife.inject(this, view);
 
         mSwipeViewVenueListContainer.setOnRefreshListener(this);
-        mSwipeViewVenueListContainer.setColorScheme(R.color.foursquare_green, R.color.foursquare_orange, R.color.foursquare_green, R.color.foursquare_blue);
+        mSwipeViewVenueListContainer.setColorScheme(
+                R.color.soup_green,
+                R.color.soup_blue,
+                R.color.soup_green,
+                R.color.soup_red);
 	}
 
 	public static void RefreshList(ListFragment theCaller) {
@@ -247,7 +251,7 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 		} catch (Exception ex) {
 			// Crouton.makeText(getActivity(),
 			// R.string.alert_error_loading_venues, Style.INFO).show();
-			Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Location 5", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Error 5", Toast.LENGTH_SHORT).show();
 			ex.printStackTrace();
 		}
 	}

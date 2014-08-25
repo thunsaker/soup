@@ -22,6 +22,7 @@ public class CompactVenue {
 	public Specials Specials;
 	public HereNow HereNow;
 	public Listed listed; */
+    public String storeId;
 	public String referralId;
 
 	@Override
@@ -78,6 +79,9 @@ public class CompactVenue {
 //			myVenue.beenHere =
 //                    jsonObject.get("beenHere") != null
 //                            ? jsonObject.get("beenHere").getAsString()
+            myVenue.storeId = jsonObject.get("storeId") != null
+                    ? jsonObject.get("storeId").getAsString()
+                    : "";
 
 			return myVenue;
 		} catch (Exception e) {
@@ -116,6 +120,11 @@ public class CompactVenue {
             myVenue.referralId = response.referralId!= null
                     ? response.referralId
                     : "";
+
+            myVenue.storeId = response.storeId!= null
+                    ? response.storeId
+                    : "";
+
             // TODO: Convert this to use the object
 //            myVenue.beenHere = response.beenHere != null && response.beenHere.count > 0;
             return myVenue;

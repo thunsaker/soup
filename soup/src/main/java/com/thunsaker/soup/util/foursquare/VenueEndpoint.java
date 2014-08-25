@@ -227,7 +227,7 @@ public class VenueEndpoint {
 						&& myModifiedVenue.venueHours.timeFrames != null) {
 					StringBuilder venueHours = new StringBuilder();
 					for (TimeFrame t : myModifiedVenue.venueHours.timeFrames) {
-						venueHours.append(t.getFoursquareApiString());
+						venueHours.append(TimeFrame.createFoursquareApiString(t));
 					}
 					if (venueHours.length() > 0) {
 						venueRequestUrl += String.format("&hours=%s",
