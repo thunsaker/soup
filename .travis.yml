@@ -24,4 +24,4 @@ android:
 
 script:
     - echo "Assembling..."
-    - gradlew clean assembleDebug zipalignDebug
+    - ./gradlew clean assembleDebug zipalignDebug
