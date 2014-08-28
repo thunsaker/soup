@@ -23,5 +23,5 @@ android:
     # - sys-img-armeabi-v7a-android-19
 
 script:
-	- echo "Assembling..."
-	- gradlew clean assembleDebug zipalignDebug
+    - echo "Assembling..."
+    - gradlew clean assembleDebug zipalignDebug
