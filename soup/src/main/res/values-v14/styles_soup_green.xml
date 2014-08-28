@@ -38,8 +38,8 @@
     <style name="ActionBar.Solid.Soup_green" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@drawable/ab_solid_soup_green</item>
         <item name="background">@drawable/ab_solid_soup_green</item>
-        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_soup_green</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_soup_green</item>
+        <item name="android:backgroundStacked">@drawable/ab_solid_soup_green</item>
+        <item name="android:backgroundSplit">@drawable/ab_solid_soup_green</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Soup_green</item>
     </style>
 

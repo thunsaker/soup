@@ -12,7 +12,7 @@
 	    android:paddingTop="@dimen/activity_vertical_margin"
 	    tools:context=".MainActivity"
 	    android:orientation="vertical">
-	    
+
 	    <TextView
 	        android:id="@+id/textViewThanks"
 	        android:layout_width="fill_parent"
@@ -20,23 +20,24 @@
 	        android:gravity="center"
 	        android:textSize="24sp"
 	        android:text="@string/thanks" />
-	    
+
 	    <LinearLayout
 	        android:id="@+id/linearLayoutNoSoup"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:orientation="horizontal" >
-		    
+
 	        <ImageButton
 	            android:id="@+id/imageButtonSoupBowl"
 		        android:layout_width="0dp"
-		        android:layout_height="fill_parent"
+		        android:layout_height="200dp"
 		        android:layout_weight="0.5"
 		        android:layout_gravity="center"
-		        android:src="@drawable/bowl"
+                android:scaleType="centerInside"
+		        android:src="@drawable/can_o_soup"
 		        android:background="@drawable/layout_selector"
 		        android:contentDescription="@string/image_description_soup" />
-	        
+
 	        <TextView
 		        android:id="@+id/textViewSoupInstruction"
 		        android:layout_width="0dp"
@@ -46,7 +47,7 @@
 		        android:textSize="16sp"
 		        android:text="@string/download_soup" />
 		</LinearLayout>
-		
+
 	    <LinearLayout
 	        android:id="@+id/linearLayoutNoSoupButtons"
 	        android:layout_width="fill_parent"
@@ -58,7 +59,7 @@
 		        android:layout_height="wrap_content"
 		        android:layout_weight="0.5"
 		        android:text="@string/get_soup" />
-		    
+
 		    <Button
 		        android:id="@+id/buttonHideSoup"
 		        android:layout_width="fill_parent"
