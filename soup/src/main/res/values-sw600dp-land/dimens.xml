@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="list_venue_item_title">16dp</dimen>
-    
+    <dimen name="list_venue_item_title">16sp</dimen>
+
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_horizontal_margin_adjusted">14dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    
+
 	<dimen name="nexus_frame_margin_top">69dp</dimen>
     <dimen name="nexus_frame_margin_side">49dp</dimen>
 </resources>

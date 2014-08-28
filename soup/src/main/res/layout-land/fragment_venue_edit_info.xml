@@ -38,7 +38,8 @@
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_padding_double">
+                android:layout_marginTop="@dimen/material_padding_double"
+                android:baselineAligned="false">
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="0dp"
