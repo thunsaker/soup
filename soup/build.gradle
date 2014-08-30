@@ -20,13 +20,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1"
+    compileSdkVersion 20
+    buildToolsVersion "20"
 
     defaultConfig {
         applicationId "com.thunsaker.soup"
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 20
         versionCode 22
         versionName "2.5"
 //        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
