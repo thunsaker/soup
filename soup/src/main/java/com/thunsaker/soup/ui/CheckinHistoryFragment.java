@@ -1,5 +1,6 @@
 package com.thunsaker.soup.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
@@ -397,6 +398,9 @@ public class CheckinHistoryFragment extends BaseSoupFragment
         mImageViewToggle.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_unfold_less));
     }
 
+
+    @SuppressWarnings("NewApi")
+    @SuppressLint("NewApi")
     @OnClick(R.id.buttonHistoryGetCheckins)
     public void GetCustomDateRange() {
         boolean isSingleDay = false;

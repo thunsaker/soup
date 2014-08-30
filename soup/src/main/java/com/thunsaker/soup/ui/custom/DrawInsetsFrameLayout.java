@@ -16,11 +16,13 @@ package com.thunsaker.soup.ui.custom;
  * limitations under the License.
  */
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
@@ -64,6 +66,7 @@ public class DrawInsetsFrameLayout extends FrameLayout {
         setWillNotDraw(true);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
         mInsets = new Rect(insets);

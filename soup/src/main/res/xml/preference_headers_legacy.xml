@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="@string/prefs_soup_title"
-    android:summary="@string/prefs_soup_title_summary">
-    <Preference
-        android:title="@string/prefs_soup_category_title_general">
-        <intent
-            android:targetPackage="com.thunsaker.soup.ui"
-            android:targetClass="SettingsFragment"
-            android:action="com.thunsaker.soup.ui.ACTION_PREFS_ONE" />
-    </Preference>
-</PreferenceScreen>
-   <!-- 
+    android:summary="@string/prefs_soup_title_summary" />
+    <!--<Preference-->
+        <!--android:title="@string/prefs_soup_category_title_general">-->
+        <!--<intent-->
+            <!--android:targetPackage="com.thunsaker.soup.ui"-->
+            <!--android:targetClass="SettingsFragment"-->
+            <!--android:action="com.thunsaker.soup.ui.ACTION_PREFS_ONE" />-->
+    <!--</Preference>-->
+<!--</PreferenceScreen>-->
+   <!--
     <PreferenceCategory
 	    android:title="@string/prefs_soup_category_title_general">
-		<CheckBoxPreference 
+		<CheckBoxPreference
 		    android:title="@string/prefs_soup_title_connect"
 		    android:key="@string/prefs_soup_connected"
 		    android:defaultValue="false"
 	    	android:summaryOn="@string/prefs_soup_title_connected" />
-		
+
 		<ListPreference
 		    android:title="@string/prefs_soup_title_distance_units"
 		    android:summary="@string/prefs_soup_title_distance_units_summary"
@@ -27,13 +27,13 @@
 		    android:entries="@array/prefs_soup_title_distance_units_entries"
 		    android:dialogTitle="@string/prefs_soup_title_distance_units"
 		    android:entryValues="@array/prefs_soup_title_distance_units_entryValues" />
-		
-		<CheckBoxPreference 
+
+		<CheckBoxPreference
 		    android:title="@string/prefs_soup_title_push"
-		    android:summaryOff="@string/prefs_soup_title_push_summary_off" 
+		    android:summaryOff="@string/prefs_soup_title_push_summary_off"
 		    android:key="@string/prefs_soup_push"
 		    android:defaultValue="true" />
-		
+
 	</PreferenceCategory>
     <PreferenceCategory
             android:title="@string/prefs_bitly_category_title_beta">
@@ -45,10 +45,10 @@
     </PreferenceCategory>
 	<PreferenceCategory
 	    android:title="@string/prefs_soup_category_title_about">
-	    <Preference 
+	    <Preference
 	        android:title="@string/prefs_soup_about_version"
 	        android:summary="@string/app_version" />
-	    <Preference 
+	    <Preference
 	        android:title="@string/prefs_soup_about_rate_title"
 	        android:key="@string/prefs_soup_about_rate"
 	        android:summary="@string/prefs_soup_about_rate_summary" />
