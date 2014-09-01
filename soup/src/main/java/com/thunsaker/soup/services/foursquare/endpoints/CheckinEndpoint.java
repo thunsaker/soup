@@ -126,7 +126,7 @@ public class CheckinEndpoint {
 				String myUrlEncodedShout = myShout != null && myShout.length() > 0 ? URLEncoder.encode(myShout.trim(), Util.ENCODER_CHARSET) : null;
 
 				String checkinRequestUrl =
-						String.format("%s%s?ll=%s,%s&oauth_token=%s&venueId=%s&v=%s",
+						String.format("%s%s?ll=%s,%s&oauth_token=%s&venueId=%s&v=%s&m=swarm",
 								FoursquarePrefs.FOURSQUARE_BASE_URL,
 								FoursquarePrefs.FOURSQUARE_CHECKIN_SUFFIX,
 								myCurrentLatLng.latitude,

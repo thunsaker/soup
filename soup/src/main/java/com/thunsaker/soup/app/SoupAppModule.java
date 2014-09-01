@@ -99,6 +99,8 @@ public class SoupAppModule {
             @Override
             public void intercept(RequestFacade request) {
                 request.addQueryParam("v", FoursquarePrefs.CURRENT_API_DATE);
+                // TODO: Figure out a way to add m=swarm w/o too much extra code.
+                request.addQueryParam("m", FoursquarePrefs.API_MODE_FOURSQUARE);
             }
         };
 

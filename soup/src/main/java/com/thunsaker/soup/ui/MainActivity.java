@@ -55,7 +55,8 @@ import de.greenrobot.event.EventBus;
  * Created by @thunsaker
  */
 public class MainActivity extends BaseSoupActivity implements
-		VenueListFragment.OnFragmentInteractionListener, ListsFragment.OnFragmentInteractionListener {
+		VenueListFragment.OnFragmentInteractionListener,
+        ListsFragment.OnFragmentInteractionListener {
 
     @Inject @ForApplication
     Context mContext;
@@ -100,6 +101,7 @@ public class MainActivity extends BaseSoupActivity implements
 
 	public static final String VENUE_ID_CHECKIN_EXTRA = "VENUE_ID_CHECKIN_EXTRA";
 	public static final String VENUE_NAME_CHECKIN_EXTRA = "VENUE_NAME_CHECKIN_EXTRA";
+	public static final String IS_SEARCH_CHECKIN_EXTRA = "IS_SEARCH_CHECKIN_EXTRA";
 
 //    public static double markerActionBarAdjustment = 0.00;
 
@@ -357,7 +359,7 @@ public class MainActivity extends BaseSoupActivity implements
 
 	@Override
     public boolean onVenueListLongClick(String venueId, String venueName) {
-		CheckinDialogFragment checkinDialog = CheckinDialogFragment.newInstance(venueId, venueName);
+		CheckinDialogFragment checkinDialog = CheckinDialogFragment.newInstance(venueId, venueName, false);
 		checkinDialog.show(getSupportFragmentManager(), CHECKIN_CONFIRMATION_DIALOG);
 		return true;
 	}
@@ -426,11 +428,12 @@ public class MainActivity extends BaseSoupActivity implements
 	}
 
 	public static class CheckinDialogFragment extends DialogFragment {
-        public static CheckinDialogFragment newInstance(String id, String name) {
+        public static CheckinDialogFragment newInstance(String id, String name, boolean isSearch) {
             CheckinDialogFragment fragment = new CheckinDialogFragment();
             Bundle args = new Bundle();
             args.putString(VENUE_ID_CHECKIN_EXTRA, id);
             args.putString(VENUE_NAME_CHECKIN_EXTRA, name);
+            args.putBoolean(IS_SEARCH_CHECKIN_EXTRA, isSearch);
             fragment.setArguments(args);
             return fragment;
         }
@@ -440,6 +443,7 @@ public class MainActivity extends BaseSoupActivity implements
 			if (getArguments() != null) {
                 final String venueId = getArguments().getString(VENUE_ID_CHECKIN_EXTRA);
                 final String venueName = getArguments().getString(VENUE_NAME_CHECKIN_EXTRA);
+                final boolean isSearch = getArguments().getBoolean(IS_SEARCH_CHECKIN_EXTRA);
 				return new AlertDialog.Builder(getActivity())
                         .setMessage(
                                 String.format(getString(R.string.dialog_checkin_confirmation), venueName))
@@ -447,9 +451,12 @@ public class MainActivity extends BaseSoupActivity implements
                                 getString(R.string.dialog_yes),
 								new DialogInterface.OnClickListener() {
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-                                        ((MainActivity)getActivity()).CheckinUser(venueId, venueName);
+									public void onClick(DialogInterface dialog, int which) {
+                                        if(isSearch)
+                                            ((VenueSearchActivity)getActivity()).CheckinUser(venueId, venueName);
+                                        else {
+                                            ((MainActivity)getActivity()).CheckinUser(venueId, venueName);
+                                        }
 									}
 								})
 						.setNegativeButton(getString(R.string.dialog_no), null)
