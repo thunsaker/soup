@@ -86,7 +86,9 @@ public class FoursquarePrefs {
 		}
 	}
 
-	public static String CURRENT_API_DATE = "20140710";
+	public static String CURRENT_API_DATE = "20140901";
+    public static final String API_MODE_FOURSQUARE = "foursquare";
+    public static final String API_MODE_SWARM = "swarm";
 
     /**
      *   Find venues within a given area. Unlike the checkin intent, browse searches an entire region instead of only finding Venues closest to a point. You must define a region to search be including either the ll and radius parameters, or the sw and ne. The region will be a spherical cap if you include the ll and radius parameters, or it will be a bounding quadrangle if you include the sw and ne parameters.

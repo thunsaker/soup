@@ -32,6 +32,7 @@ import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
 import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.endpoints.CheckinEndpoint;
 import com.thunsaker.soup.ui.MainActivity.CheckinDialogFragment;
 
 import javax.inject.Inject;
@@ -114,7 +115,6 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 
 		SetupSearchViews();
 		ShowInstructionalOverlay(PreferencesHelper.getShownSearchOverlay(mContext));
-		setSupportProgressBarVisibility(false);
 	}
 
 	@Override
@@ -373,8 +373,13 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 
 	@Override
     public boolean onVenueListLongClick(String venueId, String venueName) {
-        CheckinDialogFragment checkinDialog = CheckinDialogFragment.newInstance(venueId, venueName);
+        CheckinDialogFragment checkinDialog = CheckinDialogFragment.newInstance(venueId, venueName, true);
 		checkinDialog.show(getSupportFragmentManager(), MainActivity.CHECKIN_CONFIRMATION_DIALOG);
 		return true;
 	}
+
+    public void CheckinUser(String id, String name) {
+        new CheckinEndpoint.PostUserCheckin(mContext, MainActivity.currentLocation, id, name, "").execute();
+        finish();
+    }
 }
