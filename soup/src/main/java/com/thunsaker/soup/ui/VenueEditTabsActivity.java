@@ -3,6 +3,7 @@ package com.thunsaker.soup.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,29 +17,43 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.VenueEditPagerAdapter;
 import com.thunsaker.soup.app.BaseSoupActivity;
-import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.Contact;
 import com.thunsaker.soup.data.api.model.Hours;
 import com.thunsaker.soup.data.api.model.Location;
 import com.thunsaker.soup.data.api.model.Venue;
+import com.thunsaker.soup.data.events.EditVenueEvent;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.viewpagerindicator.TitlePageIndicator;
+
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 /*
  * Created by @thunsaker
  */
 public class VenueEditTabsActivity extends BaseSoupActivity {
+    @Inject @ForApplication
+    Context mContext;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
+
+    @Inject
+    EventBus mBus;
+
     VenueEditPagerAdapter mVenueEditPagerAdapter;
     ViewPager mViewPager;
 
     public static String EDIT_VENUE_RESULT = "EDIT_VENUE_RESULT";
     public static String DIALOG_CONFIRM_REVERT = "DIALOG_CONFIRM_REVERT";
 
-    public static CompactVenue venueToEdit;
     public static Venue originalVenue = null;
     public static Venue modifiedVenue = null;
     public static Boolean hasModified = false;
@@ -67,17 +82,15 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
         mViewPager.setAdapter(mVenueEditPagerAdapter);
         TitlePageIndicator indicator = (TitlePageIndicator)findViewById(R.id.titles);
         indicator.setViewPager(mViewPager);
-//        indicator.setTextColor(getResources().getColor(R.color.white));
-//        indicator.setSelectedBold(true);
-//        indicator.setFooterIndicatorStyle(TitlePageIndicator.IndicatorStyle.Underline);
-//        indicator.setFooterColor(getResources().getColor(R.color.white));
 
         level = PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext());
 
         if(getIntent().hasExtra(VenueDetailFragment.VENUE_EDIT_EXTRA)) {
-            venueToEdit = CompactVenue.GetCompactVenueFromJson(
-                    getIntent().getExtras().get(VenueDetailFragment.VENUE_EDIT_EXTRA).toString());
+            originalVenue = Venue.GetVenueFromJson(getIntent().getExtras().get(VenueDetailFragment.VENUE_EDIT_EXTRA).toString());
         }
+
+        if(mBus != null && !mBus.isRegistered(this))
+            mBus.register(this);
     }
 
     /**
@@ -146,10 +159,7 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
             }
 
             setSupportProgressBarVisibility(true);
-            new FoursquareTasks.EditVenue(
-                    getApplicationContext(), venueToEdit.id, modifiedVenue,
-                    this,modifiedDescription,false)
-                    .execute();
+            mFoursquareTasks.new EditVenue(modifiedVenue.id, modifiedVenue, modifiedDescription, FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
         }
     }
 
@@ -163,17 +173,25 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
 
         if(VenueEditLocationFragment.mAddressEditText != null) {
             Location modifiedLocation = new Location();
-            modifiedLocation.address = VenueEditLocationFragment.mAddressEditText.getText().toString();
-            modifiedLocation.crossStreet = VenueEditLocationFragment.mCrossStreetEditText.getText().toString();
-            modifiedLocation.city = VenueEditLocationFragment.mCityEditText.getText().toString();
-            modifiedLocation.state = VenueEditLocationFragment.mStateEditText.getText().toString();
-            modifiedLocation.postalCode = VenueEditLocationFragment.mZipEditText.getText().toString();
+            modifiedLocation.address =
+                    !VenueEditLocationFragment.mAddressEditText.getText().toString().equals(originalVenue.location.address)
+                            ? VenueEditLocationFragment.mAddressEditText.getText().toString() : null;
+            modifiedLocation.crossStreet =
+                    !VenueEditLocationFragment.mCrossStreetEditText.getText().toString().equals(originalVenue.location.crossStreet)
+                            ? VenueEditLocationFragment.mCrossStreetEditText.getText().toString() : null;
+            modifiedLocation.city =
+                    !VenueEditLocationFragment.mCityEditText.getText().toString().equals(originalVenue.location.city)
+                            ? VenueEditLocationFragment.mCityEditText.getText().toString() : null;
+            modifiedLocation.state =
+                    !VenueEditLocationFragment.mStateEditText.getText().toString().equals(originalVenue.location.state)
+                            ? VenueEditLocationFragment.mStateEditText.getText().toString() : null;
+            modifiedLocation.postalCode =
+                    !VenueEditLocationFragment.mZipEditText.getText().toString().equals(originalVenue.location.postalCode)
+                            ? VenueEditLocationFragment.mZipEditText.getText().toString() : null;
 
             try {
-                // TODO: Implement my own try parse functions
                 String[] myLatLngArray =
-                        VenueEditLocationFragment.mLatLngEditText.getText()
-                                .toString().replace(" ", "").split(",");
+                        VenueEditLocationFragment.mLatLngEditText.getText().toString().replace(" ", "").split(",");
                 Double myLat;
                 if(myLatLngArray[0] != null) {
                     myLat = Double.parseDouble(myLatLngArray[0]);
@@ -196,12 +214,20 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
             modifiedVenue.name = VenueEditInfoFragment.mNameEditText.getText().toString();
 
             Contact modifiedContact = new Contact();
-            modifiedContact.phone = VenueEditInfoFragment.mPhoneEditText.getText().toString();
-            modifiedContact.twitter = VenueEditInfoFragment.mTwitterEditText.getText().toString();
+            modifiedContact.phone =
+                    !VenueEditInfoFragment.mPhoneEditText.getText().toString().equals(originalVenue.contact.phone)
+                            ? VenueEditInfoFragment.mPhoneEditText.getText().toString() : null;
+            modifiedContact.twitter =
+                    !VenueEditInfoFragment.mTwitterEditText.getText().toString().equals(originalVenue.contact.twitter)
+                            ? VenueEditInfoFragment.mTwitterEditText.getText().toString() : null;
             modifiedVenue.contact = modifiedContact;
 
-            modifiedVenue.url = VenueEditInfoFragment.mUrlEditText.getText().toString();
-            modifiedVenue.description = VenueEditInfoFragment.mDescriptionEditText.getText().toString();
+            modifiedVenue.url =
+                    !VenueEditInfoFragment.mUrlEditText.getText().toString().equals(originalVenue.url)
+                        ? VenueEditInfoFragment.mUrlEditText.getText().toString() : null;
+            modifiedVenue.description =
+                    !VenueEditInfoFragment.mDescriptionEditText.getText().toString().equals(originalVenue.description)
+                        ? VenueEditInfoFragment.mDescriptionEditText.getText().toString() : null;
         }
     }
 
@@ -274,7 +300,6 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
     public void ClearVenue() {
         modifiedVenue = null;
         originalVenue = null;
-        venueToEdit = null;
         VenueEditHoursFragment.currentVenueListHours = null;
         VenueEditHoursFragment.updatedTimes = null;
     }
@@ -300,7 +325,7 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
                                     		getActivity().getApplicationContext(),
                                             VenueEditTabsActivity.class);
                             editVenueIntent.putExtra(
-                                    VenueDetailFragment.VENUE_EDIT_EXTRA,originalVenue.toString());
+                                    VenueDetailFragment.VENUE_EDIT_EXTRA, originalVenue.toString());
                             editVenueIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                             VenueEditTabsActivity.originalVenue = new Venue(originalVenue);
                             startActivity(editVenueIntent);
@@ -357,5 +382,23 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
         VenueEditHoursFragment.currentVenueListHours.remove(item);
         VenueEditHoursFragment.currentVenueHoursListAdapter.notifyDataSetChanged();
         VenueEditTabsActivity.ShowRevertOption(this);
+    }
+
+    public void onEvent(EditVenueEvent event) {
+        String message = "";
+        if (event != null) {
+            if (event.source == FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE) {
+                if (event.result != null) {
+                    Toast.makeText(mContext, mContext.getString(R.string.edit_venue_success_propose), Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    message = event.resultMessage;
+                    Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            message = mContext.getString(R.string.edit_venue_fail);
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+        }
     }
 }

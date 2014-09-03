@@ -112,4 +112,10 @@ public class SoupAppModule {
 
         return restAdapter.create(FoursquareService.class);
     }
+
+    @Provides
+    @Singleton
+    FoursquareTasks providesFoursquareTasks(@ForApplication Context myContext) {
+        return new FoursquareTasks((SoupApp)myContext);
+    }
 }

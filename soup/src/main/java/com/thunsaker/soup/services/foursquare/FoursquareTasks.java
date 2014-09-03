@@ -21,11 +21,13 @@ import com.thunsaker.soup.data.api.model.FoursquareVenueResponse;
 import com.thunsaker.soup.data.api.model.GetUserCheckinHistoryResponse;
 import com.thunsaker.soup.data.api.model.GetVenueHoursResponse;
 import com.thunsaker.soup.data.api.model.GetVenueResponse;
+import com.thunsaker.soup.data.api.model.Location;
 import com.thunsaker.soup.data.api.model.PostVenueEditResponse;
 import com.thunsaker.soup.data.api.model.TimeFrame;
 import com.thunsaker.soup.data.api.model.Venue;
 import com.thunsaker.soup.data.api.model.VenueSearchResponse;
 import com.thunsaker.soup.data.events.CheckinHistoryEvent;
+import com.thunsaker.soup.data.events.EditVenueEvent;
 import com.thunsaker.soup.data.events.GetVenueEvent;
 import com.thunsaker.soup.data.events.GetVenueHoursEvent;
 import com.thunsaker.soup.data.events.VenueListEvent;
@@ -47,6 +49,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+
+import static com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES;
 
 public class FoursquareTasks {
     @Inject
@@ -138,19 +142,7 @@ public class FoursquareTasks {
         }
     }
 
-    private void ShowServerErrorToast(FoursquareResponse.FoursquareResponseMeta responseMeta) {
-        Toast.makeText(mContext,
-                String.format(
-                        mContext.getResources().getString(R.string.error_server),
-                        responseMeta.errorDetail != null
-                                ? responseMeta.errorDetail
-                                : mContext.getResources().getString(R.string.foursquare_server_status)
-                ),
-                Toast.LENGTH_SHORT
-        ).show();
-    }
-
-    public class EditVenueNew extends AsyncTask<Void, Integer, PostVenueEditResponse> {
+    public class EditVenue extends AsyncTask<Void, Integer, PostVenueEditResponse> {
         String mVenueId;
         Venue mModifiedVenue;
 
@@ -159,16 +151,16 @@ public class FoursquareTasks {
         String mClientSecret;
         boolean canEdit;
         boolean modifiedDescription;
-        int source;
+        int mSource;
 
-        public EditVenueNew(String theVenueToModifyId,
+        public EditVenue(String theVenueToModifyId,
                          Venue theModifiedVenue,
                          Boolean modifiedDescription,
                          int theSource) {
             mVenueId = theVenueToModifyId;
             mModifiedVenue = theModifiedVenue;
             this.modifiedDescription = modifiedDescription;
-            this.source = theSource;
+            this.mSource = theSource;
         }
 
         @Override
@@ -185,6 +177,45 @@ public class FoursquareTasks {
 
                 Map<String, String> queryParams = new HashMap<String, String>();
 
+                if(mSource == CALLER_SOURCE_EDIT_CATEGORIES) {
+                    if (mModifiedVenue.categories != null)
+                        queryParams.putAll(getCategoryQueryParams(mSuperuserLevel, mModifiedVenue.categories));
+                } else {
+                    if (mModifiedVenue.name != null)
+                        queryParams.put(FoursquarePrefs.EDIT_VENUE_NAME, Util.Encode(mModifiedVenue.name));
+
+                    if (mModifiedVenue.location != null) {
+                        queryParams.putAll(getLocationQueryParams(mSuperuserLevel, mModifiedVenue.location));
+                    }
+
+                    if (mModifiedVenue.contact != null) {
+                        if (mModifiedVenue.contact.phone != null)
+                            queryParams.put(FoursquarePrefs.EDIT_VENUE_PHONE, Util.Encode(mModifiedVenue.contact.phone));
+                        if (mSuperuserLevel >= 2 && mModifiedVenue.contact.twitter != null)
+                            queryParams.put(FoursquarePrefs.EDIT_VENUE_TWITTER, Util.Encode(mModifiedVenue.contact.twitter));
+                    }
+
+                    if (mSuperuserLevel >= 2) {
+                        if (modifiedDescription && mModifiedVenue.description != null)
+                            queryParams.put(FoursquarePrefs.EDIT_VENUE_DESCRIPTION, Util.Encode(mModifiedVenue.description));
+
+                        if (mModifiedVenue.url != null)
+                            queryParams.put(FoursquarePrefs.EDIT_VENUE_URL, mModifiedVenue.url);
+                    }
+
+                    if (mModifiedVenue.venueHours != null && mModifiedVenue.venueHours.timeFrames != null) {
+                        StringBuilder venueHours = new StringBuilder();
+                        for (TimeFrame t : mModifiedVenue.venueHours.timeFrames)
+                            venueHours.append(TimeFrame.createFoursquareApiString(t));
+
+                        if (venueHours.length() > 0)
+                            queryParams.put(FoursquarePrefs.EDIT_VENUE_HOURS, venueHours.toString());
+                    }
+
+                    if(MainActivity.currentLocation != null)
+                        queryParams.put(FoursquarePrefs.EDIT_VENUE_LATLONG, String.format("%s,%s", MainActivity.currentLocation.latitude, MainActivity.currentLocation.longitude));
+                }
+
                 return mFoursquareService.postVenueEdit(mVenueId, mAccessToken, queryParams);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -196,55 +227,35 @@ public class FoursquareTasks {
         protected void onPostExecute(PostVenueEditResponse result) {
             super.onPostExecute(result);
 
-            // TODO: Post response to event bus...
-
             try {
-//                myCaller.setProgressBarVisibility(false);
-//                VenueDetailActivity.wasEdited = true;
-//
-//                // DEBUG EMAIL
-//                if (SEND_DEBUG_EMAIL && result.startsWith("DEBUG: ")) {
-//                    Toast.makeText(
-//                            myCaller.getApplicationContext(),
-//                            "The editing failed. "
-//                                    + "Trying to send an email to the developer to help debug.",
-//                            Toast.LENGTH_SHORT).show();
-//                    VenueEditTabsActivity.mDebugString = result;
-//                } else {
-//                    if (result.equals(FoursquarePrefs.SUCCESS)) {
-//                        Toast.makeText(
-//                                myCaller.getApplicationContext(),
-//                                canEdit ? myContext
-//                                        .getString(R.string.edit_venue_success)
-//                                        : myContext
-//                                        .getString(R.string.edit_venue_success_propose),
-//                                Toast.LENGTH_SHORT).show();
-//                        myCaller.setResult(Activity.RESULT_OK);
-//                    } else if (result
-//                            .equals(FoursquarePrefs.FAIL_UNAUTHORIZED)) {
-//                        Toast.makeText(
-//                                myCaller.getApplicationContext(),
-//                                myContext
-//                                        .getString(modifiedDescription ? R.string.edit_venue_fail_unauthorized_description
-//                                                : R.string.edit_venue_fail_unauthorized),
-//                                Toast.LENGTH_SHORT).show();
-//                        myCaller.setResult(Activity.RESULT_CANCELED);
-//                    } else {
-//                        Toast.makeText(myCaller.getApplicationContext(),
-//                                myContext.getString(R.string.edit_venue_fail),
-//                                Toast.LENGTH_SHORT).show();
-//                        myCaller.setResult(Activity.RESULT_CANCELED);
-//                    }
-//                }
-//
-//                myCaller.finish();
+                if(result != null) {
+                    if(result.meta.code == 200) {
+                        mBus.post(new EditVenueEvent(true, "", mSource));
+                    } else {
+                        String resultMessage;
+                        switch (result.meta.code) {
+                            case 403:
+                                resultMessage = mContext.getString(
+                                        modifiedDescription
+                                                ? R.string.edit_venue_fail_unauthorized_description
+                                                : R.string.edit_venue_fail_unauthorized);
+                                break;
+                            default:
+                                resultMessage = "Failure! Code: " + result.meta.code + " Error: " + result.meta.errorType + " - " + result.meta.errorDetail;
+                                break;
+                        }
+
+                        mBus.post(new EditVenueEvent(false, resultMessage, mSource));
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static class EditVenue extends AsyncTask<Void, Integer, String> {
+    @Deprecated
+    public static class EditVenueOld extends AsyncTask<Void, Integer, String> {
         Context myContext;
         String myVenueId;
         Venue myModifiedVenue;
@@ -257,7 +268,7 @@ public class FoursquareTasks {
         boolean modifiedDescription;
         boolean fromAddCategory;
 
-        public EditVenue(Context theContext, String theVenueToModifyId,
+        public EditVenueOld(Context theContext, String theVenueToModifyId,
                          Venue theModifiedVenue, FragmentActivity theCaller,
                          Boolean modifiedDescription, Boolean fromAddCategory) {
             myContext = theContext;
@@ -364,7 +375,7 @@ public class FoursquareTasks {
          *
          * @param theVenueId
          * @param theSource     Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE} or
-                                {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES) or
+                                {@link CALLER_SOURCE_EDIT_CATEGORIES) or
                                 {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS} or
                                 {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT}
          */
@@ -463,7 +474,7 @@ public class FoursquareTasks {
          *
          * @param theVenueId
          * @param theSource     Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE} or
-        {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES) or
+        {@link CALLER_SOURCE_EDIT_CATEGORIES) or
         {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS} or
         {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT}
          */
@@ -750,5 +761,58 @@ public class FoursquareTasks {
                 mBus.post(new CheckinHistoryEvent(false, "", null));
             }
         }
+    }
+
+    // Helper Classes
+    private Map<String, String> getLocationQueryParams(int mSuperuserLevel, Location location) {
+        Map<String, String> locationParams = new HashMap<String, String>();
+        if (location.address != null)
+            locationParams.put(FoursquarePrefs.EDIT_VENUE_ADDRESS, Util.Encode(location.address));
+
+        if (location.crossStreet != null)
+            locationParams.put(FoursquarePrefs.EDIT_VENUE_CROSS_STREET, Util.Encode(location.crossStreet));
+
+        if (location.city != null)
+            locationParams.put(FoursquarePrefs.EDIT_VENUE_CITY, Util.Encode(location.city));
+
+        if (location.state != null)
+            locationParams.put(FoursquarePrefs.EDIT_VENUE_STATE, Util.Encode(location.state));
+
+        if (location.postalCode != null)
+            locationParams.put(FoursquarePrefs.EDIT_VENUE_ZIP, Util.Encode(location.postalCode));
+
+        if (mSuperuserLevel >= 2 && location.latitude != 0 && location.longitude != 0)
+            locationParams.put(FoursquarePrefs.EDIT_VENUE_LATLONG, location.getLatLngString());
+
+        return locationParams;
+    }
+
+    private Map<String, String> getCategoryQueryParams(int mSuperuserLevel, List<Category> categories) {
+        Map<String, String> categoryParams = new HashMap<String, String>();
+        if (mSuperuserLevel > 0) {
+            String modifiedCategories = "";
+            for (Category c : categories)
+                modifiedCategories += c.id + ",";
+
+            modifiedCategories = modifiedCategories.substring(0, modifiedCategories.length() - 1);
+
+            if (!modifiedCategories.equals(""))
+                categoryParams.put(FoursquarePrefs.EDIT_VENUE_CATEGORY_ADD, Util.Encode(modifiedCategories));
+        }
+
+        categoryParams.put(FoursquarePrefs.EDIT_VENUE_CATEGORY_PRIMARY, categories.get(0).id);
+        return categoryParams;
+    }
+
+    private void ShowServerErrorToast(FoursquareResponse.FoursquareResponseMeta responseMeta) {
+        Toast.makeText(mContext,
+                String.format(
+                        mContext.getResources().getString(R.string.error_server),
+                        responseMeta.errorDetail != null
+                                ? responseMeta.errorDetail
+                                : mContext.getResources().getString(R.string.foursquare_server_status)
+                ),
+                Toast.LENGTH_SHORT
+        ).show();
     }
 }

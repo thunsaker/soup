@@ -106,4 +106,25 @@ public class FoursquarePrefs {
      *   Finds venues that are are nearly-exact matches for the given parameters. This intent is highly sensitive to the provided location. We recommend using this intent only when trying to correlate an existing place database with Foursquare's. The results will be sorted best match first, taking distance and spelling mistakes/variations into account. query and ll are the only required parameters for this intent, but matching also supports phone, address, city, state, zip, and twitter. There's no specified format for these parameters—we do our best to normalize them and drop them from the search if unsuccessful.
      */
     public static final String FOURSQUARE_SEARCH_INTENT_MATCH = "match";
+
+    public static final String EDIT_VENUE_NAME = "name";
+    public static final String EDIT_VENUE_ADDRESS = "address";
+    public static final String EDIT_VENUE_CROSS_STREET = "crossStreet";
+    public static final String EDIT_VENUE_CITY = "city";
+    public static final String EDIT_VENUE_STATE = "state";
+    public static final String EDIT_VENUE_ZIP = "zip";
+    public static final String EDIT_VENUE_PHONE = "phone";
+    public static final String EDIT_VENUE_LATLONG = "venuell";
+    public static final String EDIT_VENUE_CATEGORY_PRIMARY = "primaryCategoryId";
+    public static final String EDIT_VENUE_CATEGORY_ADD = "addCategoryIds";
+    public static final String EDIT_VENUE_CATEGORY_REMOVE = "removeCategoryIds";
+    public static final String EDIT_VENUE_TWITTER = "twitter";
+    public static final String EDIT_VENUE_DESCRIPTION = "description";
+    public static final String EDIT_VENUE_URL = "url";
+    public static final String EDIT_VENUE_URL_FACEBOOK = "facebookUrl";
+    public static final String EDIT_VENUE_URL_MENU = "menuUrl";
+    public static final String EDIT_VENUE_STORE_ID = "storeId";
+    public static final String EDIT_VENUE_HOURS = "hours";
+
+    public static final String EDIT_VENUE_USER_LATLONG = "ll";
 }

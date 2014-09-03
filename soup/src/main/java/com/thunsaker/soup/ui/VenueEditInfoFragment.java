@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
-import com.thunsaker.soup.app.SoupApp;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
@@ -28,6 +27,9 @@ public class VenueEditInfoFragment extends Fragment {
     @Inject
     @ForApplication
     Context mContext;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
 
     public static final String ARG_OBJECT = "object";
 
@@ -98,15 +100,14 @@ public class VenueEditInfoFragment extends Fragment {
                 mDescriptionProgressBar.setVisibility(View.VISIBLE);
 
                 getActivity().setProgressBarVisibility(true);
-                FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
-                mFoursquareTasks.new GetVenue(VenueEditTabsActivity.venueToEdit.id, FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
+                mFoursquareTasks.new GetVenue(VenueEditTabsActivity.originalVenue.id, FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
 
-                name = VenueEditTabsActivity.venueToEdit.name;
-                phone = VenueEditTabsActivity.venueToEdit.contact.phone != null
-                        ? VenueEditTabsActivity.venueToEdit.contact.phone
+                name = VenueEditTabsActivity.originalVenue.name;
+                phone = VenueEditTabsActivity.originalVenue.contact.phone != null
+                        ? VenueEditTabsActivity.originalVenue.contact.phone
                         : "";
-                twitter = VenueEditTabsActivity.venueToEdit.contact.twitter;
-                url = VenueEditTabsActivity.venueToEdit.url;
+                twitter = VenueEditTabsActivity.originalVenue.contact.twitter;
+                url = VenueEditTabsActivity.originalVenue.url;
             }
 
             mNameEditText.setText(name);

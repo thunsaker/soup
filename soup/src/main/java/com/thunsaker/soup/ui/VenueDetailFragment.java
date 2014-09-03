@@ -78,6 +78,9 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
     Context mContext;
 
     @Inject
+    FoursquareTasks mFoursquareTasks;
+
+    @Inject
     EventBus mBus;
 
     @InjectView(R.id.swipeLayoutVenueDetailsContainer) SwipeRefreshLayout mSwipeViewVenueDetailsContainer;
@@ -182,7 +185,6 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
             setHasOptionsMenu(true);
             if(getActivity() != null)
                 getActivity().setProgressBarVisibility(true);
-            FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
 
             if(mBus != null && !mBus.isRegistered(this))
                 mBus.register(this);
@@ -301,35 +303,52 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
     }
 
     public void LoadDetails() {
-
         mName.setText(currentVenue.name);
 
         mAddress.setText(currentVenue.location.address);
         mAddress2.setText(currentVenue.location.getCityStatePostalCode());
         mCrossStreet.setText(currentVenue.location.crossStreet);
 
-        if(mAddress.getText().length() == 0) {
+        if(mAddress.getText().length() > 0)
+            mAddress.setVisibility(View.VISIBLE);
+        else
             mAddress.setVisibility(View.GONE);
-        }
 
-        if(mAddress2.getText().length() == 0) {
+        if(mAddress2.getText().length() > 0)
+            mAddress2.setVisibility(View.VISIBLE);
+        else
             mAddress2.setVisibility(View.GONE);
-        }
 
-        if(mCrossStreet.getText().length() == 0) {
+        if(mCrossStreet.getText().length() > 0)
+            mCrossStreet.setVisibility(View.VISIBLE);
+        else
             mCrossStreet.setVisibility(View.GONE);
+
+        if(currentVenue.contact != null) {
+            mPhone.setText(
+                    currentVenue.contact.formattedPhone != null
+                            ? currentVenue.contact.formattedPhone
+                            : currentVenue.contact.phone);
+            mTwitter.setText(currentVenue.contact.twitter);
         }
 
-        mPhone.setText(currentVenue.contact.formattedPhone);
-        mTwitter.setText(currentVenue.contact.twitter);
         mUrl.setText(currentVenue.url != null ? currentVenue.url.replace("http://","").replace("https://","") : "");
 
-        if(mPhone.getText().length() == 0)
+
+        if(mPhone.getText().length() > 0)
+            mPhoneWrapper.setVisibility(View.VISIBLE);
+        else
             mPhoneWrapper.setVisibility(View.GONE);
 
-        if(mTwitter.getText().length() == 0)
+
+        if(mTwitter.getText().length() > 0)
+            mTwitterWrapper.setVisibility(View.VISIBLE);
+        else
             mTwitterWrapper.setVisibility(View.GONE);
-        if(mUrl.getText().length() == 0)
+
+        if(mUrl.getText().length() > 0)
+            mUrlWrapper.setVisibility(View.VISIBLE);
+        else
             mUrlWrapper.setVisibility(View.GONE);
     }
 
@@ -544,16 +563,11 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
             showWelcomeActivity();
         } else {
             if (currentVenue != null) {
-                Intent editVenueIntent = new Intent(mContext,
-                        VenueEditTabsActivity.class);
+                Intent editVenueIntent = new Intent(mContext, VenueEditTabsActivity.class);
                 editVenueIntent.putExtra(VENUE_EDIT_EXTRA, currentVenue.toString());
-                VenueEditTabsActivity.originalVenue = new Venue(
-                        currentVenue);
-                getActivity().startActivityForResult(editVenueIntent,
-                        EDIT_VENUE);
+                getActivity().startActivityForResult(editVenueIntent, EDIT_VENUE);
             } else {
-                Toast.makeText(mContext, R.string.alert_still_loading,
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.alert_still_loading, Toast.LENGTH_SHORT).show();
             }
         }
     }
