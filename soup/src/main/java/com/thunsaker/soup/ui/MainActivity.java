@@ -35,7 +35,6 @@ import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
-import com.thunsaker.soup.app.SoupApp;
 import com.thunsaker.soup.data.FoursquareClient;
 import com.thunsaker.soup.data.events.VenueSearchEvent;
 import com.thunsaker.soup.services.AuthHelper;
@@ -60,6 +59,9 @@ public class MainActivity extends BaseSoupActivity implements
 
     @Inject @ForApplication
     Context mContext;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
 
     @Inject
     EventBus mBus;
@@ -589,7 +591,6 @@ public class MainActivity extends BaseSoupActivity implements
 	}
 
     public void onEvent(VenueSearchEvent event) {
-        FoursquareTasks foursquareTasks = new FoursquareTasks((SoupApp) mContext);
-        foursquareTasks.new GetClosestVenuesNew(event.searchQuery, event.searchLocation, event.duplicateVenueId, event.listType).execute();
+        mFoursquareTasks.new GetClosestVenuesNew(event.searchQuery, event.searchLocation, event.duplicateVenueId, event.listType).execute();
     }
 }

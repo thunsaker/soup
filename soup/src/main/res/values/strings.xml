@@ -105,7 +105,7 @@
     <string name="edit_venue_description_title">Description</string>
     <string name="edit_venue_description_hint">Short description of venue.</string>
     <string name="edit_venue_reverted_changes">Reverting Changes</string>
-    <string name="edit_venue_success">Successfully edited venue!</string>
+    <string name="edit_venue_success">Successfully submitted venue edits!</string>
     <string name="edit_venue_success_propose">Successfully submitted proposed edit!</string>
     <string name="edit_venue_fail">Edit failed. :( Please try again.</string>
     <string name="edit_venue_fail_unauthorized">Unauthorized: You are not allowed to make edits to this venue.</string>

@@ -118,10 +118,8 @@ public class VenueEndpoint {
 					if (result.equals(FoursquarePrefs.SUCCESS)) {
 						Toast.makeText(
 								myCaller.getApplicationContext(),
-								canEdit ? myContext
-										.getString(R.string.edit_venue_success)
-										: myContext
-												.getString(R.string.edit_venue_success_propose),
+								canEdit ? myContext.getString(R.string.edit_venue_success)
+										: myContext.getString(R.string.edit_venue_success_propose),
 								Toast.LENGTH_SHORT).show();
 						myCaller.setResult(Activity.RESULT_OK);
 					} else if (result

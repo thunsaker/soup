@@ -25,10 +25,10 @@ import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
-import com.thunsaker.soup.app.SoupApp;
 import com.thunsaker.soup.data.api.model.Category;
 import com.thunsaker.soup.data.api.model.FoursquareImage;
 import com.thunsaker.soup.data.api.model.Venue;
+import com.thunsaker.soup.data.events.EditVenueEvent;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.thunsaker.soup.util.Util;
@@ -44,6 +44,8 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 import de.greenrobot.event.EventBus;
 
+import static com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES;
+
 /*
  * Created by @thunsaker
  */
@@ -51,6 +53,9 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
     @Inject
     @ForApplication
     Context mContext;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
 
     @Inject
     EventBus mBus;
@@ -106,6 +111,9 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 
         ButterKnife.inject(this);
 
+        if(mBus != null && !mBus.isRegistered(this))
+            mBus.register(this);
+
         level = PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext());
 
         if (getIntent().hasExtra(VenueDetailFragment.VENUE_EDIT_EXTRA)) {
@@ -126,8 +134,7 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
             }
 
             setSupportProgressBarVisibility(true);
-            FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
-            mFoursquareTasks.new GetVenue(currentVenue.id, FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES).execute();
+            mFoursquareTasks.new GetVenue(currentVenue.id, CALLER_SOURCE_EDIT_CATEGORIES).execute();
         }
 
         LoadCurrentCategories(currentVenue.categories);
@@ -174,8 +181,8 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
             myModifiedVenue.categories = updatedCategories;
 
             setSupportProgressBarVisibility(true);
-            new FoursquareTasks.EditVenue(getApplicationContext(),
-                    currentVenue.id, myModifiedVenue, this, false, true).execute();
+
+            mFoursquareTasks.new EditVenue(currentVenue.id, myModifiedVenue, false, CALLER_SOURCE_EDIT_CATEGORIES).execute();
         } else {
             Toast.makeText(getApplicationContext(), R.string.edit_category_no_categories, Toast.LENGTH_SHORT).show();
         }
@@ -495,5 +502,23 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 
     public void doRemoveCategory(int item) {
         RemoveCategory(item);
+    }
+
+    public void onEvent(EditVenueEvent event) {
+        String message = "";
+        if (event != null) {
+            if (event.source == FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES) {
+                if (event.result != null) {
+                    Toast.makeText(mContext, mContext.getString(R.string.edit_venue_success_propose), Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    message = event.resultMessage;
+                    Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            message = mContext.getString(R.string.edit_venue_fail);
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+        }
     }
 }

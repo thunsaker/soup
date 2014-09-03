@@ -23,7 +23,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupFragment;
-import com.thunsaker.soup.app.SoupApp;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
@@ -36,6 +35,9 @@ public class VenueEditLocationFragment extends BaseSoupFragment {
     @Inject
     @ForApplication
     Context mContext;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
 
     public static final String ARG_OBJECT = "object";
 
@@ -87,7 +89,7 @@ public class VenueEditLocationFragment extends BaseSoupFragment {
                 (LinearLayout) rootView.findViewById(
                         R.id.linearLayoutEditVenueLocationSuperuserSection);
 
-        if(VenueEditTabsActivity.venueToEdit != null)
+        if(VenueEditTabsActivity.originalVenue != null)
             LoadForm();
 
         return rootView;
@@ -113,15 +115,14 @@ public class VenueEditLocationFragment extends BaseSoupFragment {
                 latLng = VenueEditTabsActivity.originalVenue.location.getLatLngString();
             } else {
                 getActivity().setProgressBarVisibility(true);
-                FoursquareTasks mFoursquareTasks = new FoursquareTasks((SoupApp) mContext);
-                mFoursquareTasks.new GetVenue(VenueEditTabsActivity.venueToEdit.id, FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
+                mFoursquareTasks.new GetVenue(VenueEditTabsActivity.originalVenue.id, FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE).execute();
 
-                address = VenueEditTabsActivity.venueToEdit.location.address;
-                crossStreet = VenueEditTabsActivity.venueToEdit.location.crossStreet;
-                city = VenueEditTabsActivity.venueToEdit.location.city;
-                state = VenueEditTabsActivity.venueToEdit.location.state;
-                zip = VenueEditTabsActivity.venueToEdit.location.postalCode;
-                latLng = VenueEditTabsActivity.venueToEdit.location.getLatLngString();
+                address = VenueEditTabsActivity.originalVenue.location.address;
+                crossStreet = VenueEditTabsActivity.originalVenue.location.crossStreet;
+                city = VenueEditTabsActivity.originalVenue.location.city;
+                state = VenueEditTabsActivity.originalVenue.location.state;
+                zip = VenueEditTabsActivity.originalVenue.location.postalCode;
+                latLng = VenueEditTabsActivity.originalVenue.location.getLatLngString();
             }
 
             mAddressEditText.setText(address);
@@ -168,7 +169,7 @@ public class VenueEditLocationFragment extends BaseSoupFragment {
                 mLinearLayoutLocationSuperuserSection.setVisibility(View.VISIBLE);
             }
 
-            SetupMap(VenueEditTabsActivity.venueToEdit.location.getLatLng());
+            SetupMap(VenueEditTabsActivity.originalVenue.location.getLatLng());
         } catch (Exception e) {
             e.printStackTrace();
         }

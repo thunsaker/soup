@@ -9,6 +9,7 @@ import com.thunsaker.soup.data.api.model.VenueSearchResponse;
 import java.util.Map;
 import java.util.UUID;
 
+import retrofit.http.EncodedQueryMap;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -114,9 +115,9 @@ public interface FoursquareService {
             @Query("offset") int offset,
             @Query("sort") String sortOrder);
 
-    @POST("/venue/{venueId}/edit")
+    @POST("/venues/{venueId}/proposeedit")
     PostVenueEditResponse postVenueEdit(
             @Path("venueId") String venueId,
             @Query("oauth_token") String oauth_token,
-            @QueryMap Map<String, String> edits);
+            @EncodedQueryMap Map<String, String> edits);
 }
