@@ -48,6 +48,7 @@ public class VenueEndpoint {
         app.inject(this);
     }
 
+    @Deprecated
     public List<CompactVenue> GetClosestVenuesWithLatLng(LatLng currentLatLng, String searchQuery, String searchQueryLocation) {
         String mAccessToken = PreferencesHelper.getFoursquareToken(mContext);
         String mClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
@@ -67,6 +68,7 @@ public class VenueEndpoint {
         }
     }
 
+    @Deprecated
 	public static List<CompactVenue> GetClosestVenuesWithLatLng(
 			LatLng currentLatLng, String searchQuery, String accessToken,
 			String clientId, String clientSecret, String searchQueryLocation) {
@@ -151,6 +153,7 @@ public class VenueEndpoint {
         }
     }
 
+    @Deprecated
     private static String ConstructFoursquareServiceCall(LatLng currentLatLng, String searchQuery, String accessToken, String clientId, String clientSecret, String searchQueryLocation) throws UnsupportedEncodingException {
         String venueRequestUrl;
         if (accessToken != null && accessToken.length() > 0) {
@@ -191,6 +194,7 @@ public class VenueEndpoint {
         return venueRequestUrl;
     }
 
+    @Deprecated
     public static Venue GetVenue(String Id, String accessToken,
 			String clientId, String clientSecret) {
 		Venue myVenue;
@@ -312,6 +316,7 @@ public class VenueEndpoint {
 	 * https://developer.foursquare.com/docs/venues/edit Proposed Edit
 	 * Reference: https://developer.foursquare.com/docs/venues/proposeedit
 	 */
+    @Deprecated
 	public static String EditVenue(String myVenueId, String accessToken,
 			String clientId, String clientSecret, Venue myModifiedVenue,
 			int level, Boolean modifiedDescription, Boolean fromAddCategory) {
@@ -493,6 +498,7 @@ public class VenueEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static String EditVenueCategories(String myVenueId,
 			String accessToken, String clientId, String clientSecret,
 			List<Category> myCategories, Boolean canEdit) {
@@ -603,6 +609,7 @@ public class VenueEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static List<Category> GetCategories(String accessToken,
 			String clientId, String clientSecret) {
 		List<Category> myFoursquareCategories;
@@ -695,6 +702,8 @@ public class VenueEndpoint {
 	 * Flag Venue allows user to flag an incorrect/closed/etc venue. Edit
 	 * Reference: https://developer.foursquare.com/docs/venues/flag
 	 */
+    // TODO: Migrate to retrofit
+    @Deprecated
 	public static String FlagVenue(String myVenueId, String accessToken,
 			String clientId, String clientSecret, Integer myFlagType,
 			String myDuplicateId) {

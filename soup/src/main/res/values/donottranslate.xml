@@ -3,8 +3,8 @@
 	<string name="app_name" translatable="false">Soup</string>
 	<string name="app_name_pro" translatable="false">Soup Pro</string>
     <string name="app_name_dev" translatable="false">Soup Dev</string>
-    <string name="app_version" translatable="false">2.5</string>
-    <string name="app_version_long" translatable="false">Soup v.2.5</string>
+    <string name="app_version" translatable="false">2.5.1</string>
+    <string name="app_version_long" translatable="false">Soup v.2.5.1</string>
 
     <string name="prefs_foursquare_connected" translatable="false">soup_foursquare_connected</string>
     <string name="prefs_foursquare_token" translatable="false">soup_foursquare_token</string>

@@ -8,40 +8,22 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.SoupApp;
-import com.thunsaker.soup.data.api.model.Category;
-import com.thunsaker.soup.data.api.model.Checkin;
-import com.thunsaker.soup.data.api.model.CompactVenue;
-import com.thunsaker.soup.data.api.model.FoursquareCompactVenueResponse;
-import com.thunsaker.soup.data.api.model.FoursquareResponse;
-import com.thunsaker.soup.data.api.model.FoursquareVenueResponse;
-import com.thunsaker.soup.data.api.model.GetUserCheckinHistoryResponse;
-import com.thunsaker.soup.data.api.model.GetVenueHoursResponse;
-import com.thunsaker.soup.data.api.model.GetVenueResponse;
-import com.thunsaker.soup.data.api.model.Location;
-import com.thunsaker.soup.data.api.model.PostVenueEditResponse;
-import com.thunsaker.soup.data.api.model.TimeFrame;
-import com.thunsaker.soup.data.api.model.Venue;
-import com.thunsaker.soup.data.api.model.VenueSearchResponse;
-import com.thunsaker.soup.data.events.CheckinHistoryEvent;
-import com.thunsaker.soup.data.events.EditVenueEvent;
-import com.thunsaker.soup.data.events.GetVenueEvent;
-import com.thunsaker.soup.data.events.GetVenueHoursEvent;
-import com.thunsaker.soup.data.events.VenueListEvent;
+import com.thunsaker.soup.data.api.model.*;
+import com.thunsaker.soup.data.events.*;
 import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.services.FoursquareService;
 import com.thunsaker.soup.services.foursquare.endpoints.VenueEndpoint;
 import com.thunsaker.soup.ui.MainActivity;
-import com.thunsaker.soup.ui.VenueAddCategoryActivity;
 import com.thunsaker.soup.ui.VenueDetailActivity;
 import com.thunsaker.soup.ui.VenueEditTabsActivity;
 import com.thunsaker.soup.util.Util;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -535,38 +517,38 @@ public class FoursquareTasks {
         }
     }
 
-    public static class GetCategories extends AsyncTask<Void, Integer, List<Category>> {
-        Context myContext;
-        VenueAddCategoryActivity myCaller;
-
+    public class GetCategories extends AsyncTask<Void, Integer, List<Category>> {
         String myAccessToken;
-        String myClientId;
-        String myClientSecret;
+        int mSource;
 
-        public GetCategories(Context theContext,
-                             VenueAddCategoryActivity theCaller) {
-            myContext = theContext;
-            myCaller = theCaller;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        public GetCategories(int theSource) {
+            mSource = theSource;
         }
 
         @Override
         protected List<Category> doInBackground(Void... params) {
-            try {
-                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("") ? PreferencesHelper
-                        .getFoursquareToken(myContext) : "";
-                myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
-                myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
+            List<Category> resultCategories = new ArrayList<Category>();
 
-                List<Category> foursquareCategories = VenueEndpoint
-                        .GetCategories(myAccessToken, myClientId,
-                                myClientSecret);
-                return foursquareCategories != null ? foursquareCategories
-                        : null;
+            try {
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                                ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+                GetCategoriesResponse response = mFoursquareService.getCategories(myAccessToken);
+
+                if(response != null) {
+                    if(response.meta.code == 200 && response.response.categories != null) {
+                        resultCategories = response.response.categories;
+                    } else if (response.meta.code == 503) {
+                        ShowServerErrorToast(response.meta);
+                    } else {
+                        Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                    }
+                } else {
+                    Log.i("FoursquareTasks", "Failure :( GetCategories call");
+                }
+
+                return resultCategories;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -577,30 +559,16 @@ public class FoursquareTasks {
         protected void onPostExecute(List<Category> result) {
             super.onPostExecute(result);
             try {
-                VenueAddCategoryActivity.FoursquareCategoriesMaster = result;
-                Calendar cal = Calendar.getInstance();
-                VenueAddCategoryActivity.FoursquareCategoriesMasterDate =
-                        cal.get(Calendar.SECOND);
-
-                if (VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items == null)
-                    VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items = new ArrayList<Category>();
-
-                VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items
-                        .addAll(result);
-                VenueAddCategoryActivity.myPrimaryCategoryListAdapter
-                        .notifyDataSetChanged();
-
-                VenueAddCategoryActivity.myPrimaryCategoryListAdapter = myCaller.new CategoryListAdapter(
-                        myContext, R.layout.list_category_item, result, 1);
-                VenueAddCategoryActivity.mPrimaryListView
-                        .setAdapter(VenueAddCategoryActivity.myPrimaryCategoryListAdapter);
-                VenueAddCategoryActivity.myPrimaryCategoryListAdapter
-                        .notifyDataSetChanged();
+                if(result != null)
+                    mBus.post(new GetCategoriesEvent(true, "", result, mSource));
+                else
+                    mBus.post(new GetCategoriesEvent(false, "", null, mSource));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
 
     public static class FlagVenue extends AsyncTask<Void, Integer, String> {
         Context myContext;

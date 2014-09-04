@@ -23,8 +23,6 @@ import com.thunsaker.soup.ui.VenueDetailActivity;
 import com.thunsaker.soup.ui.VenueEditTabsActivity;
 import com.thunsaker.soup.util.Util;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -536,6 +534,7 @@ public class VenueEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static class GetCategories extends
 			AsyncTask<Void, Integer, List<Category>> {
 		Context myContext;
@@ -579,25 +578,25 @@ public class VenueEndpoint {
 		protected void onPostExecute(List<Category> result) {
 			super.onPostExecute(result);
 			try {
-				VenueAddCategoryActivity.FoursquareCategoriesMaster = result;
-				Calendar cal = Calendar.getInstance();
-				VenueAddCategoryActivity.FoursquareCategoriesMasterDate = cal
-						.get(Calendar.SECOND);
-
-				if (VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items == null)
-					VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items = new ArrayList<Category>();
-
-				VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items
-						.addAll(result);
-				VenueAddCategoryActivity.myPrimaryCategoryListAdapter
-						.notifyDataSetChanged();
-
-				VenueAddCategoryActivity.myPrimaryCategoryListAdapter = myCaller.new CategoryListAdapter(
-						myContext, R.layout.list_category_item, result, 1);
-				VenueAddCategoryActivity.mPrimaryListView
-						.setAdapter(VenueAddCategoryActivity.myPrimaryCategoryListAdapter);
-				VenueAddCategoryActivity.myPrimaryCategoryListAdapter
-						.notifyDataSetChanged();
+//				VenueAddCategoryActivity.FoursquareCategoriesMaster = result;
+//				Calendar cal = Calendar.getInstance();
+//				VenueAddCategoryActivity.FoursquareCategoriesMasterDate = cal
+//						.get(Calendar.SECOND);
+//
+//				if (VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items == null)
+//					VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items = new ArrayList<Category>();
+//
+//				VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items
+//						.addAll(result);
+//				VenueAddCategoryActivity.myPrimaryCategoryListAdapter
+//						.notifyDataSetChanged();
+//
+//				VenueAddCategoryActivity.myPrimaryCategoryListAdapter = myCaller.new CategoryListAdapter(
+//						myContext, R.layout.list_category_item, result, 1);
+//				VenueAddCategoryActivity.mPrimaryListView
+//						.setAdapter(VenueAddCategoryActivity.myPrimaryCategoryListAdapter);
+//				VenueAddCategoryActivity.myPrimaryCategoryListAdapter
+//						.notifyDataSetChanged();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
