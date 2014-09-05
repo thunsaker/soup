@@ -3,4 +3,7 @@
 
 [!["Get it on Google Play"](http://www.android.com/images/brand/get_it_on_play_logo_large.png)](http://play.google.com/store/apps/details?id=com.thunsaker.soup)
 
+Go Pro!  
+[!["Get it on Google Play"](http://www.android.com/images/brand/get_it_on_play_logo_large.png)](http://play.google.com/store/apps/details?id=com.thunsaker.soup.pro)
+
 !["Soup Title Image"] (https://lh5.ggpht.com/SOJTD8RE0zq8eyDMyKIk4uGhWyOxlVqy8eied6qqonVZfd58G3QCFkWVoTLYUWutYsI=w705)
