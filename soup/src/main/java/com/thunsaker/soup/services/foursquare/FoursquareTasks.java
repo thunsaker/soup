@@ -17,6 +17,7 @@ import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.SoupApp;
+import com.thunsaker.soup.data.api.GetUserInfoResponse;
 import com.thunsaker.soup.data.api.model.Category;
 import com.thunsaker.soup.data.api.model.Checkin;
 import com.thunsaker.soup.data.api.model.CompactVenue;
@@ -38,6 +39,7 @@ import com.thunsaker.soup.data.events.CheckinHistoryEvent;
 import com.thunsaker.soup.data.events.EditVenueEvent;
 import com.thunsaker.soup.data.events.FlagVenueEvent;
 import com.thunsaker.soup.data.events.GetCategoriesEvent;
+import com.thunsaker.soup.data.events.GetUserInfoEvent;
 import com.thunsaker.soup.data.events.GetVenueEvent;
 import com.thunsaker.soup.data.events.GetVenueHoursEvent;
 import com.thunsaker.soup.data.events.VenueListEvent;
@@ -73,9 +75,6 @@ public class FoursquareTasks {
     public FoursquareTasks(SoupApp app) {
         app.inject(this);
     }
-
-    // DEBUG EMAIL
-    public static boolean SEND_DEBUG_EMAIL = false;
 
     public class GetClosestVenuesNew extends AsyncTask<Void, Integer, List<CompactVenue>> {
         LatLng myLatLng;
@@ -699,7 +698,47 @@ public class FoursquareTasks {
 
     }
 
-    // Helper Classes
+    public class GetUserInfo extends AsyncTask<Void, Integer, GetUserInfoResponse> {
+        String mUserId;
+
+        String myAccessToken;
+
+        public GetUserInfo(String theUserId) {
+            mUserId = theUserId;
+        }
+
+        @Override
+        protected GetUserInfoResponse doInBackground(Void... params) {
+            myAccessToken =
+                    !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                            ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+            return mFoursquareService.getUserInfo(mUserId, myAccessToken);
+        }
+
+        @Override
+        protected void onPostExecute(GetUserInfoResponse result) {
+            super.onPostExecute(result);
+
+            String resultMessage = null;
+            if (result != null) {
+                if (result.meta.code == 200) {
+                    if (result.response != null && result.response.user != null) {
+                        mBus.post(new GetUserInfoEvent(true, "", result.response.user));
+                        return;
+                    }
+                } else {
+                    resultMessage = "Failure! Code: " + result.meta.code + " Error: " + result.meta.errorType + " - " + result.meta.errorDetail;
+                }
+            } else {
+                resultMessage = "Failure fetching user details";
+            }
+
+            mBus.post(new GetUserInfoEvent(false, resultMessage, null));
+        }
+    }
+
+        // Helper Classes
     private Map<String, String> getLocationQueryParams(int mSuperuserLevel, Location location) {
         Map<String, String> locationParams = new HashMap<String, String>();
         if (location.address != null)

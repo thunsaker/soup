@@ -27,6 +27,7 @@ import java.util.List;
  * Created by @thunsaker
  */
 public class UserEndpoint {
+    @Deprecated
 	public static class GetUserInfo extends AsyncTask<Void, Integer, Boolean> {
 		Context myContext;
 		String myUrl;

@@ -1,5 +1,6 @@
 package com.thunsaker.soup.services;
 
+import com.thunsaker.soup.data.api.GetUserInfoResponse;
 import com.thunsaker.soup.data.api.model.FlagVenueResponse;
 import com.thunsaker.soup.data.api.model.GetCategoriesResponse;
 import com.thunsaker.soup.data.api.model.GetVenueHoursResponse;
@@ -18,23 +19,33 @@ import retrofit.http.Query;
 
 public interface FoursquareService {
 
-    /*
-    Search for Venues!
-    https://developer.foursquare.com/docs/venues/search
-    /v2/venues/search
-    */
+    /**
+     * Get User information
+     * https://developer.foursquare.com/docs/users/users
+     * @param userId        User id {@link String} to fetch or self
+     * @param oauth_token   Auth Token {@link String}
+     * @return
+     */
+    @GET("/users/{USER_ID}")
+    GetUserInfoResponse getUserInfo(
+            @Path("USER_ID") String userId,
+            @Query("oauth_token") String oauth_token
+    );
 
     /**
-     * @param oauth_token Auth Token
+     *  Search for Venues!
+     *  https://developer.foursquare.com/docs/venues/search/v2/venues/search
+     *
+     * @param oauth_token Auth Token {@link String}
      * @param latLong     Current GPS Coords from Device
-     * @param query       Search query
-     * @param limit       Max number of search results to return
+     * @param query       Search query {@link String}
+     * @param limit       Max number of search results to return {@link int}
      * @param intent      Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_BROWSE} or
      *                    {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_GLOBAL} or
      *                    {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_CHECKIN} or
      *                    {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_MATCH}
-     * @param radius      Area to search within
-     * @return List of venues contained within {@link com.thunsaker.soup.data.api.model.VenueSearchResponse}
+     * @param radius      Area to search within {@link int}
+     * @return List of venues contained within {@link VenueSearchResponse}
      */
     @GET("/venues/search")
     VenueSearchResponse searchVenuesNearby(
@@ -46,15 +57,18 @@ public interface FoursquareService {
             @Query("radius") int radius);
 
     /**
-     * @param oauth_token Auth Token
+     *  Search for Venues!
+     *  https://developer.foursquare.com/docs/venues/search/v2/venues/search
+     *
+     * @param oauth_token Auth Token {@link String}
      * @param query       Search query
      * @param near        Text search location instead of using device GPS
-     * @param limit       Max number of search results to return
+     * @param limit       Max number of search results to return {@link int}
      * @param intent      Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_BROWSE} or
      *                    {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_GLOBAL} or
      *                    {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_CHECKIN} or
      *                    {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_SEARCH_INTENT_MATCH}
-     * @param radius      Area to search within
+     * @param radius      Area to search within {@link int}
      * @return List of venues contained within {@link com.thunsaker.soup.data.api.model.VenueSearchResponse}
      */
     @GET("/venues/search")
@@ -70,7 +84,7 @@ public interface FoursquareService {
      * Fetch the complete venue
      *
      * @param venueId     Venue Id {@link UUID} to fetch
-     * @param oauth_token Auth Token
+     * @param oauth_token Auth Token {@link String}
      * @return Single venue contained within {@link com.thunsaker.soup.data.api.model.GetVenueResponse}
      */
     @GET("/venues/{VENUE_ID}")
@@ -82,7 +96,7 @@ public interface FoursquareService {
      * Fetch Venue Hours
      *
      * @param venueId     Venue Id {@link UUID} for which to fetch hours
-     * @param oauth_token Auth Token
+     * @param oauth_token Auth Token {@link String}
      * @return Venue Hours within {@link com.thunsaker.soup.data.api.model.GetVenueHoursResponse}
      */
     @GET("/venues/{VENUE_ID}/hours")
@@ -94,7 +108,7 @@ public interface FoursquareService {
      * Edit venue passing a collection of fields to be edited
      *
      * @param venueId       Venue Id {@link UUID} for which to fetch hours
-     * @param oauth_token   Auth Token
+     * @param oauth_token   Auth Token {@link String}
      * @param edits         Collection of fields to be edited see: https://developer.foursquare.com/docs/venues/proposeedit
      * @return Returns success/error message
      */
@@ -108,7 +122,8 @@ public interface FoursquareService {
      * Flag a venue with a certain problem
      *
      * @param venueId       Venue Id {@link UUID} for which to fetch hours
-     * @param problem       Problem to be reported.
+     * @param oauth_token   Auth Token {@link String}
+     * @param problem       Problem to be reported. {@link String}
      * @return Returns success/error message
      */
     @POST("/venues/{VENUE_ID}/flag")
@@ -117,6 +132,15 @@ public interface FoursquareService {
             @Query("oauth_token") String oauth_token,
             @Query("problem") String problem);
 
+    /**
+     * Flag a venue as duplicate
+     *
+     * @param venueId           Venue Id {@link UUID} for which to fetch hours
+     * @param oauth_token       Auth Token {@link String}
+     * @param problem           Problem to be reported. {@link String}
+     * @param duplicateVenueId  Venue Id {@link UUID} of the duplicate venue
+     * @return Returns success/error message
+     */
     @POST("/venues/{VENUE_ID}/flag")
     FlagVenueResponse flagDuplicateVenue(
             @Path("VENUE_ID") String venueId,
