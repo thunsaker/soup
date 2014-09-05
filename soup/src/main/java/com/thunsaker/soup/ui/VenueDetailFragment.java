@@ -744,14 +744,6 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 									    getActivity().setProgressBarVisibility(true);
 
                                     ((VenueDetailActivity)getActivity()).FlagVenueDuplicate(originalId, currentFlagItem, duplicateId);
-
-//									new FoursquareTasks.FlagVenue(
-//											getActivity()
-//													.getApplicationContext(),
-//											originalId,
-//											FoursquarePrefs.FlagType.DUPLICATE,
-//											duplicateId, getActivity())
-//											.execute();
 									ClearFlagDuplicateValues();
 								}
 							})
