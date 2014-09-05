@@ -569,42 +569,36 @@ public class FoursquareTasks {
         }
     }
 
-
-    public static class FlagVenue extends AsyncTask<Void, Integer, String> {
-        Context myContext;
-        Integer myFlagType;
-        String myVenueId;
-        String myDuplicateId = "";
-        FragmentActivity myCaller;
+    public class FlagVenue extends AsyncTask<Void, Integer, FlagVenueResponse> {
+        Integer mFlagType;
+        String mVenueId;
+        String mDuplicateId = "";
 
         String myAccessToken;
-        String myClientId;
-        String myClientSecret;
 
-        public FlagVenue(Context theContext, String theVenueToModifyId,
-                         Integer theFlagType, String theDuplicateId,
-                         FragmentActivity FragmentActivity) {
-            myContext = theContext;
-            myVenueId = theVenueToModifyId;
-            myFlagType = theFlagType;
-            if (myFlagType.equals(FoursquarePrefs.FlagType.DUPLICATE)) {
-                myDuplicateId = theDuplicateId;
+        public FlagVenue(String theVenueToModifyId, Integer theFlagType, String theDuplicateId) {
+            mVenueId = theVenueToModifyId;
+            mFlagType = theFlagType;
+            if (mFlagType.equals(FoursquarePrefs.FlagType.DUPLICATE)) {
+                mDuplicateId = theDuplicateId;
             }
-            myCaller = FragmentActivity;
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected FlagVenueResponse doInBackground(Void... params) {
             try {
-                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("") ? PreferencesHelper
-                        .getFoursquareToken(myContext) : "";
-                myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
-                myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                        ? PreferencesHelper.getFoursquareToken(mContext) : "";
 
-                String venueResult = VenueEndpoint.FlagVenue(myVenueId,
-                        myAccessToken, myClientId, myClientSecret, myFlagType,
-                        myDuplicateId);
-                return venueResult != null ? venueResult : null;
+                FlagVenueResponse response;
+
+                if(mFlagType == FoursquarePrefs.FlagType.DUPLICATE)
+                    response = mFoursquareService.flagDuplicateVenue(mVenueId, myAccessToken, Util.Encode(Util.GetFlagTypeStringFromInt(mFlagType, false)), mDuplicateId);
+                else
+                    response = mFoursquareService.flagVenue(mVenueId, myAccessToken, Util.Encode(Util.GetFlagTypeStringFromInt(mFlagType, false)));
+
+                return response != null ? response : null;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -612,50 +606,9 @@ public class FoursquareTasks {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(FlagVenueResponse result) {
             super.onPostExecute(result);
-
-            try {
-                myCaller.setProgressBarVisibility(false);
-                myCaller.supportInvalidateOptionsMenu();
-                // myCaller.setProgressBarVisibility(false);
-                if (result.equals(FoursquarePrefs.SUCCESS)) {
-                    // Crouton.makeText(myCaller,
-                    // String.format(myContext.getString(R.string.flag_venue_success),
-                    // Util.GetFlagTypeStringFromInt(myFlagType, true)),
-                    // Style.CONFIRM).show();
-
-                    Toast.makeText(
-                            myCaller,
-                            String.format(myContext
-                                            .getString(R.string.flag_venue_success),
-                                    Util.GetFlagTypeStringFromInt(myFlagType,
-                                            true)), Toast.LENGTH_SHORT).show();
-                    // } else if(result == FAIL_UNAUTHORIZED) {
-                    // Toast.makeText(myContext,
-                    // myContext.getString(R.string.edit_venue_fail_unauthorized),
-                    // Toast.LENGTH_LONG).show();
-                } else {
-                    // Crouton.makeText(myCaller,
-                    // myContext.getString(R.string.flag_venue_fail),
-                    // Style.ALERT).show();
-
-                    Toast.makeText(myCaller,
-                            myContext.getString(R.string.flag_venue_fail),
-                            Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            if (myCaller != null) {
-                myCaller.setProgressBarVisibility(true);
-                myCaller.supportInvalidateOptionsMenu();
-            }
+            mBus.post(new FlagVenueEvent(true, ""));
         }
     }
 

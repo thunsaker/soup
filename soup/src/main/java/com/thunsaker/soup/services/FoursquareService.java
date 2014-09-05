@@ -1,5 +1,6 @@
 package com.thunsaker.soup.services;
 
+import com.thunsaker.soup.data.api.model.FlagVenueResponse;
 import com.thunsaker.soup.data.api.model.GetCategoriesResponse;
 import com.thunsaker.soup.data.api.model.GetUserCheckinHistoryResponse;
 import com.thunsaker.soup.data.api.model.GetVenueHoursResponse;
@@ -15,7 +16,6 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
-import retrofit.http.QueryMap;
 
 public interface FoursquareService {
 
@@ -74,9 +74,9 @@ public interface FoursquareService {
      * @param oauth_token Auth Token
      * @return Single venue contained within {@link com.thunsaker.soup.data.api.model.GetVenueResponse}
      */
-    @GET("/venues/{venueId}")
+    @GET("/venues/{VENUE_ID}")
     GetVenueResponse getVenue(
-            @Path("venueId") String venueId,
+            @Path("VENUE_ID") String venueId,
             @Query("oauth_token") String oauth_token);
 
     /**
@@ -86,9 +86,9 @@ public interface FoursquareService {
      * @param oauth_token Auth Token
      * @return Venue Hours within {@link com.thunsaker.soup.data.api.model.GetVenueHoursResponse}
      */
-    @GET("/venues/{venueId}/hours")
+    @GET("/venues/{VENUE_ID}/hours")
     GetVenueHoursResponse getVenueHours(
-            @Path("venueId") String venueId,
+            @Path("VENUE_ID") String venueId,
             @Query("oauth_token") String oauth_token);
 
     /**
@@ -104,7 +104,7 @@ public interface FoursquareService {
      */
     @GET("/users/{userId}/checkins")
     GetUserCheckinHistoryResponse getUserCheckins(
-            @Path("userId") String userId,
+            @Path("USER_ID") String userId,
             @Query("oauth_token") String oauth_token,
             @Query("beforeTimestamp") long beforeTimestamp,
             @Query("afterTimestamp") long afterTimestamp,
@@ -123,9 +123,9 @@ public interface FoursquareService {
      *                          {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.History.Sort.OLDEST}
      * @return List of checkins within {@link com.thunsaker.soup.data.api.model.GetUserCheckinHistoryResponse}
      */
-    @GET("/users/{userId}/checkins")
+    @GET("/users/{USER_ID}/checkins")
     GetUserCheckinHistoryResponse getUserCheckins(
-            @Path("userId") String userId,
+            @Path("USER_ID") String userId,
             @Query("oauth_token") String oauth_token,
             @Query("beforeTimestamp") long beforeTimestamp,
             @Query("afterTimestamp") long afterTimestamp,
@@ -134,18 +134,38 @@ public interface FoursquareService {
             @Query("sort") String sortOrder);
 
     /**
-     *
+     * Edit venue passing a collection of fields to be edited
      *
      * @param venueId       Venue Id {@link UUID} for which to fetch hours
      * @param oauth_token   Auth Token
      * @param edits         Collection of fields to be edited see: https://developer.foursquare.com/docs/venues/proposeedit
      * @return Returns success/error message
      */
-    @POST("/venues/{venueId}/proposeedit")
+    @POST("/venues/{VENUE_ID}/proposeedit")
     PostVenueEditResponse postVenueEdit(
-            @Path("venueId") String venueId,
+            @Path("VENUE_ID") String venueId,
             @Query("oauth_token") String oauth_token,
             @EncodedQueryMap Map<String, String> edits);
+
+    /**
+     * Flag a venue with a certain problem
+     *
+     * @param venueId       Venue Id {@link UUID} for which to fetch hours
+     * @param problem       Problem to be reported.
+     * @return Returns success/error message
+     */
+    @POST("/venues/{VENUE_ID}/flag")
+    FlagVenueResponse flagVenue(
+            @Path("VENUE_ID") String venueId,
+            @Query("oauth_token") String oauth_token,
+            @Query("problem") String problem);
+
+    @POST("/venues/{VENUE_ID}/flag")
+    FlagVenueResponse flagDuplicateVenue(
+            @Path("VENUE_ID") String venueId,
+            @Query("oauth_token") String oauth_token,
+            @Query("problem") String problem,
+            @Query("venueId") String duplicateVenueId);
 
     /**
      * Fetch the complete venue

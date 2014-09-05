@@ -679,17 +679,13 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 									if(getActivity() != null)
                                         getActivity().setProgressBarVisibility(true);
 
-									if (currentVenue != null) {
-										new FoursquareTasks.FlagVenue(getActivity(),
-												currentVenue.id,
-												currentFlagItem, "", getActivity())
-												.execute();
-									} else if (VenueDetailActivity.venueIdToLoad.length() > 0) {
-										new FoursquareTasks.FlagVenue(getActivity(),
-												VenueDetailActivity.venueIdToLoad,
-												currentFlagItem, "", getActivity())
-												.execute();
-									}
+                                    String venueId = "";
+                                    if (currentVenue != null)
+                                        venueId = currentVenue.id;
+                                    else if (VenueDetailActivity.venueIdToLoad.length() > 0)
+                                        venueId = VenueDetailActivity.venueIdToLoad;
+
+                                    ((VenueDetailActivity)getActivity()).FlagVenue(venueId, currentFlagItem);
 								}
 							})
 					.setNegativeButton(R.string.dialog_cancel,
@@ -745,13 +741,16 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 								public void onClick(DialogInterface dialog, int which) {
                                     if(getActivity() != null)
 									    getActivity().setProgressBarVisibility(true);
-									new FoursquareTasks.FlagVenue(
-											getActivity()
-													.getApplicationContext(),
-											originalId,
-											FoursquarePrefs.FlagType.DUPLICATE,
-											duplicateId, getActivity())
-											.execute();
+
+                                    ((VenueDetailActivity)getActivity()).FlagVenueDuplicate(originalId, currentFlagItem, duplicateId);
+
+//									new FoursquareTasks.FlagVenue(
+//											getActivity()
+//													.getApplicationContext(),
+//											originalId,
+//											FoursquarePrefs.FlagType.DUPLICATE,
+//											duplicateId, getActivity())
+//											.execute();
 									ClearFlagDuplicateValues();
 								}
 							})
