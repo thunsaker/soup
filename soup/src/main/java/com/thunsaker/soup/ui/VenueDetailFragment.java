@@ -54,7 +54,6 @@ import com.thunsaker.soup.data.events.GetVenueEvent;
 import com.thunsaker.soup.data.events.GetVenueHoursEvent;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
-import com.thunsaker.soup.services.foursquare.endpoints.VenueEndpoint;
 import com.thunsaker.soup.util.Util;
 
 import java.util.List;
@@ -798,19 +797,19 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 		}
 
 		// DEBUG Email
-		if (VenueEndpoint.SEND_DEBUG_EMAIL
-				&& VenueEditTabsActivity.mDebugString != null) {
-			Intent debugIntent = new Intent(Intent.ACTION_SEND);
-			debugIntent.setType("message/rfc822");
-			debugIntent.putExtra(Intent.EXTRA_SUBJECT, "Soup Debug Data");
-			debugIntent.putExtra(Intent.EXTRA_TEXT,
-					VenueEditTabsActivity.mDebugString);
-			debugIntent.putExtra(Intent.EXTRA_EMAIL,
-					new String[] { "android+soup+debug@thomashunsaker.com" });
-			Intent mailerIntent = Intent.createChooser(debugIntent, null);
-			startActivity(mailerIntent);
-			VenueEditTabsActivity.mDebugString = null;
-		}
+//		if (VenueEndpoint.SEND_DEBUG_EMAIL
+//				&& VenueEditTabsActivity.mDebugString != null) {
+//			Intent debugIntent = new Intent(Intent.ACTION_SEND);
+//			debugIntent.setType("message/rfc822");
+//			debugIntent.putExtra(Intent.EXTRA_SUBJECT, "Soup Debug Data");
+//			debugIntent.putExtra(Intent.EXTRA_TEXT,
+//					VenueEditTabsActivity.mDebugString);
+//			debugIntent.putExtra(Intent.EXTRA_EMAIL,
+//					new String[] { "android+soup+debug@thomashunsaker.com" });
+//			Intent mailerIntent = Intent.createChooser(debugIntent, null);
+//			startActivity(mailerIntent);
+//			VenueEditTabsActivity.mDebugString = null;
+//		}
 	}
 
 	@Override
