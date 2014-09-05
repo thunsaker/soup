@@ -27,7 +27,6 @@ import com.thunsaker.soup.data.api.model.Hours;
 import com.thunsaker.soup.data.api.model.Location;
 import com.thunsaker.soup.data.api.model.Venue;
 import com.thunsaker.soup.data.events.EditVenueEvent;
-import com.thunsaker.soup.data.events.FlagVenueEvent;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.viewpagerindicator.TitlePageIndicator;
@@ -399,22 +398,6 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
             }
         } else {
             message = mContext.getString(R.string.edit_venue_fail);
-            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void onEvent(FlagVenueEvent event) {
-        String message;
-        if (event != null) {
-            if (event.result != null) {
-                Toast.makeText(mContext, mContext.getString(R.string.flag_venue_success), Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                message = event.resultMessage;
-                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            message = mContext.getString(R.string.flag_venue_fail);
             Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
         }
     }

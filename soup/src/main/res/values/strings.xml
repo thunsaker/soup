@@ -137,7 +137,7 @@
     <string name="dialog_no">No</string>
     <string name="dialog_yes">Yes</string>
     <string name="venue_details_dialog_flag_message">Choose Error Type</string>
-    <string name="flag_venue_success">Successfully flagged venue as: %s</string>
+    <string name="flag_venue_success">Successfully flagged venue</string>
     <string name="flag_venue_fail">Flagging failed. :( Please try again.</string>
     <string name="venue_details_edit_button">Edit</string>
     <string name="venue_details_edit_categories_button">Categories</string>

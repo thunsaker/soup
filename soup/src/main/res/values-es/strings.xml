@@ -147,7 +147,7 @@
     <string name="dialog_yes">Sí</string>
 
     <string name="venue_details_dialog_flag_message">Elija el tipo de error</string>
-    <string name="flag_venue_success">Lugar marcado exitosamente como: %s</string>
+    <string name="flag_venue_success">Lugar marcado exitosamente.</string>
     <string name="flag_venue_fail">Marcando falló. :( Por favor, inténtelo de nuevo.</string>
 
     <string name="venue_details_edit_button">Editar</string>

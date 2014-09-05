@@ -49,6 +49,7 @@ import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.FoursquareImage;
 import com.thunsaker.soup.data.api.model.TimeFrame;
 import com.thunsaker.soup.data.api.model.Venue;
+import com.thunsaker.soup.data.events.FlagVenueEvent;
 import com.thunsaker.soup.data.events.GetVenueEvent;
 import com.thunsaker.soup.data.events.GetVenueHoursEvent;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
@@ -709,7 +710,7 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 		}
 	}
 
-	public static class FlagDuplicateVenueDialogFragment extends DialogFragment {
+    public static class FlagDuplicateVenueDialogFragment extends DialogFragment {
 
 		public FlagDuplicateVenueDialogFragment() {
 		}
@@ -755,14 +756,14 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 								}
 							})
 					.setNegativeButton(R.string.dialog_no,
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									ClearFlagDuplicateValues();
-									dialog.dismiss();
-								}
-							}).setMessage(Html.fromHtml(flagDuplicateMessage));
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    ClearFlagDuplicateValues();
+                                    dialog.dismiss();
+                                }
+                            }).setMessage(Html.fromHtml(flagDuplicateMessage));
 			return builder.create();
 		}
 
@@ -924,6 +925,9 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
     }
 
     public void onEvent(GetVenueHoursEvent event) {
+        if(getActivity() != null)
+            getActivity().setProgressBarVisibility(false);
+
         mSwipeViewVenueDetailsContainer.setRefreshing(false);
 
         if(event != null) {
@@ -935,6 +939,22 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
                     mHoursWrapper.setVisibility(View.GONE);
                 }
             }
+        }
+    }
+
+    public void onEvent(FlagVenueEvent event) {
+        mSwipeViewVenueDetailsContainer.setRefreshing(false);
+        String message;
+        if (event != null) {
+            if (event.result != null) {
+                Toast.makeText(mContext, mContext.getString(R.string.flag_venue_success), Toast.LENGTH_SHORT).show();
+            } else {
+                message = event.resultMessage;
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            message = mContext.getString(R.string.flag_venue_fail);
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
         }
     }
 
