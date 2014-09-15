@@ -26,6 +26,7 @@ import java.util.List;
 /*
  * Created by @thunsaker
  */
+@Deprecated
 public class UserEndpoint {
 	public static class GetUserInfo extends AsyncTask<Void, Integer, Boolean> {
 		Context myContext;
@@ -268,6 +269,7 @@ public class UserEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static class GetLists extends AsyncTask<Void, Integer, List<FoursquareList>> {
 		Context myContext;
         ListsFragment myCaller;
@@ -324,6 +326,7 @@ public class UserEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static List<FoursquareList> GetListsByGroup(String accessToken, String clientId, String clientSecret, String listType) {
 		try {
 			String listsRequestUrl;
@@ -367,6 +370,7 @@ public class UserEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static List<FoursquareList> GetLists(String accessToken, String clientId, String clientSecret) {
 		List<FoursquareList> myLists = new ArrayList<FoursquareList>();
 		try {
@@ -448,6 +452,7 @@ public class UserEndpoint {
 		}
 	}
 
+    @Deprecated
 	private static List<FoursquareList> ParseListFromJson(JsonObject jObject, String listType) {
 		List<FoursquareList> myLists = new ArrayList<FoursquareList>();
         String log_tag = "UserEndpoint - ParseListFromJson";

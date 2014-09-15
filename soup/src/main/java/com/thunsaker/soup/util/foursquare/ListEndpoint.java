@@ -21,6 +21,7 @@ import com.thunsaker.soup.util.Util;
 /*
  * Created by @thunsaker
  */
+@Deprecated
 public class ListEndpoint {
 	public static class GetList extends
 			AsyncTask<Void, Integer, FoursquareList> {
