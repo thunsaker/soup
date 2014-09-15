@@ -23,10 +23,14 @@ import com.thunsaker.soup.data.api.model.Checkin;
 import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.FlagVenueResponse;
 import com.thunsaker.soup.data.api.model.FoursquareCompactVenueResponse;
+import com.thunsaker.soup.data.api.model.FoursquareList;
+import com.thunsaker.soup.data.api.model.FoursquareListGroup;
 import com.thunsaker.soup.data.api.model.FoursquareResponse;
 import com.thunsaker.soup.data.api.model.FoursquareVenueResponse;
 import com.thunsaker.soup.data.api.model.GetCategoriesResponse;
+import com.thunsaker.soup.data.api.model.GetListResponse;
 import com.thunsaker.soup.data.api.model.GetUserCheckinHistoryResponse;
+import com.thunsaker.soup.data.api.model.GetUserListsResponse;
 import com.thunsaker.soup.data.api.model.GetVenueHoursResponse;
 import com.thunsaker.soup.data.api.model.GetVenueResponse;
 import com.thunsaker.soup.data.api.model.Location;
@@ -39,6 +43,8 @@ import com.thunsaker.soup.data.events.CheckinHistoryEvent;
 import com.thunsaker.soup.data.events.EditVenueEvent;
 import com.thunsaker.soup.data.events.FlagVenueEvent;
 import com.thunsaker.soup.data.events.GetCategoriesEvent;
+import com.thunsaker.soup.data.events.GetListEvent;
+import com.thunsaker.soup.data.events.GetListsEvent;
 import com.thunsaker.soup.data.events.GetUserInfoEvent;
 import com.thunsaker.soup.data.events.GetVenueEvent;
 import com.thunsaker.soup.data.events.GetVenueHoursEvent;
@@ -700,7 +706,6 @@ public class FoursquareTasks {
 
     public class GetUserInfo extends AsyncTask<Void, Integer, GetUserInfoResponse> {
         String mUserId;
-
         String myAccessToken;
 
         public GetUserInfo(String theUserId) {
@@ -735,6 +740,154 @@ public class FoursquareTasks {
             }
 
             mBus.post(new GetUserInfoEvent(false, resultMessage, null));
+        }
+    }
+
+    public class GetFoursquareList extends AsyncTask<Void, Integer, FoursquareList> {
+        String myListId;
+        String myAccessToken;
+
+        /**
+         * Get Foursquare list.
+         *
+         * @param theListId     List Id to fetch
+         */
+        public GetFoursquareList(String theListId) {
+            myListId = theListId;
+        }
+
+        @Override
+        protected FoursquareList doInBackground(Void... params) {
+            try {
+                FoursquareList resultList = null;
+
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                                ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+                if(myListId != null && myListId.length() > 0) {
+                    GetListResponse response = mFoursquareService.getList(myListId, myAccessToken);
+
+                    if (response != null)
+                        if (response.meta.code == 200 && response.response.list != null)
+                            resultList = response.response.list;
+                        else if (response.meta.code == 503)
+                            ShowServerErrorToast(response.meta);
+                        else
+                            Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                    else
+                        Log.i("FoursquareTasks", "Failure :( GetLists call");
+                }
+
+                return resultList;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(FoursquareList result) {
+            super.onPostExecute(result);
+
+            try {
+                if(result != null) {
+                    mBus.post(new GetListEvent(true, "", result));
+                } else {
+                    Toast.makeText(mContext, R.string.alert_error_loading_list, Toast.LENGTH_SHORT).show();
+                    mBus.post(new GetListsEvent(false, "", null));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class GetFoursquareLists extends AsyncTask<Void, Integer, List<FoursquareList>> {
+        String myUserId;
+        String myAccessToken;
+        String myListGroup;
+
+        /**
+         * Get default Foursquare lists for the current user.
+         */
+        public GetFoursquareLists() {
+            this(FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX);
+        }
+
+        /**
+         * Get default Foursquare lists for the given user.
+         *
+         * @param theUserId     User id or "self"
+         */
+        public GetFoursquareLists(String theUserId) {
+            this(theUserId, "");
+        }
+
+        /**
+         * Get default Foursquare lists for the given user and list group
+         *
+         * @param theUserId     User id or "self"
+         * @param theListGroup  Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED} or
+         *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_EDITED} or
+         *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED} or
+         *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FRIENDS} or
+         *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_SUGGESTED}
+         */
+        public GetFoursquareLists(String theUserId, String theListGroup) {
+            myUserId = theUserId;
+            myListGroup = theListGroup;
+        }
+
+        @Override
+        protected List<FoursquareList> doInBackground(Void... params) {
+            try {
+                List<FoursquareList> resultLists = new ArrayList<FoursquareList>();
+
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                                ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+                if(myUserId != null && myUserId.length() > 0) {
+                    GetUserListsResponse response;
+                    if(myListGroup.length() > 0)
+                        response = mFoursquareService.getUserListsByGroup(myUserId, myAccessToken, myListGroup);
+                    else
+                        response = mFoursquareService.getUserLists(myUserId, myAccessToken);
+
+                    if (response != null)
+                        if (response.meta.code == 200 && response.response.lists != null)
+                            for (FoursquareListGroup listGroup : response.response.lists.groups)
+                                resultLists.addAll(listGroup.items);
+                        else if (response.meta.code == 503)
+                            ShowServerErrorToast(response.meta);
+                        else
+                            Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                    else
+                        Log.i("FoursquareTasks", "Failure :( GetLists call");
+                }
+
+                return resultLists;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<FoursquareList> result) {
+            super.onPostExecute(result);
+
+            try {
+                if(result != null) {
+                    mBus.post(new GetListsEvent(true, "", result));
+                } else {
+                    Toast.makeText(mContext, R.string.alert_error_loading_details, Toast.LENGTH_SHORT).show();
+                    mBus.post(new GetListsEvent(false, "", null));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -463,25 +463,22 @@ public class UserEndpoint {
 						JsonObject jObjectLists = jObjectResponses
 								.getAsJsonObject("lists");
 						if (jObjectLists != null) {
-							if (jObjectLists.get("count")
-									.getAsInt() > 0) {
-								JsonArray jArrayListsItem = jObjectLists.getAsJsonArray("items");
-								for (JsonElement jsonListElement : jArrayListsItem) {
-									FoursquareList myParsedList = FoursquareList
-											.GetListFromJson(
-													jsonListElement
-															.getAsJsonObject(),
-													listType);
-									if (myParsedList != null)
-										myLists.add(myParsedList);
-								}
+                            if (jObjectLists.get("count")
+                                    .getAsInt() > 0) {
+                                JsonArray jArrayListsItem = jObjectLists.getAsJsonArray("items");
+                                for (JsonElement jsonListElement : jArrayListsItem) {
+                                    FoursquareList myParsedList = FoursquareList
+                                            .GetListFromJson(jsonListElement.getAsJsonObject());
+                                    if (myParsedList != null)
+                                        myLists.add(myParsedList);
+                                }
 
-								return myLists;
-							} else {
-								Log.e(log_tag, "No lists...");
-								return null;
-							}
-						} else {
+                                return myLists;
+                            } else {
+                                Log.e(log_tag, "No lists...");
+                                return null;
+                            }
+                        } else {
 							Log.e("UserEndpoint - ParseListFromJson",
 									"Failed to parse the lists json");
 						}

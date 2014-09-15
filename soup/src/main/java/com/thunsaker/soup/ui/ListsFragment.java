@@ -25,8 +25,9 @@ import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupFragment;
 import com.thunsaker.soup.data.api.model.FoursquareList;
+import com.thunsaker.soup.data.events.GetListsEvent;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
-import com.thunsaker.soup.services.foursquare.endpoints.UserEndpoint;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 /*
  * Created by @thunsaker
@@ -45,6 +47,12 @@ public class ListsFragment extends BaseSoupFragment
     @Inject
     @ForApplication
     Context mContext;
+
+    @Inject
+    EventBus mBus;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
 
     @Inject
     Picasso mPicasso;
@@ -77,11 +85,16 @@ public class ListsFragment extends BaseSoupFragment
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        if(mBus != null && !mBus.isRegistered(this))
+            mBus.register(this);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
+
 		View rootView = inflater.inflate(R.layout.fragment_lists, container, false);
 
 		mGridViewLists = (GridView)rootView.findViewById(R.id.gridViewLists);
@@ -94,8 +107,6 @@ public class ListsFragment extends BaseSoupFragment
 			mGridViewLists.setAdapter(currentListsListAdapter);
 			currentListsListAdapter.notifyDataSetChanged();
 		}
-
-		RefreshLists(this);
 
 		return rootView;
 	}
@@ -113,6 +124,8 @@ public class ListsFragment extends BaseSoupFragment
                     R.color.soup_green,
                     R.color.soup_red);
         }
+
+        RefreshLists(this);
 	}
 
 	@Override
@@ -159,12 +172,7 @@ public class ListsFragment extends BaseSoupFragment
 		NetworkInfo activeNetworkInfo = connectivityManager
 				.getActiveNetworkInfo();
 		if (activeNetworkInfo != null) {
-			theCaller.getActivity().setProgressBarVisibility(true);
-
-			new UserEndpoint.GetLists(theCaller.getActivity()
-					.getApplicationContext(), theCaller,
-					theCaller.mGridViewLists,
-					FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED).execute();
+            mFoursquareTasks.new GetFoursquareLists().execute();
 		}
 	}
 
@@ -188,13 +196,13 @@ public class ListsFragment extends BaseSoupFragment
 			try {
 				final FoursquareList list = items.get(position);
 				if (list != null) {
-					final String myListId = list.getId() != null ? list.getId() : "";
-					final String myListName = list.getName() != null ? list.getName() : "";
+					final String myListId = list.id != null ? list.id : "";
+					final String myListName = list.name != null ? list.name : "";
 					final TextView nameTextView = (TextView) v.findViewById(R.id.textViewListName);
 					if (nameTextView != null)
 						nameTextView.setText(myListName);
 
-					final Integer myVenueCount = list.getVenueCount();
+					final Integer myVenueCount = list.venueCount;
 					final TextView countTextView = (TextView) v.findViewById(R.id.textViewListCount);
 					countTextView.setText(String.format(getResources().getQuantityString(R.plurals.venue_count, myVenueCount), myVenueCount));
 //                    final LinearLayout textWrapper = (LinearLayout) v.findViewById(R.id.linearLayoutTextWrapper);
@@ -206,8 +214,8 @@ public class ListsFragment extends BaseSoupFragment
 								.getDrawable(
 										R.drawable.list_placeholder_todo));
 					} else {
-						final String myPhotoUrl = list.getPhoto() != null
-								? list.getPhoto().getFoursquareImageUrl() : "";
+						final String myPhotoUrl = list.photo != null
+								? list.photo.getFoursquareImageUrl() : "";
 
 						if (!myPhotoUrl.equals("")) {
                             mPicasso.load(myPhotoUrl)
@@ -246,14 +254,14 @@ public class ListsFragment extends BaseSoupFragment
 					}
 
 					final ImageView myImageViewIsPublic = (ImageView)v.findViewById(R.id.imageViewListIsPublic);
-					if(!list.getIsPublic()) {
+					if(!list._public) {
 						myImageViewIsPublic.setVisibility(View.VISIBLE);
 					} else {
 						myImageViewIsPublic.setVisibility(View.GONE);
 					}
 
 					final ImageView myImageViewListIsFollowed = (ImageView)v.findViewById(R.id.imageViewListFollowing);
-					if(list.getType().equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED)) {
+					if(list.type.equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED)) {
 						myImageViewListIsFollowed.setVisibility(View.VISIBLE);
 					} else {
 						myImageViewListIsFollowed.setVisibility(View.GONE);
@@ -281,10 +289,30 @@ public class ListsFragment extends BaseSoupFragment
         try {
             FoursquareList list =
                     (FoursquareList) mGridViewLists.getItemAtPosition(position);
-            mClickListener.onFoursquareListClick(list.getId());
+            mClickListener.onFoursquareListClick(list.id);
         } catch (Exception e) {
             Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Error 8", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+        }
+    }
+
+    public void onEvent(GetListsEvent event) {
+        mSwipeViewListsContainer.setRefreshing(false);
+
+        boolean error = false;
+        if(event != null) {
+            if(event.resultList != null) {
+                currentListsList = event.resultList;
+                mGridViewLists.setAdapter(new FoursquareListAdapter(mContext, R.layout.list_lists_item, ListsFragment.currentListsList));
+            } else {
+                error = true;
+            }
+        } else {
+            error = true;
+        }
+
+        if(error) {
+            Toast.makeText(mContext, "Error: " + error, Toast.LENGTH_SHORT).show();
         }
     }
 }

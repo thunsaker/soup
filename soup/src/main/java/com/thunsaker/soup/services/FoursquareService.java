@@ -3,6 +3,8 @@ package com.thunsaker.soup.services;
 import com.thunsaker.soup.data.api.GetUserInfoResponse;
 import com.thunsaker.soup.data.api.model.FlagVenueResponse;
 import com.thunsaker.soup.data.api.model.GetCategoriesResponse;
+import com.thunsaker.soup.data.api.model.GetListResponse;
+import com.thunsaker.soup.data.api.model.GetUserListsResponse;
 import com.thunsaker.soup.data.api.model.GetVenueHoursResponse;
 import com.thunsaker.soup.data.api.model.GetVenueResponse;
 import com.thunsaker.soup.data.api.model.PostVenueEditResponse;
@@ -155,5 +157,22 @@ public interface FoursquareService {
      */
     @GET("/venues/categories")
     GetCategoriesResponse getCategories(
+            @Query("oauth_token") String oauth_token);
+
+
+    @GET("/users/{USER_ID}/lists")
+    GetUserListsResponse getUserLists(
+            @Path("USER_ID") String userId,
+            @Query("oauth_token") String oauth_token);
+
+    @GET("/users/{USER_ID}/lists")
+    GetUserListsResponse getUserListsByGroup(
+            @Path("USER_ID") String userId,
+            @Query("oauth_token") String oauth_token,
+            @Query("group") String group);
+
+    @GET("/lists/{LIST_ID}")
+    GetListResponse getList(
+            @Path("USER_ID") String userId,
             @Query("oauth_token") String oauth_token);
 }

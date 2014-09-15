@@ -21,23 +21,41 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.api.model.FoursquareImage;
 import com.thunsaker.soup.data.api.model.FoursquareList;
 import com.thunsaker.soup.data.api.model.FoursquareListItem;
+import com.thunsaker.soup.data.events.GetListEvent;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.thunsaker.soup.util.Util;
-import com.thunsaker.soup.util.foursquare.ListEndpoint;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 /*
  * Created by @thunsaker
  */
 public class ListFragment extends android.support.v4.app.ListFragment implements
         SwipeRefreshLayout.OnRefreshListener {
+
+    @Inject
+    @ForApplication
+    Context mContext;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
+
+    @Inject
+    EventBus mBus;
 
 	public static final String ARG_ITEM_JSON_STRING = "item_json_string";
 
@@ -81,6 +99,9 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        if(mBus != null && !mBus.isRegistered(this))
+            mBus.register(this);
 
 		setHasOptionsMenu(true);
 
@@ -146,8 +167,8 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
                 R.color.soup_red);
 	}
 
-	public static void RefreshList(ListFragment theCaller) {
-		theCaller.getActivity().setProgressBarVisibility(true);
+	public void RefreshList(ListFragment theCaller) {
+        mSwipeViewVenueListContainer.setRefreshing(true);
 		currentList = null;
 		if (currentListItemsAdapter == null)
 			currentListItemsAdapter = theCaller.new FoursquareListItemsAdapter(
@@ -156,16 +177,15 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 
 		currentListItemsAdapter.notifyDataSetChanged();
 
-		ConnectivityManager connectivityManager = (ConnectivityManager) theCaller
-				.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetworkInfo = connectivityManager
-				.getActiveNetworkInfo();
+		ConnectivityManager connectivityManager = (ConnectivityManager) theCaller.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		if (activeNetworkInfo != null) {
-			ListFragment.isRefreshing = true;
-			theCaller.getActivity().setProgressBarVisibility(true);
-			new ListEndpoint.GetList(theCaller.getActivity()
-					.getApplicationContext(), theCaller,
-					ListActivity.listIdToLoad).execute();
+			isRefreshing = true;
+            mSwipeViewVenueListContainer.setRefreshing(true);
+            mFoursquareTasks.new GetFoursquareList(ListActivity.listIdToLoad).execute();
+//			new ListEndpoint.GetList(theCaller.getActivity()
+//					.getApplicationContext(), theCaller,
+//					ListActivity.listIdToLoad).execute();
 		}
 	}
 
@@ -196,17 +216,12 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 		switch (item.getItemId()) {
 		case R.id.action_foursquare:
 			String canonicalUrl = "";
-			if(currentList != null && currentList.getCanonicalUrl() != null && currentList.getCanonicalUrl().length() > 0)
-				canonicalUrl = currentList.getCanonicalUrl();
-			else if(currentList != null && !currentList.getCanonicalUrl().equals("") && currentList.getCanonicalUrl().length() > 0)
-				canonicalUrl = currentList.getCanonicalUrl();
+			if(currentList != null && currentList.canonicalUrl != null && currentList.canonicalUrl.length() > 0)
+				canonicalUrl = currentList.canonicalUrl;
 
 			if(canonicalUrl != null && canonicalUrl.length() > 0)
 				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(canonicalUrl)));
 			else
-//				Crouton.makeText(getActivity(),
-//                        R.string.alert_error_loading_details,
-//                        Style.INFO).show();
                 Toast.makeText(getActivity(),
                         R.string.alert_error_loading_details,
                         Toast.LENGTH_SHORT).show();
@@ -226,39 +241,30 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 			if (!ListFragment.isRefreshing) {
 				if(getListView().getHeaderViewsCount() == 2 && position == 1) {
 					String userUrl = "";
-					if(currentList != null && currentList.getUser() != null && currentList.getUser().id.length() > 0)
-						userUrl = String.format("https://foursquare.com/user/%s", currentList.getUser().id);
+					if(currentList != null && currentList.user != null && currentList.user.id.length() > 0)
+						userUrl = String.format("https://foursquare.com/user/%s", currentList.user.id);
 
 					if(userUrl != null && userUrl.length() > 0)
 						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(userUrl)));
 					else
-//						Crouton.makeText(getActivity(),
-//	                            R.string.alert_error_loading_details,
-//	                            Style.INFO).show();
 	                    Toast.makeText(getActivity(),
 	                            R.string.alert_error_loading_details,
 	                            Toast.LENGTH_SHORT).show();
 				} else {
-					CompactVenue clickedVenue = currentListItems.get(offsetPosition).getVenue();
+					CompactVenue clickedVenue = currentListItems.get(offsetPosition).venue;
 					mCallbacks.onItemSelected(clickedVenue.toString());
 				}
 			} else {
-				// Crouton.makeText(getActivity(), R.string.alert_still_loading,
-				// Style.INFO).show();
 				Toast.makeText(getActivity(), R.string.alert_still_loading,
 						Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception ex) {
-			// Crouton.makeText(getActivity(),
-			// R.string.alert_error_loading_venues, Style.INFO).show();
 			Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Error 5", Toast.LENGTH_SHORT).show();
 			ex.printStackTrace();
 		}
 	}
 
 	public void setActivateOnItemClick(boolean activateOnItemClick) {
-		// When setting CHOICE_MODE_SINGLE, ListView will automatically
-		// give items the 'activated' state when touched.
 		getListView().setChoiceMode(
 				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
 						: ListView.CHOICE_MODE_NONE);
@@ -296,7 +302,7 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 			}
 			try {
 				final FoursquareListItem listItem = items.get(position);
-				final CompactVenue venue = listItem.getVenue();
+				final CompactVenue venue = listItem.venue;
 				if (venue != null) {
 					final String myVenueName = venue.name != null ? venue.name : "";
 					final String myVenueAddress = venue.location.address != null
@@ -347,4 +353,95 @@ public class ListFragment extends android.support.v4.app.ListFragment implements
 			return v;
 		}
 	}
+
+    public void onEvent(GetListEvent event) {
+        mSwipeViewVenueListContainer.setRefreshing(false);
+
+        boolean error = false;
+        if(event != null) {
+            if(event.resultList != null) {
+                currentList = event.resultList;
+                assert event.resultList.listItems.items != null;
+                currentListItems = event.resultList.listItems.items;
+
+                setListAdapter(new FoursquareListItemsAdapter(mContext, R.layout.list_lists_item, currentListItems));
+                currentListItemsAdapter.notifyDataSetChanged();
+
+                setUpListHeader();
+            } else {
+                error = true;
+            }
+        } else {
+            error = true;
+        }
+
+        if(error) {
+            Toast.makeText(mContext, "Error Loading List :(", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setUpListHeader() {
+        if (currentList.url.contains("/todos")) {
+            mImageViewHeaderPhoto.setImageDrawable(
+                    mContext.getResources().getDrawable(R.drawable.list_placeholder_todo_header));
+            mImageViewHeaderProfile.setVisibility(View.GONE);
+            mTextViewHeaderCreator.setVisibility(View.GONE);
+        } else {
+            if (currentList.photo != null
+                    && currentList.photo.getFoursquareImageUrl() != null) {
+                UrlImageViewHelper
+                        .setUrlDrawable(
+                                mImageViewHeaderPhoto,currentList.photo.getFoursquareImageUrl(),
+                                R.drawable.list_placeholder_gray_dark_small);
+            } else
+                mImageViewHeaderPhoto.setImageDrawable(
+                        mContext.getResources().getDrawable(R.drawable.list_placeholder_orange));
+
+            if (!currentList.type.equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED)) {
+                if (currentList.user != null) {
+                    if (currentList.user.photo != null
+                            && currentList.user.photo.getFoursquareImageUrl(FoursquareImage.SIZE_EXTRA_GRANDE) != null) {
+                        UrlImageViewHelper.setUrlDrawable(mImageViewHeaderProfile,
+                                currentList.user.photo.getFoursquareImageUrl(FoursquareImage.SIZE_EXTRA_GRANDE),
+                                R.drawable.list_placeholder_gray_dark_small);
+                    } else {
+                        if (currentList.user.type.equals("page")) {
+                            mImageViewHeaderProfile.setImageDrawable(
+                                    mContext.getResources().getDrawable(R.drawable.list_placeholder_gray_dark_small));
+                        } else {
+                            mImageViewHeaderProfile.setImageDrawable(
+                                    mContext.getResources().getDrawable(
+                                            currentList.user.gender != null
+                                                    && currentList.user.gender.equals("male")
+                                                    ? R.drawable.profile_boy
+                                                    : R.drawable.profile_girl));
+                        }
+                    }
+
+                    if (currentList.user.firstName != null) {
+                        Boolean isPerson = !(currentList.user.type != null &&
+                                (currentList.user.type.equals("page")
+                                        || currentList.user.type.equals("chain")
+                                        || currentList.user.type.equals("celebrity")
+                                        || currentList.user.type.equals("venuePage")));
+                        String creator = !isPerson
+                                ? currentList.user.firstName
+                                : String.format("%s %s", currentList.user.firstName, currentList.user.lastName);
+                        mTextViewHeaderCreator.setText(String.format(
+                                        mContext.getString(R.string.lists_title_header_creator), creator));
+                    }
+                } else {
+                    mImageViewHeaderProfile.setVisibility(View.GONE);
+                    mTextViewHeaderCreator.setVisibility(View.GONE);
+                }
+            } else {
+                mImageViewHeaderProfile.setVisibility(View.GONE);
+                mTextViewHeaderCreator.setVisibility(View.GONE);
+            }
+        }
+
+        if (currentList.name != null) {
+            getActivity().setTitle(currentList.name);
+        }
+    }
 }

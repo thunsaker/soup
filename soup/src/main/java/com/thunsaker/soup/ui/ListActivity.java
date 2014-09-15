@@ -1,5 +1,6 @@
 package com.thunsaker.soup.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,15 +10,22 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
 import com.thunsaker.soup.data.api.model.FoursquareList;
+
+import javax.inject.Inject;
 
 /*
  * Created by @thunsaker
  */
 public class ListActivity extends BaseSoupActivity
 	implements FoursquareListFragment.Callbacks {
+
+    @Inject
+    @ForApplication
+    Context mContext;
 
 	public static final String LIST_TO_LOAD_EXTRA = "LIST_TO_LOAD_EXTRA";
 	public static String listIdToLoad = "";
@@ -71,7 +79,7 @@ public class ListActivity extends BaseSoupActivity
 
 			if(ListsFragment.currentListsList != null) {
 				for (FoursquareList list : ListsFragment.currentListsList) {
-					if(list.getId() == listIdToLoad) {
+					if(list.id.equals(listIdToLoad)) {
 						FoursquareListFragment.currentList = list;
 						break;
 					}

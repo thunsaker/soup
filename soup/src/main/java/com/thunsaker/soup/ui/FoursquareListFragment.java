@@ -168,8 +168,8 @@ public class FoursquareListFragment extends BaseSoupFragment implements
                     if (!FoursquareListFragment.isRefreshing) {
                         if(mListView.getHeaderViewsCount() == 2 && position == 1) {
                             String userUrl = "";
-                            if(currentList != null && currentList.getUser() != null && currentList.getUser().id.length() > 0)
-                                userUrl = String.format("https://foursquare.com/user/%s", currentList.getUser().id);
+                            if(currentList != null && currentList.user != null && currentList.user.id.length() > 0)
+                                userUrl = String.format("https://foursquare.com/user/%s", currentList.user.id);
 
                             if(userUrl != null && userUrl.length() > 0)
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(userUrl)));
@@ -181,7 +181,7 @@ public class FoursquareListFragment extends BaseSoupFragment implements
                                         R.string.alert_error_loading_details,
                                         Toast.LENGTH_SHORT).show();
                         } else {
-                            CompactVenue clickedVenue = currentListItems.get(offsetPosition).getVenue();
+                            CompactVenue clickedVenue = currentListItems.get(offsetPosition).venue;
                             mCallbacks.onItemSelected(clickedVenue.toString());
                         }
                     } else {
@@ -250,17 +250,12 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 		switch (item.getItemId()) {
 		case R.id.action_foursquare:
 			String canonicalUrl = "";
-			if(currentList != null && currentList.getCanonicalUrl() != null && currentList.getCanonicalUrl().length() > 0)
-				canonicalUrl = currentList.getCanonicalUrl();
-			else if(currentList != null && !currentList.getCanonicalUrl().equals("") && currentList.getCanonicalUrl().length() > 0)
-				canonicalUrl = currentList.getCanonicalUrl();
+			if(currentList != null && currentList.canonicalUrl != null && currentList.canonicalUrl.length() > 0)
+				canonicalUrl = currentList.canonicalUrl;
 
 			if(canonicalUrl != null && canonicalUrl.length() > 0)
 				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(canonicalUrl)));
 			else
-//				Crouton.makeText(getActivity(),
-//                        R.string.alert_error_loading_details,
-//                        Style.INFO).show();
                 Toast.makeText(getActivity(),
                         R.string.alert_error_loading_details,
                         Toast.LENGTH_SHORT).show();
@@ -313,7 +308,7 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 			}
 			try {
 				final FoursquareListItem listItem = items.get(position);
-				final CompactVenue venue = listItem.getVenue();
+				final CompactVenue venue = listItem.venue;
 				if (venue != null) {
 					final String myVenueName = venue.name != null ? venue.name : "";
 					final String myVenueAddress = venue.location.address != null ? venue.location.address : "";

@@ -73,13 +73,13 @@ public class ListEndpoint {
 			try {
 				if (result != null) {
 					ListFragment.currentList = result;
-					ListFragment.currentListItems = result.getItems();
+					ListFragment.currentListItems = result.listItems.items;
 					myCaller.setListAdapter(myCaller.new FoursquareListItemsAdapter(
 							myContext, R.layout.list_lists_item,
 							ListFragment.currentListItems));
 					ListFragment.currentListItemsAdapter.notifyDataSetChanged();
 
-					if (result.getUrl().contains("/todos")) {
+					if (result.url.contains("/todos")) {
 						ListFragment.mImageViewHeaderPhoto
 								.setImageDrawable(myContext
 										.getResources()
@@ -90,12 +90,12 @@ public class ListEndpoint {
 						ListFragment.mTextViewHeaderCreator
 								.setVisibility(View.GONE);
 					} else {
-						if (result.getPhoto() != null
-								&& result.getPhoto().getFoursquareImageUrl() != null) {
+						if (result.photo != null
+								&& result.photo.getFoursquareImageUrl() != null) {
 							UrlImageViewHelper
 									.setUrlDrawable(
 											ListFragment.mImageViewHeaderPhoto,
-											result.getPhoto()
+											result.photo
 													.getFoursquareImageUrl(),
 											R.drawable.list_placeholder_gray_dark_small);
 						} else {
@@ -105,19 +105,19 @@ public class ListEndpoint {
 											.getDrawable(
 													R.drawable.list_placeholder_orange));
 						}
-						if (!result.getType().equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED)) {
-							if (result.getUser() != null) {
-								if (result.getUser().photo != null
-										&& result.getUser().photo.getFoursquareImageUrl(FoursquareImage.SIZE_EXTRA_GRANDE) != null) {
+						if (!result.type.equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED)) {
+							if (result.user != null) {
+								if (result.user.photo != null
+										&& result.user.photo.getFoursquareImageUrl(FoursquareImage.SIZE_EXTRA_GRANDE) != null) {
 									UrlImageViewHelper
 											.setUrlDrawable(
 													ListFragment.mImageViewHeaderProfile,
-													result.getUser().photo
+													result.user.photo
 															.getFoursquareImageUrl(
 																	FoursquareImage.SIZE_EXTRA_GRANDE),
 													R.drawable.list_placeholder_gray_dark_small);
 								} else {
-									if (result.getUser().type.equals("page")) {
+									if (result.user.type.equals("page")) {
 										ListFragment.mImageViewHeaderProfile
 												.setImageDrawable(myContext
 														.getResources()
@@ -128,26 +128,26 @@ public class ListEndpoint {
 												.setImageDrawable(myContext
 														.getResources()
 														.getDrawable(
-																result.getUser()
+																result.user
 																		.gender != null
 																		&& result
-																				.getUser()
+																				.user
 																				.gender
 																				.equals("male") ? R.drawable.profile_boy
 																		: R.drawable.profile_girl));
 									}
 								}
 
-								if (result.getUser().firstName != null) {
-									Boolean isPerson = result.getUser().type != null &&
-											(result.getUser().type.equals("page")
-											|| result.getUser().type.equals("chain")
-											|| result.getUser().type.equals("celebrity")
-											|| result.getUser().type.equals("venuePage"))
+								if (result.user.firstName != null) {
+									Boolean isPerson = result.user.type != null &&
+											(result.user.type.equals("page")
+											|| result.user.type.equals("chain")
+											|| result.user.type.equals("celebrity")
+											|| result.user.type.equals("venuePage"))
 											? false
 											: true;
-									String creator = !isPerson ? result.getUser().firstName
-											: result.getUser().firstName + " " + result.getUser().lastName;
+									String creator = !isPerson ? result.user.firstName
+											: result.user.firstName + " " + result.user.lastName;
 									ListFragment.mTextViewHeaderCreator
 											.setText(String.format(
 													myContext.getString(R.string.lists_title_header_creator), creator));
@@ -167,8 +167,8 @@ public class ListEndpoint {
 						}
 					}
 
-					if (result.getName() != null) {
-						myCaller.getActivity().setTitle(result.getName());
+					if (result.name != null) {
+						myCaller.getActivity().setTitle(result.name);
 					}
 				}
 			} catch (Exception e) {
@@ -197,60 +197,59 @@ public class ListEndpoint {
 					listRequestUrl, "", "");
 
 			try {
-				if (jsonListRequestResponse != null) {
-					JsonParser jParser = new JsonParser();
-					JsonObject jObject = (JsonObject) jParser
-							.parse(jsonListRequestResponse);
+                if (jsonListRequestResponse != null) {
+                    JsonParser jParser = new JsonParser();
+                    JsonObject jObject = (JsonObject) jParser
+                            .parse(jsonListRequestResponse);
 
-					if (jObject != null) {
-						JsonObject jObjectMeta = jObject
-								.getAsJsonObject("meta");
-						if (jObjectMeta != null) {
-							if (Integer.parseInt(jObjectMeta.get("code")
-									.toString()) == 200) {
-								JsonObject jObjectResponses = jObject
-										.getAsJsonObject("response");
-								if (jObjectResponses != null) {
-									JsonObject jObjectList = jObjectResponses
-											.getAsJsonObject("list");
-									if (jObjectList != null) {
-										myList = FoursquareList
-												.GetListFromJson(jObjectList,
-														null);
-										if (myList != null) {
-											return myList;
-										} else {
-											Log.e("UserEndpoint - GetList",
-													"Failed to parse the lists json");
-										}
-									} else {
-										Log.e("UserEndpoint - GetList",
-												"Failed to parse the lists json");
-									}
-								} else {
-									Log.e("UserEndpoint - GetList",
-											"Failed to parse the response json");
-								}
-							} else {
-								Log.e("UserEndpoint - GetList",
-										"Failed to return a 200, meaning there was an error with the call");
-							}
-						} else {
-							Log.e("UserEndpoint - GetList",
-									"Failed to parse the meta section");
-						}
-					} else {
-						Log.e("UserEndpoint - GetList",
-								"Failed to parse main response");
-					}
-				} else {
-					Log.e("UserEndpoint - GetList", "Problem fetching the data");
-				}
+                    if (jObject != null) {
+                        JsonObject jObjectMeta = jObject
+                                .getAsJsonObject("meta");
+                        if (jObjectMeta != null) {
+                            if (Integer.parseInt(jObjectMeta.get("code")
+                                    .toString()) == 200) {
+                                JsonObject jObjectResponses = jObject
+                                        .getAsJsonObject("response");
+                                if (jObjectResponses != null) {
+                                    JsonObject jObjectList = jObjectResponses
+                                            .getAsJsonObject("list");
+                                    if (jObjectList != null) {
+                                        myList = FoursquareList
+                                                .GetListFromJson(jObjectList);
+                                        if (myList != null) {
+                                            return myList;
+                                        } else {
+                                            Log.e("UserEndpoint - GetList",
+                                                    "Failed to parse the lists json");
+                                        }
+                                    } else {
+                                        Log.e("UserEndpoint - GetList",
+                                                "Failed to parse the lists json");
+                                    }
+                                } else {
+                                    Log.e("UserEndpoint - GetList",
+                                            "Failed to parse the response json");
+                                }
+                            } else {
+                                Log.e("UserEndpoint - GetList",
+                                        "Failed to return a 200, meaning there was an error with the call");
+                            }
+                        } else {
+                            Log.e("UserEndpoint - GetList",
+                                    "Failed to parse the meta section");
+                        }
+                    } else {
+                        Log.e("UserEndpoint - GetList",
+                                "Failed to parse main response");
+                    }
+                } else {
+                    Log.e("UserEndpoint - GetList", "Problem fetching the data");
+                }
 
-				Log.e("UserEndpoint - GetLists",
-						"Failed for some other reason...");
-				return null;
-			} catch (Exception e) {
+                Log.e("UserEndpoint - GetLists",
+                        "Failed for some other reason...");
+                return null;
+            } catch (Exception e) {
 				Log.e("UserEndpoint - GetLists", e.getMessage());
 				return null;
 			}

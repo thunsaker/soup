@@ -174,6 +174,7 @@ public class UserEndpoint {
 //		}
 	}
 
+    @Deprecated
 	public static List<Checkin> GetCheckins(String accessToken, String clientId, String clientSecret, long startTimestamp, long endTimestamp, Integer limit, Integer offset, String sortOrder) {
 		List<Checkin> myCheckins = new ArrayList<Checkin>();
 		try {
@@ -268,6 +269,7 @@ public class UserEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static class GetLists extends AsyncTask<Void, Integer, List<FoursquareList>> {
 		Context myContext;
         ListsFragment myCaller;
@@ -324,6 +326,7 @@ public class UserEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static List<FoursquareList> GetListsByGroup(String accessToken, String clientId, String clientSecret, String listType) {
 		try {
 			String listsRequestUrl;
@@ -367,6 +370,7 @@ public class UserEndpoint {
 		}
 	}
 
+    @Deprecated
 	public static List<FoursquareList> GetLists(String accessToken, String clientId, String clientSecret) {
 		List<FoursquareList> myLists = new ArrayList<FoursquareList>();
 		try {
@@ -469,8 +473,7 @@ public class UserEndpoint {
 									FoursquareList myParsedList = FoursquareList
 											.GetListFromJson(
 													jsonListElement
-															.getAsJsonObject(),
-													listType);
+															.getAsJsonObject());
 									if (myParsedList != null)
 										myLists.add(myParsedList);
 								}

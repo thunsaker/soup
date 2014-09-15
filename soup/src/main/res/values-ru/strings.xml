@@ -275,4 +275,5 @@
     <string name="dialog_category_delete_confirm">Remove category %s?</string>
     <string name="em_dash">—</string>
     <string name="dialog_hour_segment_delete_confirm">Are you sure you want to delete this time segment?</string>
+    <string name="alert_error_loading_list">Error loading list. :(</string>
 </resources>

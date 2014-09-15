@@ -32,6 +32,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.model.LatLng;
 import com.thunsaker.android.common.annotations.ForApplication;
+import com.thunsaker.soup.BuildConfig;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
@@ -110,7 +111,10 @@ public class MainActivity extends BaseSoupActivity implements
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
+
+        if(!BuildConfig.DEBUG)
+            Crashlytics.start(this);
+
         mBus.register(this);
 
         handleIntent(getIntent());
