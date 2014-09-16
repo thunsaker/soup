@@ -32,6 +32,8 @@ public class FoursquarePrefs {
 	public static String FOURSQUARE_LISTS_GROUP_FRIENDS = "friends";
 	public static String FOURSQUARE_LISTS_GROUP_SUGGESTED = "suggested";
 
+    public static final String FOURSQUARE_LIST_ITEM_TYPE_TIP = "tip";
+
 	public static String FOURSQUARE_CHECKIN_SUFFIX = "/checkins/add";
 
 	public static String FOURSQURE_INTENT_VENUE_URL = "https://foursquare.com/v/%s";

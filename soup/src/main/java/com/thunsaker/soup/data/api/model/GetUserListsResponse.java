@@ -6,6 +6,7 @@ public class GetUserListsResponse extends FoursquareResponse {
     public class GetUserListsResponseResponse {
         public FoursquareListsResponse lists;
 
-        public class FoursquareListsResponse extends BaseCountGroupsClass<FoursquareListGroup> { }
+        public class FoursquareListsResponse extends BaseCountClass<FoursquareList> {
+        }
     }
 }

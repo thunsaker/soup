@@ -3,6 +3,7 @@ package com.thunsaker.soup.data.api.model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +12,13 @@ public class FoursquareList {
     public String id;
     public String name;
     public String description;
-    public List<Object> entities;
+//    public List<Object> entities;
     public String type;
 	public CompactFoursquareUser user;
     public boolean editable;
-    public boolean _public;
+
+    @SerializedName("public")
+    public boolean isPublic;
     public boolean collaborative;
     public String url;
     public String canonicalUrl;
@@ -24,10 +27,10 @@ public class FoursquareList {
     public FoursquareImage photo;
     public int visitedCount;
     public int venueCount;
-    public List<Category> categories;
+    public FoursquareListCategories categories;
     public boolean following;
-    public FoursquareListFollowers followers;
-    public FoursquareListSaves saves;
+//    public FoursquareListFollowers followers;
+//    public FoursquareListSaves saves;
     public FoursquareListItemsCount listItems;
 
 	public static FoursquareList GetListFromJson(JsonObject jsonObject) {
@@ -53,7 +56,7 @@ public class FoursquareList {
 
             myList.following = jsonObject.get("following") != null && jsonObject.get("following").getAsBoolean();
             myList.editable = jsonObject.get("editable") != null && jsonObject.get("editable").getAsBoolean();
-            myList._public  = jsonObject.get("public") != null && jsonObject.get("public").getAsBoolean();
+            myList.isPublic = jsonObject.get("public") != null && jsonObject.get("public").getAsBoolean();
             myList.collaborative = jsonObject.get("collaborative") != null && jsonObject.get("collaborative").getAsBoolean();
 
             myList.url = jsonObject.get("url") != null ? jsonObject.get("url")

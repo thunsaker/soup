@@ -9,6 +9,10 @@ public class FoursquareListItem {
     public FoursquareTip tip;
     public FoursquareImage photo;
     public CompactVenue venue;
+    public CompactFoursquareUser user;
+    public long sharedAt;
+    public String state;
+    public String type;
 
     @Override
     public String toString() {

@@ -22,23 +22,42 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupFragment;
 import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.api.model.FoursquareImage;
 import com.thunsaker.soup.data.api.model.FoursquareList;
 import com.thunsaker.soup.data.api.model.FoursquareListItem;
-import com.thunsaker.soup.services.foursquare.endpoints.ListEndpoint;
+import com.thunsaker.soup.data.events.GetListEvent;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.thunsaker.soup.util.Util;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
+import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 /*
  * Created by @thunsaker
  */
 public class FoursquareListFragment extends BaseSoupFragment implements
         SwipeRefreshLayout.OnRefreshListener {
+
+    @Inject
+    @ForApplication
+    Context mContext;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
+
+    @Inject
+    EventBus mBus;
 
 	public static final String ARG_ITEM_JSON_STRING = "item_json_string";
 
@@ -59,7 +78,7 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 
     public static ListView mListView;
 
-//    @InjectView(R.id.swipeLayoutFoursquareListItems) SwipeRefreshLayout mSwipeViewFoursquareListItems;
+    @InjectView(R.id.swipeLayoutFoursquareListContainer) SwipeRefreshLayout mSwipeViewFoursquareListItems;
 
     @Override
     public void onRefresh() {
@@ -76,20 +95,22 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 		}
 	};
 
-	public static boolean isRefreshing = false;
+//	public static boolean isRefreshing = false;
 
-	public FoursquareListFragment() {
-	}
+	public FoursquareListFragment() { }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+        if(mBus != null && !mBus.isRegistered(this))
+            mBus.register(this);
+
 		setHasOptionsMenu(true);
 
-		currentListItemsAdapter = new FoursquareListItemsAdapter(getActivity()
-				.getApplicationContext(), R.layout.list_lists_item,
-				currentListItems);
+		currentListItemsAdapter =
+                new FoursquareListItemsAdapter(
+                        getActivity().getApplicationContext(), R.layout.list_lists_item, currentListItems);
 
 		if (currentListItems != null && currentListItems.size() > 0) {
             if(mListView != null) {
@@ -114,15 +135,13 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 		super.onViewCreated(view, savedInstanceState);
 
 		LayoutInflater inflater = getLayoutInflater(savedInstanceState);
-		View headerViewPhoto = inflater.inflate(
-				R.layout.list_list_item_header_photo, null);
-		mImageViewHeaderPhoto = (ImageView) headerViewPhoto
-				.findViewById(R.id.imageViewListHeader);
-		mImageViewHeaderPhoto
-				.setLayoutParams((ViewGroup.LayoutParams) new AbsListView.LayoutParams(
-						AbsListView.LayoutParams.MATCH_PARENT,
-						(int) getResources().getDimension(
-								R.dimen.list_header_size)));
+		View headerViewPhoto = inflater.inflate(R.layout.list_list_item_header_photo, null);
+		mImageViewHeaderPhoto =
+                (ImageView) headerViewPhoto.findViewById(R.id.imageViewListHeader);
+		mImageViewHeaderPhoto.setLayoutParams(
+                new AbsListView.LayoutParams(
+                        AbsListView.LayoutParams.MATCH_PARENT,
+                        (int) getResources().getDimension(R.dimen.list_header_size)));
         if(mListView != null) {
             mListView.addHeaderView(mImageViewHeaderPhoto, null, false);
 
@@ -130,10 +149,10 @@ public class FoursquareListFragment extends BaseSoupFragment implements
                     R.layout.list_list_item_header_creator, null);
 
             if (headerViewCreator != null) {
-                mImageViewHeaderProfile = (ImageView) headerViewCreator
-                        .findViewById(R.id.imageViewListItemHeaderProfile);
-                mTextViewHeaderCreator = (TextView) headerViewCreator
-                        .findViewById(R.id.textViewListItemHeaderName);
+                mImageViewHeaderProfile =
+                        (ImageView) headerViewCreator.findViewById(R.id.imageViewListItemHeaderProfile);
+                mTextViewHeaderCreator =
+                        (TextView) headerViewCreator.findViewById(R.id.textViewListItemHeaderName);
 
                 mListView.addHeaderView(headerViewCreator);
             }
@@ -151,48 +170,38 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
 
-		RefreshList(this);
-
         ButterKnife.inject(this, view);
 
-//        if(mSwipeViewFoursquareListItems != null) {
-//            mSwipeViewFoursquareListItems.setOnRefreshListener(this);
-//            mSwipeViewFoursquareListItems.setColorScheme(R.color.foursquare_green, R.color.foursquare_orange, R.color.foursquare_green, R.color.foursquare_blue);
-//        }
+        if(mSwipeViewFoursquareListItems != null) {
+            mSwipeViewFoursquareListItems.setOnRefreshListener(this);
+            mSwipeViewFoursquareListItems.setColorScheme(R.color.foursquare_green, R.color.foursquare_orange, R.color.foursquare_green, R.color.foursquare_blue);
+        }
+
+        RefreshList(this);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     int offsetPosition = position - mListView.getHeaderViewsCount();
-                    if (!FoursquareListFragment.isRefreshing) {
-                        if(mListView.getHeaderViewsCount() == 2 && position == 1) {
-                            String userUrl = "";
-                            if(currentList != null && currentList.user != null && currentList.user.id.length() > 0)
-                                userUrl = String.format("https://foursquare.com/user/%s", currentList.user.id);
+                    if(mListView.getHeaderViewsCount() == 2 && position == 1) {
+                        String userUrl = "";
+                        if(currentList != null && currentList.user != null && currentList.user.id.length() > 0)
+                            userUrl = String.format("https://foursquare.com/user/%s", currentList.user.id);
 
-                            if(userUrl != null && userUrl.length() > 0)
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(userUrl)));
-                            else
-//						Crouton.makeText(getActivity(),
-//	                            R.string.alert_error_loading_details,
-//	                            Style.INFO).show();
-                                Toast.makeText(getActivity(),
-                                        R.string.alert_error_loading_details,
-                                        Toast.LENGTH_SHORT).show();
-                        } else {
-                            CompactVenue clickedVenue = currentListItems.get(offsetPosition).venue;
-                            mCallbacks.onItemSelected(clickedVenue.toString());
-                        }
+                        if(userUrl != null && userUrl.length() > 0)
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(userUrl)));
+                        else
+                            Toast.makeText(getActivity(),
+                                    R.string.alert_error_loading_details,
+                                    Toast.LENGTH_SHORT).show();
                     } else {
-                        // Crouton.makeText(getActivity(), R.string.alert_still_loading,
-                        // Style.INFO).show();
-                        Toast.makeText(getActivity(), R.string.alert_still_loading,
-                                Toast.LENGTH_SHORT).show();
+                        FoursquareListItem itemClicked = currentListItems.get(offsetPosition);
+                        CompactVenue clickedVenue = itemClicked.type.equals(FoursquarePrefs.FOURSQUARE_LIST_ITEM_TYPE_TIP)
+                                ? itemClicked.tip.venue : itemClicked.venue;
+                        mCallbacks.onItemSelected(clickedVenue.toString());
                     }
                 } catch (Exception ex) {
-                    // Crouton.makeText(getActivity(),
-                    // R.string.alert_error_loading_venues, Style.INFO).show();
                     Toast.makeText(getActivity(), getString(R.string.alert_error_loading_venues) + " - Error 6", Toast.LENGTH_SHORT).show();
                     ex.printStackTrace();
                 }
@@ -200,26 +209,23 @@ public class FoursquareListFragment extends BaseSoupFragment implements
         });
 	}
 
-	public static void RefreshList(FoursquareListFragment theCaller) {
-//		theCaller.getActivity().setProgressBarVisibility(true);
+	public void RefreshList(FoursquareListFragment theCaller) {
+        mSwipeViewFoursquareListItems.setRefreshing(true);
 		currentList = null;
 		if (currentListItemsAdapter == null)
 			currentListItemsAdapter = theCaller.new FoursquareListItemsAdapter(
-					theCaller.getActivity().getApplicationContext(),
-					R.layout.list_lists_item, null);
+                    theCaller.getActivity().getApplicationContext(),
+                    R.layout.list_lists_item, null);
 
 		currentListItemsAdapter.notifyDataSetChanged();
 
-		ConnectivityManager connectivityManager = (ConnectivityManager) theCaller
-				.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetworkInfo = connectivityManager
-				.getActiveNetworkInfo();
+		ConnectivityManager connectivityManager =
+                (ConnectivityManager) theCaller.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo =
+                connectivityManager.getActiveNetworkInfo();
 		if (activeNetworkInfo != null) {
-			FoursquareListFragment.isRefreshing = true;
-//			theCaller.getActivity().setProgressBarVisibility(true);
-			new ListEndpoint.GetList(theCaller.getActivity()
-					.getApplicationContext(), theCaller,
-					ListActivity.listIdToLoad).execute();
+            mSwipeViewFoursquareListItems.setRefreshing(true);
+            mFoursquareTasks.new GetFoursquareList(ListActivity.listIdToLoad).execute();
 		}
 	}
 
@@ -227,8 +233,7 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		if (!(activity instanceof Callbacks)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
+			throw new IllegalStateException("Activity must implement fragment's callbacks.");
 		}
 		mCallbacks = (Callbacks) activity;
 	}
@@ -267,15 +272,6 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void setActivateOnItemClick(boolean activateOnItemClick) {
-		// When setting CHOICE_MODE_SINGLE, ListView will automatically
-		// give items the 'activated' state when touched.
-		mListView.setChoiceMode(
-                activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
-                        : ListView.CHOICE_MODE_NONE
-        );
-	}
-
 	private void setActivatedPosition(int position) {
 		if (position == ListView.INVALID_POSITION) {
             mListView.setItemChecked(mActivatedPosition, false);
@@ -290,8 +286,10 @@ public class FoursquareListFragment extends BaseSoupFragment implements
             ArrayAdapter<FoursquareListItem> {
 		public List<FoursquareListItem> items;
 
-		public FoursquareListItemsAdapter(Context context,
-				int textViewResourceId, List<FoursquareListItem> items) {
+		public FoursquareListItemsAdapter(
+                Context context,
+                int textViewResourceId,
+                List<FoursquareListItem> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
 		}
@@ -308,13 +306,14 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 			}
 			try {
 				final FoursquareListItem listItem = items.get(position);
-				final CompactVenue venue = listItem.venue;
+                final boolean isTip = listItem.type.equals(FoursquarePrefs.FOURSQUARE_LIST_ITEM_TYPE_TIP);
+				final CompactVenue venue = listItem.venue != null && !isTip ? listItem.venue : listItem.tip.venue;
+
 				if (venue != null) {
 					final String myVenueName = venue.name != null ? venue.name : "";
 					final String myVenueAddress = venue.location.address != null ? venue.location.address : "";
 
-					final TextView nameTextView = (TextView) v
-							.findViewById(R.id.textViewListItemName);
+					final TextView nameTextView = (TextView) v.findViewById(R.id.textViewListItemName);
 					if (nameTextView != null)
 						nameTextView.setText(myVenueName);
 
@@ -358,4 +357,95 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 			return v;
 		}
 	}
+
+    public void onEvent(GetListEvent event) {
+        mSwipeViewFoursquareListItems.setRefreshing(false);
+
+        boolean error = false;
+        if(event != null) {
+            if(event.resultList != null) {
+                currentList = event.resultList;
+                assert event.resultList.listItems.items != null;
+                currentListItems = event.resultList.listItems.items;
+
+                mListView.setAdapter(new FoursquareListItemsAdapter(mContext, R.layout.list_lists_item, currentListItems));
+                currentListItemsAdapter.notifyDataSetChanged();
+
+                setUpListHeader();
+            } else {
+                error = true;
+            }
+        } else {
+            error = true;
+        }
+
+        if(error) {
+            Toast.makeText(mContext, "Error Loading List :(", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setUpListHeader() {
+        if (currentList.url.contains("/todos")) {
+            mImageViewHeaderPhoto.setImageDrawable(
+                    mContext.getResources().getDrawable(R.drawable.list_placeholder_todo_header));
+            mImageViewHeaderProfile.setVisibility(View.GONE);
+            mTextViewHeaderCreator.setVisibility(View.GONE);
+        } else {
+            if (currentList.photo != null
+                    && currentList.photo.getFoursquareImageUrl() != null) {
+                UrlImageViewHelper
+                        .setUrlDrawable(
+                                mImageViewHeaderPhoto, currentList.photo.getFoursquareImageUrl(),
+                                R.drawable.list_placeholder_gray_dark_small);
+            } else
+                mImageViewHeaderPhoto.setImageDrawable(
+                        mContext.getResources().getDrawable(R.drawable.list_placeholder_orange));
+
+            if (!currentList.type.equals(FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED)) {
+                if (currentList.user != null) {
+                    if (currentList.user.photo != null
+                            && currentList.user.photo.getFoursquareImageUrl(FoursquareImage.SIZE_EXTRA_GRANDE) != null) {
+                        UrlImageViewHelper.setUrlDrawable(mImageViewHeaderProfile,
+                                currentList.user.photo.getFoursquareImageUrl(FoursquareImage.SIZE_EXTRA_GRANDE),
+                                R.drawable.list_placeholder_gray_dark_small);
+                    } else {
+                        if (currentList.user.type.equals("page")) {
+                            mImageViewHeaderProfile.setImageDrawable(
+                                    mContext.getResources().getDrawable(R.drawable.list_placeholder_gray_dark_small));
+                        } else {
+                            mImageViewHeaderProfile.setImageDrawable(
+                                    mContext.getResources().getDrawable(
+                                            currentList.user.gender != null
+                                                    && currentList.user.gender.equals("male")
+                                                    ? R.drawable.profile_boy
+                                                    : R.drawable.profile_girl));
+                        }
+                    }
+
+                    if (currentList.user.firstName != null) {
+                        Boolean isPerson = !(currentList.user.type != null &&
+                                (currentList.user.type.equals("page")
+                                        || currentList.user.type.equals("chain")
+                                        || currentList.user.type.equals("celebrity")
+                                        || currentList.user.type.equals("venuePage")));
+                        String creator = !isPerson
+                                ? currentList.user.firstName
+                                : String.format("%s %s", currentList.user.firstName, currentList.user.lastName);
+                        mTextViewHeaderCreator.setText(String.format(
+                                mContext.getString(R.string.lists_title_header_creator), creator));
+                    }
+                } else {
+                    mImageViewHeaderProfile.setVisibility(View.GONE);
+                    mTextViewHeaderCreator.setVisibility(View.GONE);
+                }
+            } else {
+                mImageViewHeaderProfile.setVisibility(View.GONE);
+                mTextViewHeaderCreator.setVisibility(View.GONE);
+            }
+        }
+
+        if (currentList.name != null) {
+            getActivity().setTitle(currentList.name);
+        }
+    }
 }

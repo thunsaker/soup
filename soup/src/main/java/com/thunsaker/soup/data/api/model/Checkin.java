@@ -1,6 +1,7 @@
 package com.thunsaker.soup.data.api.model;
 
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 public class Checkin {
 	public String id;
@@ -24,6 +25,7 @@ public class Checkin {
 	public boolean isMayor;
 
     @Deprecated
+    @SerializedName("private")
 	public boolean isPrivate;
 
     @Deprecated

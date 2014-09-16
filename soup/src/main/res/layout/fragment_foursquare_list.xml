@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--<android.support.v4.widget.SwipeRefreshLayout-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/swipeLayoutFoursquareListItems"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@color/now_background" >    -->
-
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/frameLayoutFoursquareListWrapper"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/now_background" >
-    <ListView
-        android:id="@+id/listViewFoursquareListItems"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayoutFoursquareListContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/listViewFoursquareListItems"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

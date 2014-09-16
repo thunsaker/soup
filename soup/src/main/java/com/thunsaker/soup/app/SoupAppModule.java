@@ -102,6 +102,10 @@ public class SoupAppModule {
             }
         };
 
+//        GsonBuilder builder = new GsonBuilder();
+//        builder.registerTypeAdapter()
+//        Gson myGson = new Gson();
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(FoursquarePrefs.FOURSQUARE_BASE_URL)
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)

@@ -14,6 +14,7 @@ public class FoursquareTip {
     public boolean like;
     public boolean logView;
     public CompactFoursquareUser user;
+    public Venue venue;
 
     public List<Object> flags;
     public FoursquareLikes likes;

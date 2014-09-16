@@ -24,7 +24,6 @@ import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.FlagVenueResponse;
 import com.thunsaker.soup.data.api.model.FoursquareCompactVenueResponse;
 import com.thunsaker.soup.data.api.model.FoursquareList;
-import com.thunsaker.soup.data.api.model.FoursquareListGroup;
 import com.thunsaker.soup.data.api.model.FoursquareResponse;
 import com.thunsaker.soup.data.api.model.FoursquareVenueResponse;
 import com.thunsaker.soup.data.api.model.GetCategoriesResponse;
@@ -64,6 +63,8 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 import static com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES;
+import static com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED;
+import static com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED;
 
 public class FoursquareTasks {
     @Inject
@@ -375,10 +376,8 @@ public class FoursquareTasks {
         /**
          *
          * @param theVenueId
-         * @param theSource     Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE} or
-        {@link CALLER_SOURCE_EDIT_CATEGORIES) or
-        {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS} or
-        {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT}
+         * @param theSource     Either {@link CALLER_SOURCE_EDIT_VENUE} or {@link CALLER_SOURCE_EDIT_CATEGORIES) or
+         *                      {@link CALLER_SOURCE_DETAILS} or {@link CALLER_SOURCE_DETAILS_INTENT}
          */
         public GetVenueHours(String theVenueId, Integer theSource) {
             myVenueId = theVenueId;
@@ -848,21 +847,24 @@ public class FoursquareTasks {
                         !PreferencesHelper.getFoursquareToken(mContext).equals("")
                                 ? PreferencesHelper.getFoursquareToken(mContext) : "";
 
-                if(myUserId != null && myUserId.length() > 0) {
-                    GetUserListsResponse response;
-                    if(myListGroup.length() > 0)
-                        response = mFoursquareService.getUserListsByGroup(myUserId, myAccessToken, myListGroup);
-                    else
-                        response = mFoursquareService.getUserLists(myUserId, myAccessToken);
+                if (myUserId != null && myUserId.length() > 0) {
+                    List<GetUserListsResponse> listResponse = new ArrayList<GetUserListsResponse>();
+                    if (myListGroup.length() > 0)
+                        listResponse.add(mFoursquareService.getUserListsByGroup(myUserId, myAccessToken, myListGroup));
+                    else {
+                        listResponse.add(mFoursquareService.getUserListsByGroup(myUserId, myAccessToken, FOURSQUARE_LISTS_GROUP_CREATED));
+                        listResponse.add(mFoursquareService.getUserListsByGroup(myUserId, myAccessToken, FOURSQUARE_LISTS_GROUP_FOLLOWED));
+                    }
 
-                    if (response != null)
-                        if (response.meta.code == 200 && response.response.lists != null)
-                            for (FoursquareListGroup listGroup : response.response.lists.groups)
-                                resultLists.addAll(listGroup.items);
-                        else if (response.meta.code == 503)
-                            ShowServerErrorToast(response.meta);
-                        else
-                            Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                    if (listResponse.size() > 0)
+                        for (GetUserListsResponse response : listResponse) {
+                            if (response.meta.code == 200 && response.response.lists != null)
+                                resultLists.addAll(response.response.lists.items);
+                            else if (response.meta.code == 503)
+                                ShowServerErrorToast(response.meta);
+                            else
+                                Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                        }
                     else
                         Log.i("FoursquareTasks", "Failure :( GetLists call");
                 }

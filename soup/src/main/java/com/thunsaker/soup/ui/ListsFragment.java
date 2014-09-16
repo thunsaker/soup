@@ -202,26 +202,20 @@ public class ListsFragment extends BaseSoupFragment
 					if (nameTextView != null)
 						nameTextView.setText(myListName);
 
-					final Integer myVenueCount = list.venueCount;
+					final Integer myVenueCount = list.listItems.count;
 					final TextView countTextView = (TextView) v.findViewById(R.id.textViewListCount);
 					countTextView.setText(String.format(getResources().getQuantityString(R.plurals.venue_count, myVenueCount), myVenueCount));
 //                    final LinearLayout textWrapper = (LinearLayout) v.findViewById(R.id.linearLayoutTextWrapper);
 
 					final ImageView myImageViewPhoto = (ImageView) v.findViewById(R.id.imageViewListPhoto);
-					if(position == 0) {
-						myImageViewPhoto
-						.setImageDrawable(getResources()
-								.getDrawable(
-										R.drawable.list_placeholder_todo));
-					} else {
-						final String myPhotoUrl = list.photo != null
-								? list.photo.getFoursquareImageUrl() : "";
+                    final String myPhotoUrl = list.photo != null
+                            ? list.photo.getFoursquareImageUrl() : "";
 
-						if (!myPhotoUrl.equals("")) {
-                            mPicasso.load(myPhotoUrl)
-                                    .placeholder(mContext.getResources().getDrawable(R.drawable.list_placeholder_orange_small))
-                                    .error(mContext.getResources().getDrawable(R.drawable.list_placeholder_gray_dark_small))
-                                    .into(myImageViewPhoto);
+                    if (!myPhotoUrl.equals("")) {
+                        mPicasso.load(myPhotoUrl)
+                                .placeholder(mContext.getResources().getDrawable(R.drawable.list_placeholder_orange_small))
+                                .error(mContext.getResources().getDrawable(R.drawable.list_placeholder_gray_dark_small))
+                                .into(myImageViewPhoto);
 
 // TODO: Replace this with palette when the time comes.
 //                            mPicasso.load(myPhotoUrl).into(new Target() {
@@ -245,16 +239,15 @@ public class ListsFragment extends BaseSoupFragment
 //                                    myImageViewPhoto.setImageDrawable(placeholderFaviconDrawable);
 //                                }
 //                            });
-                        } else {
-							myImageViewPhoto
-									.setImageDrawable(getResources()
-                                            .getDrawable(
-                                                    R.drawable.list_placeholder_gray_dark_small));
-						}
-					}
+                    } else {
+                        myImageViewPhoto
+                                .setImageDrawable(getResources()
+                                        .getDrawable(
+                                                R.drawable.list_placeholder_gray_dark_small));
+                    }
 
 					final ImageView myImageViewIsPublic = (ImageView)v.findViewById(R.id.imageViewListIsPublic);
-					if(!list._public) {
+					if(!list.isPublic) {
 						myImageViewIsPublic.setVisibility(View.VISIBLE);
 					} else {
 						myImageViewIsPublic.setVisibility(View.GONE);
@@ -312,7 +305,11 @@ public class ListsFragment extends BaseSoupFragment
         }
 
         if(error) {
-            Toast.makeText(mContext, "Error: " + error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext,
+                    event != null && event.resultMessage.length() > 0
+                            ? String.format("Error: %s", event.resultMessage)
+                            : "Error",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 }

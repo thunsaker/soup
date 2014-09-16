@@ -4,6 +4,6 @@
         android:id="@+id/action_foursquare"
         android:orderInCategory="100"
         soup:showAsAction="always"
-        android:icon="@drawable/ic_action_foursquare_holo_dark"
+        android:icon="@drawable/ic_action_foursquare_new_holo_dark"
         android:title="@string/action_foursquare"/>
 </menu>

@@ -159,20 +159,44 @@ public interface FoursquareService {
     GetCategoriesResponse getCategories(
             @Query("oauth_token") String oauth_token);
 
-
+    /**
+     * Fetch default lists from user (created/followed)
+     *
+     * @param userId        User id {@link String} to fetch or self
+     * @param oauth_token   Auth Token {@link String}
+     * @return  List of {@link com.thunsaker.soup.data.api.model.FoursquareListGroup}
+     */
     @GET("/users/{USER_ID}/lists")
     GetUserListsResponse getUserLists(
             @Path("USER_ID") String userId,
             @Query("oauth_token") String oauth_token);
 
+    /**
+     * Fetch specific list(s) from user by group name
+     * @param userId        User id {@link String} to fetch or self
+     * @param oauth_token   Auth Token {@link String}
+     * @param group         Foursquare List group either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED} or
+     *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_EDITED} or
+     *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED} or
+     *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FRIENDS} or
+     *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_SUGGESTED}
+     *                      or a comma-delimited string of the list types
+     * @return  List of {@link com.thunsaker.soup.data.api.model.FoursquareListGroup}
+     */
     @GET("/users/{USER_ID}/lists")
     GetUserListsResponse getUserListsByGroup(
             @Path("USER_ID") String userId,
             @Query("oauth_token") String oauth_token,
             @Query("group") String group);
 
+    /**
+     * Fetch specific list from Foursquare
+     * @param listId        List id {@link UUID} to fetch
+     * @param oauth_token   Auth Token {@link String}
+     * @return  FoursquareList with list items and details.
+     */
     @GET("/lists/{LIST_ID}")
     GetListResponse getList(
-            @Path("USER_ID") String userId,
+            @Path("LIST_ID") String listId,
             @Query("oauth_token") String oauth_token);
 }
