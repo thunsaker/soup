@@ -32,7 +32,7 @@ import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
 import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
-import com.thunsaker.soup.services.foursquare.endpoints.CheckinEndpoint;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.thunsaker.soup.ui.MainActivity.CheckinDialogFragment;
 
 import javax.inject.Inject;
@@ -56,6 +56,9 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 
     @Inject
     EventBus mBus;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
 
 	private boolean enableDuplicateMenu;
 
@@ -379,7 +382,7 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 	}
 
     public void CheckinUser(String id, String name) {
-        new CheckinEndpoint.PostUserCheckin(mContext, MainActivity.currentLocation, id, name, "").execute();
+        mFoursquareTasks.new PostUserCheckin(id, name, "", MainActivity.currentLocation).execute();
         finish();
     }
 }

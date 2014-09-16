@@ -28,7 +28,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 19
         versionCode 22
-        versionName "2.5"
+        versionName "2.5.1.4"
 //        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
         resConfigs "en", "es", "fr", "pt", "ru"
 //        resConfigs "hdpi", "xdpi", "xxdpi", "xxxdpi"

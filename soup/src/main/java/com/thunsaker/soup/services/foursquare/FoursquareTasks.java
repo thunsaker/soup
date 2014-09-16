@@ -1,9 +1,14 @@
 package com.thunsaker.soup.services.foursquare;
 
-import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,36 +17,43 @@ import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.SoupApp;
+import com.thunsaker.soup.data.api.GetUserInfoResponse;
 import com.thunsaker.soup.data.api.model.Category;
 import com.thunsaker.soup.data.api.model.Checkin;
 import com.thunsaker.soup.data.api.model.CompactVenue;
+import com.thunsaker.soup.data.api.model.FlagVenueResponse;
 import com.thunsaker.soup.data.api.model.FoursquareCompactVenueResponse;
+import com.thunsaker.soup.data.api.model.FoursquareList;
 import com.thunsaker.soup.data.api.model.FoursquareResponse;
 import com.thunsaker.soup.data.api.model.FoursquareVenueResponse;
+import com.thunsaker.soup.data.api.model.GetCategoriesResponse;
+import com.thunsaker.soup.data.api.model.GetListResponse;
 import com.thunsaker.soup.data.api.model.GetUserCheckinHistoryResponse;
+import com.thunsaker.soup.data.api.model.GetUserListsResponse;
 import com.thunsaker.soup.data.api.model.GetVenueHoursResponse;
 import com.thunsaker.soup.data.api.model.GetVenueResponse;
 import com.thunsaker.soup.data.api.model.Location;
+import com.thunsaker.soup.data.api.model.PostUserCheckinResponse;
 import com.thunsaker.soup.data.api.model.PostVenueEditResponse;
 import com.thunsaker.soup.data.api.model.TimeFrame;
 import com.thunsaker.soup.data.api.model.Venue;
 import com.thunsaker.soup.data.api.model.VenueSearchResponse;
 import com.thunsaker.soup.data.events.CheckinHistoryEvent;
 import com.thunsaker.soup.data.events.EditVenueEvent;
+import com.thunsaker.soup.data.events.FlagVenueEvent;
+import com.thunsaker.soup.data.events.GetCategoriesEvent;
+import com.thunsaker.soup.data.events.GetListEvent;
+import com.thunsaker.soup.data.events.GetListsEvent;
+import com.thunsaker.soup.data.events.GetUserInfoEvent;
 import com.thunsaker.soup.data.events.GetVenueEvent;
 import com.thunsaker.soup.data.events.GetVenueHoursEvent;
 import com.thunsaker.soup.data.events.VenueListEvent;
 import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.services.FoursquareService;
-import com.thunsaker.soup.services.foursquare.endpoints.VenueEndpoint;
 import com.thunsaker.soup.ui.MainActivity;
-import com.thunsaker.soup.ui.VenueAddCategoryActivity;
-import com.thunsaker.soup.ui.VenueDetailActivity;
-import com.thunsaker.soup.ui.VenueEditTabsActivity;
 import com.thunsaker.soup.util.Util;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +63,8 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 import static com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_CATEGORIES;
+import static com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED;
+import static com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED;
 
 public class FoursquareTasks {
     @Inject
@@ -62,12 +76,12 @@ public class FoursquareTasks {
     @Inject
     FoursquareService mFoursquareService;
 
+    @Inject
+    SwarmService mSwarmService;
+
     public FoursquareTasks(SoupApp app) {
         app.inject(this);
     }
-
-    // DEBUG EMAIL
-    public static boolean SEND_DEBUG_EMAIL = false;
 
     public class GetClosestVenuesNew extends AsyncTask<Void, Integer, List<CompactVenue>> {
         LatLng myLatLng;
@@ -254,117 +268,6 @@ public class FoursquareTasks {
         }
     }
 
-    @Deprecated
-    public static class EditVenueOld extends AsyncTask<Void, Integer, String> {
-        Context myContext;
-        String myVenueId;
-        Venue myModifiedVenue;
-        FragmentActivity myCaller;
-
-        String myAccessToken;
-        String myClientId;
-        String myClientSecret;
-        boolean canEdit;
-        boolean modifiedDescription;
-        boolean fromAddCategory;
-
-        public EditVenueOld(Context theContext, String theVenueToModifyId,
-                         Venue theModifiedVenue, FragmentActivity theCaller,
-                         Boolean modifiedDescription, Boolean fromAddCategory) {
-            myContext = theContext;
-            myVenueId = theVenueToModifyId;
-            myModifiedVenue = theModifiedVenue;
-            myCaller = theCaller;
-            this.modifiedDescription = modifiedDescription;
-            this.fromAddCategory = fromAddCategory;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("") ? PreferencesHelper
-                        .getFoursquareToken(myContext) : "";
-                myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
-                myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
-
-                int mySuperuserLevel = PreferencesHelper
-                        .getFoursquareSuperuserLevel(myContext);
-
-                canEdit = mySuperuserLevel > 0;
-
-                String venueResult = VenueEndpoint.EditVenue(myVenueId,
-                        myAccessToken, myClientId, myClientSecret,
-                        myModifiedVenue, mySuperuserLevel, modifiedDescription,
-                        fromAddCategory);
-                return venueResult != null ? venueResult : null;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            try {
-                myCaller.setProgressBarVisibility(false);
-                VenueDetailActivity.wasEdited = true;
-
-                // DEBUG EMAIL
-                if (SEND_DEBUG_EMAIL && result.startsWith("DEBUG: ")) {
-                    Toast.makeText(
-                            myCaller.getApplicationContext(),
-                            "The editing failed. "
-                                    + "Trying to send an email to the developer to help debug.",
-                            Toast.LENGTH_SHORT).show();
-                    VenueEditTabsActivity.mDebugString = result;
-                } else {
-                    if (result.equals(FoursquarePrefs.SUCCESS)) {
-                        Toast.makeText(
-                                myCaller.getApplicationContext(),
-                                canEdit ? myContext
-                                        .getString(R.string.edit_venue_success)
-                                        : myContext
-                                        .getString(R.string.edit_venue_success_propose),
-                                Toast.LENGTH_SHORT).show();
-                        myCaller.setResult(Activity.RESULT_OK);
-                    } else if (result
-                            .equals(FoursquarePrefs.FAIL_UNAUTHORIZED)) {
-                        Toast.makeText(
-                                myCaller.getApplicationContext(),
-                                myContext
-                                        .getString(modifiedDescription ? R.string.edit_venue_fail_unauthorized_description
-                                                : R.string.edit_venue_fail_unauthorized),
-                                Toast.LENGTH_SHORT).show();
-                        myCaller.setResult(Activity.RESULT_CANCELED);
-                    } else {
-                        Toast.makeText(myCaller.getApplicationContext(),
-                                myContext.getString(R.string.edit_venue_fail),
-                                Toast.LENGTH_SHORT).show();
-                        myCaller.setResult(Activity.RESULT_CANCELED);
-                    }
-                }
-
-                myCaller.finish();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            if (myCaller != null)
-                myCaller.setProgressBarVisibility(true);
-        }
-    }
-
     public class GetVenue extends AsyncTask<Void, Integer, Venue> {
         String myVenueId;
         Integer mySource;
@@ -473,10 +376,8 @@ public class FoursquareTasks {
         /**
          *
          * @param theVenueId
-         * @param theSource     Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE} or
-        {@link CALLER_SOURCE_EDIT_CATEGORIES) or
-        {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS} or
-        {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT}
+         * @param theSource     Either {@link CALLER_SOURCE_EDIT_VENUE} or {@link CALLER_SOURCE_EDIT_CATEGORIES) or
+         *                      {@link CALLER_SOURCE_DETAILS} or {@link CALLER_SOURCE_DETAILS_INTENT}
          */
         public GetVenueHours(String theVenueId, Integer theSource) {
             myVenueId = theVenueId;
@@ -535,38 +436,38 @@ public class FoursquareTasks {
         }
     }
 
-    public static class GetCategories extends AsyncTask<Void, Integer, List<Category>> {
-        Context myContext;
-        VenueAddCategoryActivity myCaller;
-
+    public class GetCategories extends AsyncTask<Void, Integer, List<Category>> {
         String myAccessToken;
-        String myClientId;
-        String myClientSecret;
+        int mSource;
 
-        public GetCategories(Context theContext,
-                             VenueAddCategoryActivity theCaller) {
-            myContext = theContext;
-            myCaller = theCaller;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        public GetCategories(int theSource) {
+            mSource = theSource;
         }
 
         @Override
         protected List<Category> doInBackground(Void... params) {
-            try {
-                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("") ? PreferencesHelper
-                        .getFoursquareToken(myContext) : "";
-                myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
-                myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
+            List<Category> resultCategories = new ArrayList<Category>();
 
-                List<Category> foursquareCategories = VenueEndpoint
-                        .GetCategories(myAccessToken, myClientId,
-                                myClientSecret);
-                return foursquareCategories != null ? foursquareCategories
-                        : null;
+            try {
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                                ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+                GetCategoriesResponse response = mFoursquareService.getCategories(myAccessToken);
+
+                if(response != null) {
+                    if(response.meta.code == 200 && response.response.categories != null) {
+                        resultCategories = response.response.categories;
+                    } else if (response.meta.code == 503) {
+                        ShowServerErrorToast(response.meta);
+                    } else {
+                        Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                    }
+                } else {
+                    Log.i("FoursquareTasks", "Failure :( GetCategories call");
+                }
+
+                return resultCategories;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -577,66 +478,46 @@ public class FoursquareTasks {
         protected void onPostExecute(List<Category> result) {
             super.onPostExecute(result);
             try {
-                VenueAddCategoryActivity.FoursquareCategoriesMaster = result;
-                Calendar cal = Calendar.getInstance();
-                VenueAddCategoryActivity.FoursquareCategoriesMasterDate =
-                        cal.get(Calendar.SECOND);
-
-                if (VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items == null)
-                    VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items = new ArrayList<Category>();
-
-                VenueAddCategoryActivity.myPrimaryCategoryListAdapter.items
-                        .addAll(result);
-                VenueAddCategoryActivity.myPrimaryCategoryListAdapter
-                        .notifyDataSetChanged();
-
-                VenueAddCategoryActivity.myPrimaryCategoryListAdapter = myCaller.new CategoryListAdapter(
-                        myContext, R.layout.list_category_item, result, 1);
-                VenueAddCategoryActivity.mPrimaryListView
-                        .setAdapter(VenueAddCategoryActivity.myPrimaryCategoryListAdapter);
-                VenueAddCategoryActivity.myPrimaryCategoryListAdapter
-                        .notifyDataSetChanged();
+                if(result != null)
+                    mBus.post(new GetCategoriesEvent(true, "", result, mSource));
+                else
+                    mBus.post(new GetCategoriesEvent(false, "", null, mSource));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static class FlagVenue extends AsyncTask<Void, Integer, String> {
-        Context myContext;
-        Integer myFlagType;
-        String myVenueId;
-        String myDuplicateId = "";
-        FragmentActivity myCaller;
+    public class FlagVenue extends AsyncTask<Void, Integer, FlagVenueResponse> {
+        Integer mFlagType;
+        String mVenueId;
+        String mDuplicateId = "";
 
         String myAccessToken;
-        String myClientId;
-        String myClientSecret;
 
-        public FlagVenue(Context theContext, String theVenueToModifyId,
-                         Integer theFlagType, String theDuplicateId,
-                         FragmentActivity FragmentActivity) {
-            myContext = theContext;
-            myVenueId = theVenueToModifyId;
-            myFlagType = theFlagType;
-            if (myFlagType.equals(FoursquarePrefs.FlagType.DUPLICATE)) {
-                myDuplicateId = theDuplicateId;
+        public FlagVenue(String theVenueToModifyId, Integer theFlagType, String theDuplicateId) {
+            mVenueId = theVenueToModifyId;
+            mFlagType = theFlagType;
+            if (mFlagType.equals(FoursquarePrefs.FlagType.DUPLICATE)) {
+                mDuplicateId = theDuplicateId;
             }
-            myCaller = FragmentActivity;
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected FlagVenueResponse doInBackground(Void... params) {
             try {
-                myAccessToken = !PreferencesHelper.getFoursquareToken(myContext).equals("") ? PreferencesHelper
-                        .getFoursquareToken(myContext) : "";
-                myClientId = AuthHelper.FOURSQUARE_CLIENT_ID;
-                myClientSecret = AuthHelper.FOURSQUARE_CLIENT_SECRET;
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                        ? PreferencesHelper.getFoursquareToken(mContext) : "";
 
-                String venueResult = VenueEndpoint.FlagVenue(myVenueId,
-                        myAccessToken, myClientId, myClientSecret, myFlagType,
-                        myDuplicateId);
-                return venueResult != null ? venueResult : null;
+                FlagVenueResponse response;
+
+                if(mFlagType == FoursquarePrefs.FlagType.DUPLICATE)
+                    response = mFoursquareService.flagDuplicateVenue(mVenueId, myAccessToken, Util.Encode(Util.GetFlagTypeStringFromInt(mFlagType, false)), mDuplicateId);
+                else
+                    response = mFoursquareService.flagVenue(mVenueId, myAccessToken, Util.Encode(Util.GetFlagTypeStringFromInt(mFlagType, false)));
+
+                return response != null ? response : null;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -644,50 +525,9 @@ public class FoursquareTasks {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(FlagVenueResponse result) {
             super.onPostExecute(result);
-
-            try {
-                myCaller.setProgressBarVisibility(false);
-                myCaller.supportInvalidateOptionsMenu();
-                // myCaller.setProgressBarVisibility(false);
-                if (result.equals(FoursquarePrefs.SUCCESS)) {
-                    // Crouton.makeText(myCaller,
-                    // String.format(myContext.getString(R.string.flag_venue_success),
-                    // Util.GetFlagTypeStringFromInt(myFlagType, true)),
-                    // Style.CONFIRM).show();
-
-                    Toast.makeText(
-                            myCaller,
-                            String.format(myContext
-                                            .getString(R.string.flag_venue_success),
-                                    Util.GetFlagTypeStringFromInt(myFlagType,
-                                            true)), Toast.LENGTH_SHORT).show();
-                    // } else if(result == FAIL_UNAUTHORIZED) {
-                    // Toast.makeText(myContext,
-                    // myContext.getString(R.string.edit_venue_fail_unauthorized),
-                    // Toast.LENGTH_LONG).show();
-                } else {
-                    // Crouton.makeText(myCaller,
-                    // myContext.getString(R.string.flag_venue_fail),
-                    // Style.ALERT).show();
-
-                    Toast.makeText(myCaller,
-                            myContext.getString(R.string.flag_venue_fail),
-                            Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            if (myCaller != null) {
-                myCaller.setProgressBarVisibility(true);
-                myCaller.supportInvalidateOptionsMenu();
-            }
+            mBus.post(new FlagVenueEvent(true, ""));
         }
     }
 
@@ -716,7 +556,7 @@ public class FoursquareTasks {
                 GetUserCheckinHistoryResponse response;
                 if(myOffset == -1)
                     response =
-                            mFoursquareService.getUserCheckins(
+                            mSwarmService.getUserCheckins(
                                     FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX,
                                     mAccessToken,
                                     myStartTimestamp,
@@ -724,7 +564,7 @@ public class FoursquareTasks {
                                     mySortOrder);
                 else
                     response =
-                            mFoursquareService.getUserCheckins(
+                            mSwarmService.getUserCheckins(
                                     FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX,
                                     mAccessToken,
                                     myStartTimestamp,
@@ -763,7 +603,297 @@ public class FoursquareTasks {
         }
     }
 
-    // Helper Classes
+    public class PostUserCheckin extends AsyncTask<Void, Integer, PostUserCheckinResponse> {
+        LatLng mCurrentLatLng;
+        String mVenueId;
+        String mVenueName;
+        String mMessage;
+
+        String myAccessToken;
+
+        public PostUserCheckin(String theFoursquareVenueId, String theVenueName, String theMsg, LatLng theCurrentLatLng ) {
+            mVenueId = theFoursquareVenueId;
+            mVenueName = theVenueName;
+            mMessage = theMsg;
+            mCurrentLatLng = theCurrentLatLng;
+        }
+
+        @Override
+        protected PostUserCheckinResponse doInBackground(Void... params) {
+            NotificationManager mNotificationManager =
+                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            NotificationCompat.Builder mNotificationFoursquare =
+                    new NotificationCompat.Builder(mContext)
+                            .setSmallIcon(R.drawable.ic_stat_soup)
+                            .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_stat_check_white))
+                            .setProgress(0, 0, true)
+                            .setContentText(mContext.getString(R.string.notification_checkin_title))
+                            .setContentTitle(mContext.getString(R.string.notification_checkin_pending))
+                            .setContentIntent(MainActivity.genericPendingIntent);
+
+            mNotificationManager.notify(MainActivity.NOTIFICATION_CHECKIN, mNotificationFoursquare.build());
+
+            myAccessToken =
+                    !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                            ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+            String ll = String.format("%s,%s", mCurrentLatLng.latitude, mCurrentLatLng.longitude);
+
+            if(mMessage.length() > 0)
+                return mSwarmService.postUserCheckinWithShout(myAccessToken, mVenueId, mMessage, "", ll);
+            else
+                return mSwarmService.postUserCheckin(myAccessToken, mVenueId, ll);
+        }
+
+        @Override
+        protected void onPostExecute(PostUserCheckinResponse result) {
+            super.onPostExecute(result);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if(result != null && result.meta.code == 200) {
+                NotificationCompat.Builder mNotificationFoursquarePosted =
+                        new NotificationCompat.Builder(mContext)
+                                .setSmallIcon(R.drawable.ic_stat_soup)
+                                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_stat_check_white))
+                                .setContentText(mContext.getString(R.string.notification_checkin_title))
+                                .setContentTitle(String.format(mContext.getString(R.string.notification_checkin_complete), mVenueName))
+                                .setContentIntent(MainActivity.genericPendingIntent);
+                mNotificationManager.notify(MainActivity.NOTIFICATION_CHECKIN, mNotificationFoursquarePosted.build());
+                mNotificationManager.cancel(MainActivity.NOTIFICATION_CHECKIN);
+            } else {
+                Intent foursquareVenueIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(String.format(FoursquarePrefs.FOURSQURE_INTENT_VENUE_URL, mVenueId)));
+                TaskStackBuilder foursquareVenueStackBuilder = TaskStackBuilder.create(mContext);
+                foursquareVenueStackBuilder.addParentStack(MainActivity.class);
+                foursquareVenueStackBuilder.addNextIntent(foursquareVenueIntent);
+                PendingIntent foursquareVenuePendingIntent =
+                        foursquareVenueStackBuilder.getPendingIntent(
+                                0,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        );
+
+                Intent retryCheckinIntent = new Intent(mContext, MainActivity.class);
+                retryCheckinIntent.putExtra(MainActivity.VENUE_ID_CHECKIN_EXTRA, mVenueId);
+                retryCheckinIntent.putExtra(MainActivity.VENUE_NAME_CHECKIN_EXTRA, mVenueName);
+                TaskStackBuilder retryCheckinStackBuilder = TaskStackBuilder.create(mContext);
+                retryCheckinStackBuilder.addParentStack(MainActivity.class);
+                retryCheckinStackBuilder.addNextIntent(retryCheckinIntent);
+                PendingIntent retryCheckinPendingIntent =
+                        retryCheckinStackBuilder.getPendingIntent(
+                                0,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        );
+
+                NotificationCompat.Builder mNotificationFoursquareFail =
+                        new NotificationCompat.Builder(mContext)
+                                .setSmallIcon(R.drawable.ic_stat_soup)
+                                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_stat_check_white))
+                                .setAutoCancel(true)
+                                .addAction(R.drawable.ic_action_foursquare_holo_dark, mContext.getString(R.string.notification_checkin_foursquare), foursquareVenuePendingIntent)
+                                .addAction(R.drawable.ic_action_refresh_holo_dark, mContext.getString(R.string.notification_checkin_retry), retryCheckinPendingIntent)
+                                .setContentIntent(foursquareVenuePendingIntent)
+                                .setContentText(mContext.getString(R.string.notification_checkin_title))
+                                .setContentTitle(mContext.getString(R.string.notification_checkin_fail));
+
+                mNotificationManager.notify(MainActivity.NOTIFICATION_CHECKIN, mNotificationFoursquareFail.build());
+            }
+        }
+
+    }
+
+    public class GetUserInfo extends AsyncTask<Void, Integer, GetUserInfoResponse> {
+        String mUserId;
+        String myAccessToken;
+
+        public GetUserInfo(String theUserId) {
+            mUserId = theUserId;
+        }
+
+        @Override
+        protected GetUserInfoResponse doInBackground(Void... params) {
+            myAccessToken =
+                    !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                            ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+            return mFoursquareService.getUserInfo(mUserId, myAccessToken);
+        }
+
+        @Override
+        protected void onPostExecute(GetUserInfoResponse result) {
+            super.onPostExecute(result);
+
+            String resultMessage = null;
+            if (result != null) {
+                if (result.meta.code == 200) {
+                    if (result.response != null && result.response.user != null) {
+                        mBus.post(new GetUserInfoEvent(true, "", result.response.user));
+                        return;
+                    }
+                } else {
+                    resultMessage = "Failure! Code: " + result.meta.code + " Error: " + result.meta.errorType + " - " + result.meta.errorDetail;
+                }
+            } else {
+                resultMessage = "Failure fetching user details";
+            }
+
+            mBus.post(new GetUserInfoEvent(false, resultMessage, null));
+        }
+    }
+
+    public class GetFoursquareList extends AsyncTask<Void, Integer, FoursquareList> {
+        String myListId;
+        String myAccessToken;
+
+        /**
+         * Get Foursquare list.
+         *
+         * @param theListId     List Id to fetch
+         */
+        public GetFoursquareList(String theListId) {
+            myListId = theListId;
+        }
+
+        @Override
+        protected FoursquareList doInBackground(Void... params) {
+            try {
+                FoursquareList resultList = null;
+
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                                ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+                if(myListId != null && myListId.length() > 0) {
+                    GetListResponse response = mFoursquareService.getList(myListId, myAccessToken);
+
+                    if (response != null)
+                        if (response.meta.code == 200 && response.response.list != null)
+                            resultList = response.response.list;
+                        else if (response.meta.code == 503)
+                            ShowServerErrorToast(response.meta);
+                        else
+                            Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                    else
+                        Log.i("FoursquareTasks", "Failure :( GetLists call");
+                }
+
+                return resultList;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(FoursquareList result) {
+            super.onPostExecute(result);
+
+            try {
+                if(result != null) {
+                    mBus.post(new GetListEvent(true, "", result));
+                } else {
+                    Toast.makeText(mContext, R.string.alert_error_loading_list, Toast.LENGTH_SHORT).show();
+                    mBus.post(new GetListsEvent(false, "", null));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class GetFoursquareLists extends AsyncTask<Void, Integer, List<FoursquareList>> {
+        String myUserId;
+        String myAccessToken;
+        String myListGroup;
+
+        /**
+         * Get default Foursquare lists for the current user.
+         */
+        public GetFoursquareLists() {
+            this(FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX);
+        }
+
+        /**
+         * Get default Foursquare lists for the given user.
+         *
+         * @param theUserId     User id or "self"
+         */
+        public GetFoursquareLists(String theUserId) {
+            this(theUserId, "");
+        }
+
+        /**
+         * Get default Foursquare lists for the given user and list group
+         *
+         * @param theUserId     User id or "self"
+         * @param theListGroup  Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_CREATED} or
+         *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_EDITED} or
+         *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FOLLOWED} or
+         *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_FRIENDS} or
+         *                      {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.FOURSQUARE_LISTS_GROUP_SUGGESTED}
+         */
+        public GetFoursquareLists(String theUserId, String theListGroup) {
+            myUserId = theUserId;
+            myListGroup = theListGroup;
+        }
+
+        @Override
+        protected List<FoursquareList> doInBackground(Void... params) {
+            try {
+                List<FoursquareList> resultLists = new ArrayList<FoursquareList>();
+
+                myAccessToken =
+                        !PreferencesHelper.getFoursquareToken(mContext).equals("")
+                                ? PreferencesHelper.getFoursquareToken(mContext) : "";
+
+                if (myUserId != null && myUserId.length() > 0) {
+                    List<GetUserListsResponse> listResponse = new ArrayList<GetUserListsResponse>();
+                    if (myListGroup.length() > 0)
+                        listResponse.add(mFoursquareService.getUserListsByGroup(myUserId, myAccessToken, myListGroup));
+                    else {
+                        listResponse.add(mFoursquareService.getUserListsByGroup(myUserId, myAccessToken, FOURSQUARE_LISTS_GROUP_CREATED));
+                        listResponse.add(mFoursquareService.getUserListsByGroup(myUserId, myAccessToken, FOURSQUARE_LISTS_GROUP_FOLLOWED));
+                    }
+
+                    if (listResponse.size() > 0)
+                        for (GetUserListsResponse response : listResponse) {
+                            if (response.meta.code == 200 && response.response.lists != null)
+                                resultLists.addAll(response.response.lists.items);
+                            else if (response.meta.code == 503)
+                                ShowServerErrorToast(response.meta);
+                            else
+                                Log.i("FoursquareTasks", "Failure! Code: " + response.meta.code + " Error: " + response.meta.errorType + " - " + response.meta.errorDetail);
+                        }
+                    else
+                        Log.i("FoursquareTasks", "Failure :( GetLists call");
+                }
+
+                return resultLists;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<FoursquareList> result) {
+            super.onPostExecute(result);
+
+            try {
+                if(result != null) {
+                    mBus.post(new GetListsEvent(true, "", result));
+                } else {
+                    Toast.makeText(mContext, R.string.alert_error_loading_details, Toast.LENGTH_SHORT).show();
+                    mBus.post(new GetListsEvent(false, "", null));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+        // Helper Classes
     private Map<String, String> getLocationQueryParams(int mSuperuserLevel, Location location) {
         Map<String, String> locationParams = new HashMap<String, String>();
         if (location.address != null)

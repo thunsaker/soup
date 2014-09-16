@@ -32,16 +32,17 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.model.LatLng;
 import com.thunsaker.android.common.annotations.ForApplication;
+import com.thunsaker.soup.BuildConfig;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
 import com.thunsaker.soup.data.FoursquareClient;
+import com.thunsaker.soup.data.api.model.CompactFoursquareUser;
+import com.thunsaker.soup.data.events.GetUserInfoEvent;
 import com.thunsaker.soup.data.events.VenueSearchEvent;
 import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
-import com.thunsaker.soup.services.foursquare.endpoints.CheckinEndpoint;
-import com.thunsaker.soup.services.foursquare.endpoints.UserEndpoint;
 import com.thunsaker.soup.ui.settings.SettingsActivity;
 import com.thunsaker.soup.ui.settings.SettingsLegacyActivity;
 import com.thunsaker.soup.util.Util;
@@ -110,7 +111,10 @@ public class MainActivity extends BaseSoupActivity implements
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
+
+        if(!BuildConfig.DEBUG)
+            Crashlytics.start(this);
+
         mBus.register(this);
 
         handleIntent(getIntent());
@@ -192,35 +196,9 @@ public class MainActivity extends BaseSoupActivity implements
             PreferencesHelper.migrateSuperUserPref(mContext);
             superuserLevel = PreferencesHelper.getFoursquareSuperuserLevel(mContext);
         }
-        if (superuserLevel == FoursquarePrefs.SUPERUSER.UNKNOWN) {
-            String userRequestUrl;
-            String accessToken = PreferencesHelper
-                    .getFoursquareToken(getApplicationContext());
-            if (accessToken != null && accessToken.length() > 0) {
-                userRequestUrl = String
-                        .format("%s%s?&oauth_token=%s&v=%s",
-                                FoursquarePrefs.FOURSQUARE_BASE_URL,
-                                FoursquarePrefs.FOURSQUARE_USER_ENDPOINT + "/"
-                                        + FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX,
-                                accessToken,
-                                FoursquarePrefs.CURRENT_API_DATE
-                        );
-            } else {
-                userRequestUrl = String
-                        .format("%s%s?client_id=%s&client_secret=%s&v=%s",
-                                FoursquarePrefs.FOURSQUARE_BASE_URL,
-                                FoursquarePrefs.FOURSQUARE_USER_ENDPOINT + "/"
-                                        + FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX,
-                                MainActivity.mFoursquareClient
-                                        .getClientId(),
-                                MainActivity.mFoursquareClient
-                                        .getClientSecret(),
-                                FoursquarePrefs.CURRENT_API_DATE
-                        );
-            }
 
-            new UserEndpoint.GetUserInfo(mContext, userRequestUrl).execute();
-        }
+        if (superuserLevel == FoursquarePrefs.SUPERUSER.UNKNOWN)
+            mFoursquareTasks.new GetUserInfo(FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX).execute();
     }
 
     private ActionBar SetupActionBar() {
@@ -586,11 +564,27 @@ public class MainActivity extends BaseSoupActivity implements
 	}
 
 	public void CheckinUser(String id, String name) {
-		new CheckinEndpoint.PostUserCheckin(mContext, currentLocation, id, name, "").execute();
+        mFoursquareTasks.new PostUserCheckin(id, name, "", currentLocation).execute();
         finish();
 	}
 
     public void onEvent(VenueSearchEvent event) {
         mFoursquareTasks.new GetClosestVenuesNew(event.searchQuery, event.searchLocation, event.duplicateVenueId, event.listType).execute();
+    }
+
+    public void onEvent(GetUserInfoEvent event) {
+        if(event != null) {
+            if(event.user != null) {
+                CompactFoursquareUser user = event.user;
+
+                if(user.id != null)
+                    PreferencesHelper.setFoursquareUserId(mContext, user.id);
+
+                PreferencesHelper.setFoursquareSuperuserLevel(mContext, user.superuser);
+
+                if(user.homeCity != null)
+                    PreferencesHelper.setFoursquareHomeCity(mContext, user.homeCity);
+            }
+        }
     }
 }

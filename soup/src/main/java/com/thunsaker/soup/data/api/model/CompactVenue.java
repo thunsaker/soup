@@ -19,11 +19,15 @@ public class CompactVenue {
 /*	public VenueLikes Likes;
 	public Menu Menu;
 	public BeenHere BeenHere;
-	public Specials Specials;
+	public Specials specials;
+	public VenuePrice price;
 	public HereNow HereNow;
 	public Listed listed; */
+    public double rating;
+    public double ratingSignals;
     public String storeId;
 	public String referralId;
+    public FoursquareTastes tastes;
 
 	@Override
 	public String toString() {

@@ -11,7 +11,7 @@ import com.thunsaker.soup.BuildConfig;
 import com.thunsaker.soup.services.FoursquareService;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
-import com.thunsaker.soup.services.foursquare.endpoints.VenueEndpoint;
+import com.thunsaker.soup.services.foursquare.SwarmService;
 import com.thunsaker.soup.ui.CheckinHistoryActivity;
 import com.thunsaker.soup.ui.CheckinHistoryFragment;
 import com.thunsaker.soup.ui.FoursquareAuthorizationActivity;
@@ -49,7 +49,6 @@ import static android.content.Context.LOCATION_SERVICE;
                 FoursquareAuthorizationActivity.class,
                 MainActivity.class,
                 FoursquareTasks.class,
-                VenueEndpoint.class,
                 VenueListFragment.class,
                 VenueSearchActivity.class,
                 VenueDetailFragment.class,
@@ -99,8 +98,31 @@ public class SoupAppModule {
             @Override
             public void intercept(RequestFacade request) {
                 request.addQueryParam("v", FoursquarePrefs.CURRENT_API_DATE);
-                // TODO: Figure out a way to add m=swarm w/o too much extra code.
                 request.addQueryParam("m", FoursquarePrefs.API_MODE_FOURSQUARE);
+            }
+        };
+
+//        GsonBuilder builder = new GsonBuilder();
+//        builder.registerTypeAdapter()
+//        Gson myGson = new Gson();
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(FoursquarePrefs.FOURSQUARE_BASE_URL)
+                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+                .setRequestInterceptor(requestInterceptor)
+                .build();
+
+        return restAdapter.create(FoursquareService.class);
+    }
+
+    @Provides
+    @Singleton
+    SwarmService providesSwarmService() {
+        RequestInterceptor requestInterceptor = new RequestInterceptor() {
+            @Override
+            public void intercept(RequestFacade request) {
+                request.addQueryParam("v", FoursquarePrefs.CURRENT_API_DATE);
+                request.addQueryParam("m", FoursquarePrefs.API_MODE_SWARM);
             }
         };
 
@@ -110,7 +132,7 @@ public class SoupAppModule {
                 .setRequestInterceptor(requestInterceptor)
                 .build();
 
-        return restAdapter.create(FoursquareService.class);
+        return restAdapter.create(SwarmService.class);
     }
 
     @Provides

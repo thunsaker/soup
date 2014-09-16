@@ -385,7 +385,7 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
     }
 
     public void onEvent(EditVenueEvent event) {
-        String message = "";
+        String message;
         if (event != null) {
             if (event.source == FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE) {
                 if (event.result != null) {

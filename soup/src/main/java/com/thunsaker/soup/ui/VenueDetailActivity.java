@@ -1,5 +1,6 @@
 package com.thunsaker.soup.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -7,13 +8,26 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.view.Window;
 
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
+import com.thunsaker.soup.services.foursquare.FoursquareTasks;
+
+import javax.inject.Inject;
 
 /*
  * Created by @thunsaker
  */
 public class VenueDetailActivity extends BaseSoupActivity {
+    @Inject @ForApplication
+    Context mContext;
+
+//    @Inject
+//    EventBus mBus;
+
+    @Inject
+    FoursquareTasks mFoursquareTasks;
+
     public static boolean wasEdited;
 
     private boolean showHomeUp = true;
@@ -120,5 +134,13 @@ public class VenueDetailActivity extends BaseSoupActivity {
         venueIdToLoad = "";
         VenueDetailFragment.currentVenue = null;
         VenueEditCategoriesActivity.currentVenue = null;
+    }
+
+    public void FlagVenue(String id, int type) {
+        mFoursquareTasks.new FlagVenue(id, type, "").execute();
+    }
+
+    public void FlagVenueDuplicate(String id, int type, String dupeId) {
+        mFoursquareTasks.new FlagVenue(id, type, dupeId).execute();
     }
 }

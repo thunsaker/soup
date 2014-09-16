@@ -7,6 +7,6 @@ public class EditVenueEvent extends BaseEvent {
 
     public EditVenueEvent(Boolean result, String resultMessage, int resultSource) {
         super(result, resultMessage);
-        this.source = resultSource;
+        source = resultSource;
     }
 }

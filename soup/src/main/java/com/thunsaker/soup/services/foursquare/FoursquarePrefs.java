@@ -32,6 +32,8 @@ public class FoursquarePrefs {
 	public static String FOURSQUARE_LISTS_GROUP_FRIENDS = "friends";
 	public static String FOURSQUARE_LISTS_GROUP_SUGGESTED = "suggested";
 
+    public static final String FOURSQUARE_LIST_ITEM_TYPE_TIP = "tip";
+
 	public static String FOURSQUARE_CHECKIN_SUFFIX = "/checkins/add";
 
 	public static String FOURSQURE_INTENT_VENUE_URL = "https://foursquare.com/v/%s";
@@ -40,18 +42,19 @@ public class FoursquarePrefs {
 	public static String FAIL = "fail";
 	public static String FAIL_UNAUTHORIZED = "fail_unauthorized";
 
-	public final static Integer CALLER_SOURCE_EDIT_VENUE = 0;
-	public final static Integer CALLER_SOURCE_EDIT_CATEGORIES = 1;
-	public final static Integer CALLER_SOURCE_DETAILS = 2;
-	public final static Integer CALLER_SOURCE_DETAILS_INTENT = 3;
+	public static final int  CALLER_SOURCE_EDIT_VENUE = 0;
+	public static final int  CALLER_SOURCE_EDIT_CATEGORIES = 1;
+	public static final int  CALLER_SOURCE_DETAILS = 2;
+	public static final int  CALLER_SOURCE_DETAILS_INTENT = 3;
+    public static final int  CALLER_SOURCE_ADD_CATEGORIES = 4;
 
 	public static class FlagType {
-		public final static Integer MISLOCATED = 0;
-		public final static Integer DOESNT_EXIST = 1;
-		public final static Integer CLOSED = 2;
-		public final static Integer INAPPROPRIATE = 3;
-		public final static Integer EVENT_OVER = 4;
-		public final static Integer DUPLICATE = 5;
+		public static final int  MISLOCATED = 0;
+		public static final int  DOESNT_EXIST = 1;
+		public static final int  CLOSED = 2;
+		public static final int  INAPPROPRIATE = 3;
+		public static final int  EVENT_OVER = 4;
+		public static final int  DUPLICATE = 5;
 	}
 
 	public final static int SUPERUSER_STATUS_UNKNOWN = -1;
@@ -60,11 +63,11 @@ public class FoursquarePrefs {
     public static final String SEARCH_DUPLICATE_VENUE_ID = "SEARCH_DUPLICATE_VENUE_ID";
 
 	public static class SUPERUSER {
-		public final static Integer UNKNOWN = -1;
-		public final static Integer NOPE = 0;
-		public final static Integer SU1 = 1;
-		public final static Integer SU2 = 2;
-		public final static Integer SU3 = 3;
+		public static final int  UNKNOWN = -1;
+		public static final int  NOPE = 0;
+		public static final int  SU1 = 1;
+		public static final int  SU2 = 2;
+		public static final int  SU3 = 3;
 	}
 
 	final public static class History {

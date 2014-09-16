@@ -147,7 +147,7 @@
     <string name="dialog_yes">Sí</string>
 
     <string name="venue_details_dialog_flag_message">Elija el tipo de error</string>
-    <string name="flag_venue_success">Lugar marcado exitosamente como: %s</string>
+    <string name="flag_venue_success">Lugar marcado exitosamente.</string>
     <string name="flag_venue_fail">Marcando falló. :( Por favor, inténtelo de nuevo.</string>
 
     <string name="venue_details_edit_button">Editar</string>
@@ -275,5 +275,6 @@
     <string name="dialog_category_delete_confirm">Remove category %s?</string>
     <string name="em_dash">—</string>
     <string name="dialog_hour_segment_delete_confirm">Are you sure you want to delete this time segment?</string>
+    <string name="alert_error_loading_list">Error loading list. :(</string>
     <!--<string name="edit_venue_cross_street_hint">C. Centro</string>-->
 </resources>

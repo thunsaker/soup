@@ -11,6 +11,11 @@ public class CompactFoursquareUser {
     public FoursquareImage photo;
     public String type;
 
+    public String homeCity;
+    public int superuser;
+    public String createdAt;
+    public String referralId;
+
 	public static CompactFoursquareUser GetCompactFoursquareUserFromJson(JsonObject jsonObject) {
 		try {
 			CompactFoursquareUser myUser = new CompactFoursquareUser();
@@ -21,6 +26,11 @@ public class CompactFoursquareUser {
 			myUser.relationship = jsonObject.get("relationship") != null ? jsonObject.get("relationship").getAsString() : "";
 			myUser.photo = jsonObject.get("photo") != null ? FoursquareImage.GetFoursquareImageFromJson(jsonObject.get("photo").getAsJsonObject()) : null;
 			myUser.type = jsonObject.get("type") != null ? jsonObject.get("type").getAsString() : "";
+
+            myUser.homeCity = jsonObject.get("homeCity") != null ? jsonObject.get("homeCity").getAsString() : "";
+            myUser.superuser = jsonObject.get("superuser") != null ? jsonObject.get("superuser").getAsInt() : 0;
+            myUser.createdAt = jsonObject.get("createdAt") != null ? jsonObject.get("createdAt").getAsString() : "";
+            myUser.referralId = jsonObject.get("referralId") != null ? jsonObject.get("referralId").getAsString() : "";
 			return myUser;
 		} catch (Exception e) {
 			e.printStackTrace();

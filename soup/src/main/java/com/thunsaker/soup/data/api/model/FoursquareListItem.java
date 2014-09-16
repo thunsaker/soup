@@ -1,72 +1,48 @@
 package com.thunsaker.soup.data.api.model;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 public class FoursquareListItem {
-	private String Id;
-	private String CreatedAt;
-	private FoursquareImage Photo;
-	private CompactVenue Venue;
+    public String id;
+    public long createdAt;
+    public FoursquareTip tip;
+    public FoursquareImage photo;
+    public CompactVenue venue;
+    public CompactFoursquareUser user;
+    public long sharedAt;
+    public String state;
+    public String type;
 
-	public String getId() {
-		return Id;
-	}
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 
-	public void setId(String id) {
-		Id = id;
-	}
+    public static FoursquareListItem parseFromJson(JsonObject jsonObject) {
+        try {
+            FoursquareListItem myFoursquareListItem = new FoursquareListItem();
 
-	public String getCreatedAt() {
-		return CreatedAt;
-	}
+            myFoursquareListItem.id = jsonObject.get("id") != null
+                    ? jsonObject.get("id").getAsString() : "";
 
-	public void setCreatedAt(String createdAt) {
-		CreatedAt = createdAt;
-	}
+            myFoursquareListItem.createdAt = jsonObject.get("createdAt") != null
+                    ? jsonObject.get("createdAt").getAsLong() : 0;
 
-	public FoursquareImage getPhoto() {
-		return Photo;
-	}
+            myFoursquareListItem.tip = jsonObject.get("tip") != null
+                    ? FoursquareTip.parseFromJson(jsonObject.get("tip").getAsJsonObject()) : null;
 
-	public void setPhoto(FoursquareImage photo) {
-		Photo = photo;
-	}
+            myFoursquareListItem.photo = jsonObject.get("photo") != null
+                    ? FoursquareImage.GetFoursquareImageFromJson(jsonObject.get("photo").getAsJsonObject()) : null;
 
-	public CompactVenue getVenue() {
-		return Venue;
-	}
+            myFoursquareListItem.venue = jsonObject.get("venue") != null
+                    ? CompactVenue.ParseCompactVenueFromJson(jsonObject.get("venue").getAsJsonObject()) : null;
 
-	public void setVenue(CompactVenue venue) {
-		Venue = venue;
-	}
-
-	public static FoursquareListItem ParseFoursquareListItemFromJson(
-			JsonObject jsonObject) {
-		try {
-			FoursquareListItem myFoursquareListItem = new FoursquareListItem();
-
-			myFoursquareListItem
-					.setId(jsonObject.get("id") != null ? jsonObject.get("id")
-							.getAsString() : "");
-
-			myFoursquareListItem
-					.setCreatedAt(jsonObject.get("createdAt") != null ? jsonObject
-							.get("createdAt").getAsString() : "");
-
-			myFoursquareListItem
-					.setPhoto(jsonObject.get("photo") != null ? FoursquareImage
-							.GetFoursquareImageFromJson(jsonObject.get("photo")
-									.getAsJsonObject()) : null);
-
-			myFoursquareListItem
-					.setVenue(jsonObject.get("venue") != null ? CompactVenue
-							.ParseCompactVenueFromJson(jsonObject.get("venue")
-									.getAsJsonObject()) : null);
-
-			return myFoursquareListItem;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+            return myFoursquareListItem;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

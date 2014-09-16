@@ -15,7 +15,7 @@ public class Category {
     public String shortName;
     public FoursquareImage icon;
     public boolean primary;
-    public List<Category> subcategories;
+    public List<Category> categories;
 
     public Category() {}
 
@@ -23,14 +23,14 @@ public class Category {
         this(id, name, pluralName, shortName, icon, primary, null);
     }
 
-    public Category(String id, String name, String pluralName, String shortName, FoursquareImage icon, boolean primary, List<Category> subcategories) {
+    public Category(String id, String name, String pluralName, String shortName, FoursquareImage icon, boolean primary, List<Category> categories) {
         this.id = id;
         this.name = name;
         this.pluralName = pluralName;
         this.shortName = shortName;
         this.icon = icon;
         this.primary = primary;
-        this.subcategories = subcategories;
+        this.categories = categories;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Category {
 				for (JsonElement element : jsonArray) {
                     myTempCategory = GetCategoryFromJson(element);
 
-					// Check for subcategories
+					// Check for categories
 					if(checkForSubcategories) {
 						List<Category> mySubcategories = new ArrayList<Category>();
 						JsonObject jObjectSubcategories = element.getAsJsonObject();
@@ -64,12 +64,12 @@ public class Category {
 										Category myTempSubSubcategory = GetCategoryFromJson(jElementSubSubcategory);
 										mySubSubcategories.add(myTempSubSubcategory);
 									}
-									myTempSubcategory.subcategories = mySubSubcategories;
+									myTempSubcategory.categories = mySubSubcategories;
 								}
 								mySubcategories.add(myTempSubcategory);
 							}
 						}
-						myTempCategory.subcategories = mySubcategories;
+						myTempCategory.categories = mySubcategories;
 					}
 					myCategories.add(myTempCategory);
 				}

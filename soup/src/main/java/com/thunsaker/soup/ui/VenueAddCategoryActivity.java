@@ -20,31 +20,45 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
+import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
 import com.thunsaker.soup.data.api.model.Category;
 import com.thunsaker.soup.data.api.model.FoursquareImage;
+import com.thunsaker.soup.data.events.GetCategoriesEvent;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 /*
  * Created by @thunsaker
  */
 public class VenueAddCategoryActivity extends BaseSoupActivity {
-	private boolean useLogo = true;
-	private boolean showHomeUp = true;
+    @Inject @ForApplication
+    Context mContext;
 
-	public static List<Category> FoursquareCategoriesMaster = null;
+    @Inject
+    FoursquareTasks mFoursquareTaaks;
+
+    @Inject
+    EventBus mBus;
+
+    public static List<Category> FoursquareCategoriesMaster = null;
 	public static Integer FoursquareCategoriesMasterDate = 0;
-	public static CategoryListAdapter myPrimaryCategoryListAdapter = null;
-	public static CategoryListAdapter mySecondaryCategoryListAdapter = null;
-	public static CategoryListAdapter myTertiaryCategoryListAdapter = null;
+	public CategoryListAdapter myPrimaryCategoryListAdapter = null;
+	public CategoryListAdapter mySecondaryCategoryListAdapter = null;
+	public CategoryListAdapter myTertiaryCategoryListAdapter = null;
 
-	public static ListView mPrimaryListView = null;
-	public static ListView mSecondaryListView = null;
-	public static ListView mTertiaryListView = null;
+	public ListView mPrimaryListView = null;
+	public ListView mSecondaryListView = null;
+	public ListView mTertiaryListView = null;
 
 	FrameLayout mPrimaryListViewOverlay = null;
 	FrameLayout mSecondaryListViewOverlay = null;
@@ -58,11 +72,14 @@ public class VenueAddCategoryActivity extends BaseSoupActivity {
 		super.onCreate(savedInstanceState);
 
 		ActionBar ab = getSupportActionBar();
-		ab.setDisplayHomeAsUpEnabled(showHomeUp);
-		ab.setDisplayUseLogoEnabled(useLogo);
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayUseLogoEnabled(true);
         ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
 
 		setContentView(R.layout.activity_venue_add_categories);
+
+        if(mBus != null && !mBus.isRegistered(this))
+            mBus.register(this);
 
 		mPrimaryListView = (ListView)findViewById(R.id.listViewPrimaryCategories);
 		mSecondaryListView = (ListView)findViewById(R.id.listViewSecondaryCategories);
@@ -71,15 +88,17 @@ public class VenueAddCategoryActivity extends BaseSoupActivity {
 		mPrimaryListViewOverlay = (FrameLayout) findViewById(R.id.frameLayoutPrimaryOverlay);
 		mSecondaryListViewOverlay = (FrameLayout) findViewById(R.id.frameLayoutSecondaryOverlay);
 
-		mPrimaryListView.setEmptyView((LinearLayout) findViewById(R.id.progressForAddCategory));
+		mPrimaryListView.setEmptyView(findViewById(R.id.progressForAddCategory));
 
 		Calendar cal = Calendar.getInstance();
-		if(FoursquareCategoriesMaster == null || (FoursquareCategoriesMaster != null && Math.abs(FoursquareCategoriesMasterDate - cal.get(Calendar.SECOND)) >= 3600))
-			new FoursquareTasks.GetCategories(getApplicationContext(), this).execute();
+		if(VenueAddCategoryActivity.FoursquareCategoriesMaster == null
+                || Math.abs(VenueAddCategoryActivity.FoursquareCategoriesMasterDate - cal.get(Calendar.SECOND)) >= 86400) // 24 hours
+            mFoursquareTaaks.new GetCategories(FoursquarePrefs.CALLER_SOURCE_ADD_CATEGORIES).execute();
 
 		myPrimaryCategoryListAdapter = new CategoryListAdapter(getApplicationContext(), R.layout.list_category_item, FoursquareCategoriesMaster, 1);
 
-		if(FoursquareCategoriesMaster != null && FoursquareCategoriesMaster.size() > 0) {
+		if(VenueAddCategoryActivity.FoursquareCategoriesMaster != null
+                && VenueAddCategoryActivity.FoursquareCategoriesMaster.size() > 0) {
 			mPrimaryListView.setAdapter(myPrimaryCategoryListAdapter);
 			myPrimaryCategoryListAdapter.notifyDataSetChanged();
 		}
@@ -107,8 +126,23 @@ public class VenueAddCategoryActivity extends BaseSoupActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public static void LoadCategories() {
-	}
+    public void onEvent(GetCategoriesEvent event) {
+        if(event != null) {
+            List<Category> result = VenueAddCategoryActivity.FoursquareCategoriesMaster = event.resultCategories;
+            Calendar cal = Calendar.getInstance();
+            FoursquareCategoriesMasterDate = cal.get(Calendar.SECOND);
+
+            if (myPrimaryCategoryListAdapter.items == null)
+                myPrimaryCategoryListAdapter.items = new ArrayList<Category>();
+
+            myPrimaryCategoryListAdapter.items.addAll(result);
+            myPrimaryCategoryListAdapter.notifyDataSetChanged();
+
+            myPrimaryCategoryListAdapter = new CategoryListAdapter(mContext, R.layout.list_category_item, result, 1);
+            mPrimaryListView.setAdapter(myPrimaryCategoryListAdapter);
+            myPrimaryCategoryListAdapter.notifyDataSetChanged();
+        }
+    }
 
 	public class CategoryListAdapter extends ArrayAdapter<Category> {
 		public List<Category> items;
@@ -141,7 +175,7 @@ public class VenueAddCategoryActivity extends BaseSoupActivity {
 					@SuppressLint("NewApi")
 					@Override
 					public void onClick(View v) {
-						if(tier < 3 && myCategory.subcategories != null && myCategory.subcategories.size() > 0) {
+						if(tier < 3 && myCategory.categories != null && myCategory.categories.size() > 0) {
 							if(tier == 1) {
 								mSecondaryListView.setVisibility(View.VISIBLE);
 								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
@@ -170,7 +204,7 @@ public class VenueAddCategoryActivity extends BaseSoupActivity {
 										mSecondaryListViewOverlay.setOnClickListener(null);
 									}
 								});
-								mySecondaryCategoryListAdapter = new CategoryListAdapter(getContext(), R.layout.list_category_item, myCategory.subcategories, 2);
+								mySecondaryCategoryListAdapter = new CategoryListAdapter(getContext(), R.layout.list_category_item, myCategory.categories, 2);
 								mSecondaryListView.setAdapter(mySecondaryCategoryListAdapter);
 								mySecondaryCategoryListAdapter.notifyDataSetChanged();
 							} else {
@@ -191,7 +225,7 @@ public class VenueAddCategoryActivity extends BaseSoupActivity {
 										mSecondaryListViewOverlay.setOnClickListener(null);
 									}
 								});
-								myTertiaryCategoryListAdapter = new CategoryListAdapter(getContext(), R.layout.list_category_item, myCategory.subcategories, 3);
+								myTertiaryCategoryListAdapter = new CategoryListAdapter(getContext(), R.layout.list_category_item, myCategory.categories, 3);
 
 								ImageView myImageView = (ImageView) myOptionalLinearLayout.getChildAt(0);
 								UrlImageViewHelper.setUrlDrawable(myImageView, myCategory.icon.getFoursquareLegacyImageUrl(FoursquareImage.SIZE_MEDIANO, true), R.drawable.foursquare_generic_category_icon);
