@@ -99,6 +99,8 @@ dependencies {
     }
     compile 'com.squareup:android-times-square:1.2.1@aar'
 
+    compile 'com.tundem.aboutlibraries:library:3.0.0@aar'
+
 //    androidTestCompile files('libs/espresso-1.1-bundled.jar')
 //    androidTestCompile 'com.squareup:fest-android:1.0.7'
 }

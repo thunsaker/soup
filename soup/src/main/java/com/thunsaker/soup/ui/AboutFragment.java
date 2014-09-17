@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.thunsaker.soup.R;
+import com.tundem.aboutlibraries.Libs;
+import com.tundem.aboutlibraries.ui.LibsActivity;
 
 /*
  * Created by @thunsaker
@@ -50,6 +52,26 @@ public class AboutFragment extends Fragment {
 						Uri.parse("market://search?q=pub:Thomas+Hunsaker")));
 			}
 		});
+
+        Button mButtonOpenSource = (Button)rootView.findViewById(R.id.about_open_source);
+        mButtonOpenSource.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent aboutIntent = new Intent(getActivity().getApplicationContext(), LibsActivity.class);
+                aboutIntent.putExtra(Libs.BUNDLE_FIELDS, Libs.toStringArray(R.string.class.getFields()));
+                aboutIntent.putExtra(Libs.BUNDLE_LIBS,
+                        new String[]{"gson", "eventbus", "joda", "butterknife",
+                                "dagger", "picasso", "retrofit", "androidtimessquare",
+                                "betterpickers", "urlimageviewhelper"});
+                aboutIntent.putExtra(Libs.BUNDLE_VERSION, true);
+                aboutIntent.putExtra(Libs.BUNDLE_LICENSE, true);
+                aboutIntent.putExtra(Libs.BUNDLE_TITLE, "Open Source");
+                aboutIntent.putExtra(Libs.BUNDLE_THEME, R.style.Theme_Soup);
+                aboutIntent.putExtra(Libs.BUNDLE_ACCENT_COLOR, "#00d04e" /*R.color.soup_green*/);
+                startActivity(aboutIntent);
+            }
+        });
 
 		return rootView;
 	}
