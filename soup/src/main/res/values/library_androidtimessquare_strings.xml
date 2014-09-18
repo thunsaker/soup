@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="define_int_AndroidTimesSquare">year;owner</string>
     <string name="library_AndroidTimesSquare_author">Square</string>
     <string name="library_AndroidTimesSquare_libraryName">Android Times Square</string>
