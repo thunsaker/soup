@@ -3,5 +3,5 @@
 	<item android:id="@+id/action_go_pro"
         android:title="@string/pro_upsell_button"
         android:orderInCategory="103"
-        soup:showAsAction="never" />
+        android:showAsAction="never" />
 </menu>

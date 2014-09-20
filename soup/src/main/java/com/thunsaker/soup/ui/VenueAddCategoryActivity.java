@@ -1,11 +1,11 @@
 package com.thunsaker.soup.ui;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -71,7 +71,7 @@ public class VenueAddCategoryActivity extends BaseSoupActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		ActionBar ab = getSupportActionBar();
+		ActionBar ab = getActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayUseLogoEnabled(true);
         ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));

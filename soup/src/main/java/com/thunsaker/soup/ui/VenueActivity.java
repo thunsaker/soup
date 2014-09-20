@@ -1,7 +1,7 @@
 package com.thunsaker.soup.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +18,7 @@ public class VenueActivity extends BaseSoupActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_venue);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }

@@ -386,7 +386,7 @@ public class CheckinHistoryFragment extends BaseSoupFragment
 
     private void CloseCalendarPicker() {
         calendarOpen = false;
-        mCalendarWrapper.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.abc_slide_out_top));
+        mCalendarWrapper.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.slide_out_top));
         mCalendarWrapper.setVisibility(View.GONE);
         mImageViewToggle.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_unfold_more));
     }
@@ -394,7 +394,7 @@ public class CheckinHistoryFragment extends BaseSoupFragment
     private void OpenCalendarPicker() {
         calendarOpen = true;
         mCalendarWrapper.setVisibility(View.VISIBLE);
-        mCalendarWrapper.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.abc_slide_in_top));
+        mCalendarWrapper.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.slide_in_top));
         mImageViewToggle.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_unfold_less));
     }
 

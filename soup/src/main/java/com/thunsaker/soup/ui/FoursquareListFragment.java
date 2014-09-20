@@ -134,7 +134,7 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		LayoutInflater inflater = getLayoutInflater(savedInstanceState);
+		LayoutInflater inflater = LayoutInflater.from(mContext);
 		View headerViewPhoto = inflater.inflate(R.layout.list_list_item_header_photo, null);
 		mImageViewHeaderPhoto =
                 (ImageView) headerViewPhoto.findViewById(R.id.imageViewListHeader);

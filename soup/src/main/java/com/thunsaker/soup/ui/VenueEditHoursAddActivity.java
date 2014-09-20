@@ -1,13 +1,13 @@
 package com.thunsaker.soup.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +16,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.doomonafireball.betterpickers.timepicker.TimePickerBuilder;
@@ -143,7 +142,7 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
                     public boolean onLongClick(View v) {
                         ConfirmDeleteDialogFragment confirmDeleteDialogFragment =
                                 ConfirmDeleteDialogFragment.newInstance(segment + 1);
-                        confirmDeleteDialogFragment.show(getSupportFragmentManager(), TIME_SEGMENT_DELETE_CONFIRMATION_DIALOG);
+                        confirmDeleteDialogFragment.show(getFragmentManager(), TIME_SEGMENT_DELETE_CONFIRMATION_DIALOG);
                         return true;
                     }
                 });
@@ -181,7 +180,7 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
                 public boolean onLongClick(View v) {
                     ConfirmDeleteDialogFragment confirmDeleteDialogFragment =
                             ConfirmDeleteDialogFragment.newInstance(0);
-                    confirmDeleteDialogFragment.show(getSupportFragmentManager(), TIME_SEGMENT_DELETE_CONFIRMATION_DIALOG);
+                    confirmDeleteDialogFragment.show(getFragmentManager(), TIME_SEGMENT_DELETE_CONFIRMATION_DIALOG);
                     return true;
                 }
             });
@@ -211,7 +210,7 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
     }
 
     private void SetupActionBar() {
-        ActionBar ab = getSupportActionBar();
+        ActionBar ab = getActionBar();
         ab.setDisplayShowHomeEnabled(true);
         ab.setDisplayUseLogoEnabled(true);
         ab.setDisplayHomeAsUpEnabled(true);
@@ -236,29 +235,30 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
                 finish();
                 return true;
             case R.id.action_save:
-                if(ValidateFormAndSave()) {
-                    if(VenueEditHoursFragment.currentVenueListHours == null)
-                        VenueEditHoursFragment.currentVenueListHours = new ArrayList<TimeFrame>();
-
-                    if(updatedTimeFrame != null) {
-                        if(itemToUpdate == -1) {
-                            VenueEditHoursFragment.currentVenueListHours.add(updatedTimeFrame);
-                        } else {
-                            VenueEditHoursFragment.currentVenueListHours.set(itemToUpdate, updatedTimeFrame);
-                        }
-
-                        setResult(Activity.RESULT_OK);
-                        finish();
-                        return true;
-                    }  else {
-                        Toast.makeText(getApplicationContext(),
-                                "Nothing to Save",
-                                Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
+                // TODO: Handle saving of hours - Send them back to the detail page, not edit, as before.
+//                if(ValidateFormAndSave()) {
+//                    if(VenueEditHoursFragment.currentVenueListHours == null)
+//                        VenueEditHoursFragment.currentVenueListHours = new ArrayList<TimeFrame>();
+//
+//                    if(updatedTimeFrame != null) {
+//                        if(itemToUpdate == -1) {
+//                            VenueEditHoursFragment.currentVenueListHours.add(updatedTimeFrame);
+//                        } else {
+//                            VenueEditHoursFragment.currentVenueListHours.set(itemToUpdate, updatedTimeFrame);
+//                        }
+//
+//                        setResult(Activity.RESULT_OK);
+//                        finish();
+//                        return true;
+//                    }  else {
+//                        Toast.makeText(getApplicationContext(),
+//                                "Nothing to Save",
+//                                Toast.LENGTH_SHORT).show();
+//                        return false;
+//                    }
+//                } else {
+//                    return false;
+//                }
         }
         return false;
     }
@@ -356,7 +356,8 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
     public void openStartTimePicker(int segment) {
         TimePickerBuilder openBuilder = new TimePickerBuilder()
                 .setReference(TIME_PICKER_OPEN + segment)
-                .setFragmentManager(getSupportFragmentManager())
+                        // TODO: Fix this
+//                .setFragmentManager(getFragmentManager())
                 .setStyleResId(R.style.BetterPickerTimeTheme);
 //                .setStyleResId(com.doomonafireball.betterpickers.R.style.BetterPickersDialogFragment);
         openBuilder.show();
@@ -365,7 +366,8 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
     public void openEndTimePicker(int segment) {
         TimePickerBuilder closeBuilder = new TimePickerBuilder()
                 .setReference(TIME_PICKER_CLOSE + segment)
-                .setFragmentManager(getSupportFragmentManager())
+                        // TODO: Fix this
+//                .setFragmentManager(getFragmentManager())
                 .setStyleResId(R.style.BetterPickerTimeTheme);
 //                .setStyleResId(com.doomonafireball.betterpickers.R.style.BetterPickersDialogFragment);
         closeBuilder.show();
@@ -413,7 +415,7 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
             public boolean onLongClick(View v) {
                 ConfirmDeleteDialogFragment confirmDeleteDialogFragment =
                         ConfirmDeleteDialogFragment.newInstance(childCount);
-                confirmDeleteDialogFragment.show(getSupportFragmentManager(), TIME_SEGMENT_DELETE_CONFIRMATION_DIALOG);
+                confirmDeleteDialogFragment.show(getFragmentManager(), TIME_SEGMENT_DELETE_CONFIRMATION_DIALOG);
                 return true;
             }
         });

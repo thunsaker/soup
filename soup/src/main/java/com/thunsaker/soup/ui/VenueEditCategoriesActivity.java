@@ -1,14 +1,14 @@
 package com.thunsaker.soup.ui;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -97,17 +97,17 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        supportRequestWindowFeature(Window.FEATURE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_PROGRESS);
 
         setContentView(R.layout.activity_venue_edit_categories);
 
-        ActionBar ab = getSupportActionBar();
+        ActionBar ab = getActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayUseLogoEnabled(true);
         ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
 
-        setSupportProgressBarVisibility(false);
-        setSupportProgressBarIndeterminate(true);
+        setProgressBarVisibility(false);
+        setProgressBarIndeterminate(true);
 
         ButterKnife.inject(this);
 
@@ -133,7 +133,7 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
                 mMainWrapper.setVisibility(View.GONE);
             }
 
-            setSupportProgressBarVisibility(true);
+            setProgressBarVisibility(true);
             mFoursquareTasks.new GetVenue(currentVenue.id, CALLER_SOURCE_EDIT_CATEGORIES).execute();
         }
 
@@ -166,7 +166,7 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
                 updatedCategories = null;
                 LoadCurrentCategories(originalCategories);
                 hasModified = false;
-                supportInvalidateOptionsMenu();
+                invalidateOptionsMenu();
                 break;
         }
 
@@ -180,7 +180,7 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
         if (updatedCategories.size() > 0) {
             myModifiedVenue.categories = updatedCategories;
 
-            setSupportProgressBarVisibility(true);
+            setProgressBarVisibility(true);
 
             mFoursquareTasks.new EditVenue(currentVenue.id, myModifiedVenue, false, CALLER_SOURCE_EDIT_CATEGORIES).execute();
         } else {
@@ -321,14 +321,14 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
         updatedCategories.clear();
         updatedCategories.addAll(tempSortList);
         hasModified = true;
-        supportInvalidateOptionsMenu();
+        invalidateOptionsMenu();
 
         LoadCurrentCategories(updatedCategories);
     }
 
     protected void RemoveCategory(Integer item) {
         hasModified = true;
-        supportInvalidateOptionsMenu();
+        invalidateOptionsMenu();
 
         if (updatedCategories == null) {
             updatedCategories = new ArrayList<Category>();
@@ -358,7 +358,7 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 
         if (updatedCategories.size() == 0) {
             myCategory.primary = true;
-            supportInvalidateOptionsMenu();
+            invalidateOptionsMenu();
             updatedCategories.add(myCategory);
         } else {
             for (Category cat : updatedCategories) {
@@ -374,7 +374,7 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
         }
 
         hasModified = true;
-        supportInvalidateOptionsMenu();
+        invalidateOptionsMenu();
         LoadCurrentCategories(updatedCategories);
     }
 
@@ -431,7 +431,7 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
         if(level >= FoursquarePrefs.SUPERUSER.SU1) {
             ConfirmDeleteDialogFragment confirmDeleteDialogFragment =
                     ConfirmDeleteDialogFragment.newInstance(0, mCategoryName1.getText().toString());
-            confirmDeleteDialogFragment.show(getSupportFragmentManager(), CATEGORY_DELETE_CONFIRMATION_DIALOG);
+            confirmDeleteDialogFragment.show(getFragmentManager(), CATEGORY_DELETE_CONFIRMATION_DIALOG);
             return true;
         }
 
@@ -443,7 +443,7 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
         if(level >= FoursquarePrefs.SUPERUSER.SU1) {
             ConfirmDeleteDialogFragment confirmDeleteDialogFragment =
                     ConfirmDeleteDialogFragment.newInstance(1, mCategoryName2.getText().toString());
-            confirmDeleteDialogFragment.show(getSupportFragmentManager(), CATEGORY_DELETE_CONFIRMATION_DIALOG);
+            confirmDeleteDialogFragment.show(getFragmentManager(), CATEGORY_DELETE_CONFIRMATION_DIALOG);
             return true;
         }
 
@@ -455,7 +455,7 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
         if(level >= FoursquarePrefs.SUPERUSER.SU1) {
             ConfirmDeleteDialogFragment confirmDeleteDialogFragment =
                     ConfirmDeleteDialogFragment.newInstance(2, mCategoryName3.getText().toString());
-            confirmDeleteDialogFragment.show(getSupportFragmentManager(), CATEGORY_DELETE_CONFIRMATION_DIALOG);
+            confirmDeleteDialogFragment.show(getFragmentManager(), CATEGORY_DELETE_CONFIRMATION_DIALOG);
             return true;
         }
 

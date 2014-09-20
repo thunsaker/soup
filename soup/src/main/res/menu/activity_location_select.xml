@@ -1,22 +1,21 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" 
-    xmlns:soup="http://schemas.android.com/apk/res-auto" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_cancel"
         android:orderInCategory="99"
-        soup:showAsAction="always|withText"
+        android:showAsAction="always|withText"
         android:title="@string/action_cancel"
         android:icon="@drawable/ic_action_cancel_holo_dark" />
 
     <item
         android:id="@+id/action_select_location"
         android:orderInCategory="100"
-        soup:showAsAction="always|withText"
+        android:showAsAction="always|withText"
         android:title="@string/action_select_location"/>
-    
-    <item 
+
+    <item
         android:id="@+id/action_my_location"
         android:orderInCategory="101"
-        soup:showAsAction="always"
+        android:showAsAction="always"
         android:icon="@drawable/ic_action_gps_holo_dark"
         android:title="@string/search_location_my_location" />
 </menu>

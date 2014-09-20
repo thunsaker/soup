@@ -5,33 +5,34 @@
     <!-- android:title="@string/action_history" -->
     <!-- android:icon="@drawable/ic_action_history_holo_dark" -->
     <!-- android:orderInCategory="99" -->
-    <!-- soup:showAsAction="always" /> -->
+    <!-- android:showAsAction="always" /> -->
 
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_action_search_holo_dark"
         android:orderInCategory="100"
         android:title="@string/action_search"
-        soup:showAsAction="always"/>
+        android:showAsAction="always"/>
 
     <!--
 	<item android:id="@+id/action_lists"
        android:title="@string/action_lists"
        android:orderInCategory="101"
        android:icon="@drawable/ic_action_check_holo_dark"
-       soup:showAsAction="ifRoom" />
+       android:showAsAction="ifRoom" />
+
     -->
 
 
     <!-- <item android:id="@+id/action_about" -->
     <!-- android:title="@string/action_about" -->
     <!-- android:orderInCategory="102" -->
-    <!-- soup:showAsAction="never" /> -->
+    <!-- android:showAsAction="never" /> -->
 
 
     <!-- <item android:id="@+id/action_logout" -->
     <!-- android:title="@string/action_logout" -->
     <!-- android:orderInCategory="104" -->
-    <!-- soup:showAsAction="never" /> -->
+    <!-- android:showAsAction="never" /> -->
 
 </menu>

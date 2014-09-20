@@ -1,7 +1,7 @@
 package com.thunsaker.android.common.dagger;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 
 import dagger.ObjectGraph;
 

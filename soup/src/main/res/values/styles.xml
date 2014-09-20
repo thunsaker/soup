@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Sopa" parent="@style/_Theme.Sopa" />
+
+    <style name="_Theme.Sopa" parent="android:Theme.Holo.Light">
+        <!--<item name="actionBarItemBackground">@drawable/selectable_background_soup_green</item>-->
+        <!--<item name="popupMenuStyle">@style/PopupMenu.Soup_green</item>-->
+        <!--<item name="dropDownListViewStyle">@style/DropDownListView.Soup_green</item>-->
+        <!--<item name="actionBarTabStyle">@style/ActionBarTabStyle.Soup_green</item>-->
+        <!--<item name="actionDropDownStyle">@style/DropDownNav.Soup_green</item>-->
+        <!--<item name="actionBarStyle">@style/ActionBar.Solid.Soup_green</item>-->
+        <!--<item name="actionModeBackground">@drawable/cab_background_top_soup_green</item>-->
+        <!--<item name="actionModeSplitBackground">@drawable/cab_background_bottom_soup_green</item>-->
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Soup_green</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <!-- Light.DarkActionBar specific -->
+        <!--<item name="actionBarWidgetTheme">@style/Theme.Soup_green.Widget</item>-->
+        <item name="android:textColor">@color/body_text</item>
+    </style>
+
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <!--<style name="Theme.Soup_green.Widget" parent="@android:Theme.Holo.Light">-->
+        <!--<item name="popupMenuStyle">@style/PopupMenu.Soup_green</item>-->
+        <!--<item name="dropDownListViewStyle">@style/DropDownListView.Soup_green</item>-->
+    <!--</style>-->
+
+    <style name="ActionButton.CloseMode.Soup_green" parent="@android:Widget.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_soup_green</item>
+    </style>
+
+    <style name="ActionButton" parent="@android:Widget.ActionButton">
+        <item name="android:background">@drawable/btn_cab_done_soup_green</item>
+    </style>
+
+    <style name="Toggle_TwentyFourHourTime">
+        <item name="android:background">@drawable/hour_toggle_holo_light</item>
+        <item name="android:textColor">@drawable/day_toggle_holo_light_text_colors</item>
+        <item name="android:padding">@dimen/material_padding</item>
+        <item name="android:layout_marginRight">@dimen/material_padding</item>
+        <item name="android:layout_marginLeft">@dimen/material_padding</item>
+        <item name="android:textSize">@dimen/calendar_text_small</item>
+    </style>
+
+    <style name="Theme.Soup.Text">
+        <item name="android:textColor">@color/body_text</item>
+    </style>
+
+    <style name="Theme.Soup.Text.Micro" parent="Theme.Soup.Text">
+        <item name="android:textSize">@dimen/material_type_micro</item>
+    </style>
+
+    <style name="Theme.Soup.Text.Small" parent="Theme.Soup.Text">
+        <item name="android:textSize">@dimen/material_type_small</item>
+    </style>
+
+    <style name="Theme.Soup.Text.Medium" parent="Theme.Soup.Text">
+        <item name="android:textSize">@dimen/material_type_med</item>
+    </style>
+
+    <style name="Theme.Soup.Text.Large" parent="Theme.Soup.Text">
+        <item name="android:textSize">@dimen/material_type_large</item>
+    </style>
+
+    <style name="Theme.Soup.Text.XLarge" parent="Theme.Soup.Text">
+        <item name="android:textSize">@dimen/material_type_xlarge</item>
+    </style>
+
+    <style name="BetterPickerTimeTheme" parent="@style/BetterPickersDialogFragment.Light">
+        <item name="bpTextColor">@color/dialog_text_color_soup_blue</item>
+        <item name="bpDividerColor">@color/gray_light</item>
+    </style>
+</resources>

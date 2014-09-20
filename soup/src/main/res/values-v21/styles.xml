@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Sopa" parent="@style/_Theme.Sopa" />
+
+    <style name="_Theme.Sopa" parent="@android:Theme.Material.Light">
+        <!-- Main theme colors -->
+        <!--   your app's branding color (for the app bar) -->
+        <item name="android:colorPrimary">@color/soup_green</item>
+        <!--   darker variant of colorPrimary (for status bar, contextual app bars) -->
+        <item name="android:colorPrimaryDark">@color/soup_green_dark</item>
+        <!--   theme UI controls like checkboxes and text fields -->
+        <item name="android:colorAccent">@color/soup_red</item>
+
+        <!--<item name="android:colorBackground">@color/white</item>-->
+        <item name="android:colorControlHighlight">@color/soup_blue</item>
+        <!--<item name="android:navigationBarColor">?android:colorPrimaryDark</item>-->
+        <!--<item name="android:navigationBarColor">@color/brevos_yellow</item>-->
+        <!--<item name="android:windowBackground">@color/brevos_yellow</item>-->
+    </style>
+</resources>

@@ -10,10 +10,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <permission
-        android:name="com.thunsaker.soup.permission.MAPS_RECEIVE"
+        android:name="com.thunsaker.soup.debug.l.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.thunsaker.soup.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="com.thunsaker.soup.debug.l.permission.MAPS_RECEIVE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -24,7 +24,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Soup" >
+        android:theme="@style/Theme.Sopa" >
         <activity
             android:name=".ui.WelcomeActivity"
             android:label="@string/title_activity_welcome"
@@ -106,11 +106,6 @@
             android:label="@string/title_activity_location_select"
             android:launchMode="singleTop"
             android:uiOptions="splitActionBarWhenNarrow" />
-        <activity
-            android:name=".ui.VenueEditTabsActivity"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:label="@string/title_activity_venue_edit"
-            android:launchMode="singleTop" />
         <activity
             android:name=".ui.VenueEditHoursAddActivity"
             android:configChanges="orientation|keyboard|screenSize"

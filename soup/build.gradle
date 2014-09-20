@@ -20,15 +20,15 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '20'
+    compileSdkVersion 'android-L'
+    buildToolsVersion '20.0.0'
 
     defaultConfig {
         applicationId "com.thunsaker.soup"
-        minSdkVersion 9
-        targetSdkVersion 19
-        versionCode 23
-        versionName "2.6"
+        minSdkVersion 'L'
+        targetSdkVersion 'L'
+        versionCode 24
+        versionName "2.7"
 //        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
         resConfigs "en", "es", "fr", "pt", "ru"
 //        resConfigs "hdpi", "xdpi", "xxdpi", "xxxdpi"
@@ -78,9 +78,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-v4'
     }
 
-    compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.google.android.gms:play-services:5.0.+'
+    compile 'com.google.android.gms:play-services:5.0.77'
 
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
     compile 'com.crashlytics.android:crashlytics:1.1.11'

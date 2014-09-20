@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,8 +13,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -34,7 +34,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -158,7 +158,7 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
     private boolean isExpanded = true;
     private float originalPosition;
 
-    public SupportMapFragment mMapFragment;
+    public MapFragment mMapFragment;
 
     public LayoutInflater mInflater;
 
@@ -237,7 +237,7 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
                 .scrollGesturesEnabled(false)
                 .tiltGesturesEnabled(false);
 
-        mMapFragment = SupportMapFragment.newInstance(options);
+        mMapFragment = MapFragment.newInstance(options);
         getChildFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentMapWrapper, mMapFragment)
@@ -535,7 +535,7 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
         } else {
             if (currentVenue != null) {
                 DialogFragment flagDialog = new FlagVenueDialogFragment();
-                flagDialog.show(getActivity().getSupportFragmentManager(),
+                flagDialog.show(getActivity().getFragmentManager(),
                         FLAG_VENUE_DIALOG);
             } else {
                 Toast.makeText(mContext, R.string.alert_still_loading,
@@ -563,9 +563,10 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
             showWelcomeActivity();
         } else {
             if (currentVenue != null) {
-                Intent editVenueIntent = new Intent(mContext, VenueEditTabsActivity.class);
-                editVenueIntent.putExtra(VENUE_EDIT_EXTRA, currentVenue.toString());
-                getActivity().startActivityForResult(editVenueIntent, EDIT_VENUE);
+//                Intent editVenueIntent = new Intent(mContext, VenueEditTabsActivity.class);
+//                editVenueIntent.putExtra(VENUE_EDIT_EXTRA, currentVenue.toString());
+//                getActivity().startActivityForResult(editVenueIntent, EDIT_VENUE);
+                Toast.makeText(mContext, "You clicked the edit button!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(mContext, R.string.alert_still_loading, Toast.LENGTH_SHORT).show();
             }
@@ -781,9 +782,9 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 		if (showConfirmDialog) {
 			if (duplicateResultVenue != null && originalId != null
 					&& duplicateId != null) {
-				DialogFragment flagDuplicateDialog = new FlagDuplicateVenueDialogFragment();
+                DialogFragment flagDuplicateDialog = new FlagDuplicateVenueDialogFragment();
 				flagDuplicateDialog.show(getActivity()
-						.getSupportFragmentManager(),
+						.getFragmentManager(),
 						FLAG_DUPLICATE_VENUE_DIALOG);
 			}
 			showConfirmDialog = false;
@@ -820,8 +821,9 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 			switch (resultCode) {
 			case Activity.RESULT_OK:
 				String resultData = null;
-				if (data.hasExtra(VenueEditTabsActivity.EDIT_VENUE_RESULT))
-					resultData = data.getStringExtra(VenueEditTabsActivity.EDIT_VENUE_RESULT);
+                // TODO: Handle editing result
+//				if (data.hasExtra(VenueEditTabsActivity.EDIT_VENUE_RESULT))
+//					resultData = data.getStringExtra(VenueEditTabsActivity.EDIT_VENUE_RESULT);
 
                 assert resultData != null;
                 if (resultData.equals(FoursquarePrefs.SUCCESS)) {

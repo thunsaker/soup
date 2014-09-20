@@ -1,11 +1,11 @@
 package com.thunsaker.soup.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -64,7 +64,7 @@ public class LocationSelectActivity extends BaseSoupActivity {
 
 	private void SetupMap() {
 		if (mMap == null) {
-			mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(
+			mMap = ((MapFragment) getFragmentManager().findFragmentById(
                     R.id.map_fragment_location_picker)).getMap();
 	        if (mMap != null) {
 	        	LatLng currentLocation = null;
@@ -90,7 +90,7 @@ public class LocationSelectActivity extends BaseSoupActivity {
 				    		.icon(BitmapDescriptorFactory.fromResource(
                                     R.drawable.map_marker_orange_outline)));
 			        	selectedLatLng = new LatLng(newPoint.latitude, newPoint.longitude);
-			        	supportInvalidateOptionsMenu();
+			        	invalidateOptionsMenu();
 			        	mMap.animateCamera(
                                 CameraUpdateFactory.newLatLng(newPoint), MAP_PAN_DELAY, null);
 					}
@@ -152,7 +152,7 @@ public class LocationSelectActivity extends BaseSoupActivity {
 	}
 
 	private void SetupActionBar() {
-		ActionBar ab = getSupportActionBar();
+		ActionBar ab = getActionBar();
 		ab.setDisplayShowHomeEnabled(showHomeUp);
 		ab.setDisplayUseLogoEnabled(useLogo);
 		ab.setDisplayHomeAsUpEnabled(showHomeUp);

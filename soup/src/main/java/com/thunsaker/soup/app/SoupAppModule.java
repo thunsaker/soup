@@ -14,7 +14,6 @@ import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.thunsaker.soup.services.foursquare.SwarmService;
 import com.thunsaker.soup.ui.CheckinHistoryActivity;
 import com.thunsaker.soup.ui.CheckinHistoryFragment;
-import com.thunsaker.soup.ui.FoursquareAuthorizationActivity;
 import com.thunsaker.soup.ui.FoursquareListFragment;
 import com.thunsaker.soup.ui.ListActivity;
 import com.thunsaker.soup.ui.ListsFragment;
@@ -26,8 +25,6 @@ import com.thunsaker.soup.ui.VenueDetailActivityReceiver;
 import com.thunsaker.soup.ui.VenueDetailFragment;
 import com.thunsaker.soup.ui.VenueEditCategoriesActivity;
 import com.thunsaker.soup.ui.VenueEditHoursAddActivity;
-import com.thunsaker.soup.ui.VenueEditLocationFragment;
-import com.thunsaker.soup.ui.VenueEditTabsActivity;
 import com.thunsaker.soup.ui.VenueListFragment;
 import com.thunsaker.soup.ui.VenueSearchActivity;
 
@@ -46,7 +43,6 @@ import static android.content.Context.LOCATION_SERVICE;
         addsTo = AndroidApplicationModule.class,
         injects = {
                 SoupApp.class,
-                FoursquareAuthorizationActivity.class,
                 MainActivity.class,
                 FoursquareTasks.class,
                 VenueListFragment.class,
@@ -60,8 +56,6 @@ import static android.content.Context.LOCATION_SERVICE;
                 VenueAddCategoryActivity.class,
                 VenueEditHoursAddActivity.class,
                 VenueEditCategoriesActivity.class,
-                VenueEditTabsActivity.class,
-                VenueEditLocationFragment.class,
                 LocationSelectActivity.class,
                 CheckinHistoryActivity.class,
                 CheckinHistoryFragment.class

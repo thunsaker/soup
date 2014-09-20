@@ -1,9 +1,9 @@
 package com.thunsaker.soup.ui;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.widget.ArrayAdapter;
 
 import com.thunsaker.android.common.annotations.ForApplication;
@@ -38,7 +38,7 @@ public class CheckinHistoryActivity extends BaseSoupActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkin_history);
 
-        final ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -61,7 +61,7 @@ public class CheckinHistoryActivity extends BaseSoupActivity
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-            getSupportActionBar().setSelectedNavigationItem(
+            getActionBar().setSelectedNavigationItem(
                     savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
         }
     }
@@ -69,7 +69,7 @@ public class CheckinHistoryActivity extends BaseSoupActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
-                getSupportActionBar().getSelectedNavigationIndex());
+                getActionBar().getSelectedNavigationIndex());
     }
 
     @Override
@@ -94,7 +94,7 @@ public class CheckinHistoryActivity extends BaseSoupActivity
                 break;
         }
 
-        getSupportFragmentManager()
+        getFragmentManager()
                 .beginTransaction()
                 .replace(
                         R.id.container,

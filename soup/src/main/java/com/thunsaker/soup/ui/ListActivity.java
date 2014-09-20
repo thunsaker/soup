@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
+import android.app.ActionBar;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
@@ -35,12 +35,12 @@ public class ListActivity extends BaseSoupActivity
 		super.onCreate(savedInstanceState);
 
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+			requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		}
 
 		handleIntent(getIntent());
 
-		ActionBar ab = getSupportActionBar();
+		ActionBar ab = getActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 		ab.setDisplayUseLogoEnabled(false);
 		ab.setDisplayShowHomeEnabled(false);
@@ -52,7 +52,7 @@ public class ListActivity extends BaseSoupActivity
             ab.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent)));
         }
 
-		setSupportProgressBarIndeterminate(true);
+		setProgressBarIndeterminate(true);
 
 		if(savedInstanceState == null) {
 			setContentView(R.layout.activity_list);
@@ -63,7 +63,7 @@ public class ListActivity extends BaseSoupActivity
 
 				FoursquareListFragment fragment = new FoursquareListFragment();
 				fragment.setArguments(arguments);
-				getSupportFragmentManager().beginTransaction().add(R.id.fragmentList, fragment).commit();
+				getFragmentManager().beginTransaction().add(R.id.fragmentList, fragment).commit();
 			}
 		}
 	}

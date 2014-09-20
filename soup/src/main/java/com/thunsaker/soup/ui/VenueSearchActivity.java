@@ -1,5 +1,6 @@
 package com.thunsaker.soup.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -7,9 +8,7 @@ import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.SearchView;
+import android.app.FragmentManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -91,7 +91,7 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 
         setContentView(R.layout.activity_venue_search);
 
-        ActionBar ab = getSupportActionBar();
+        ActionBar ab = getActionBar();
         ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         ab.setCustomView(R.layout.search_layout_actionbar);
         ab.setDisplayShowCustomEnabled(true);
@@ -127,7 +127,7 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 	}
 
 	public void handleIntent(Intent intent) {
-        FragmentManager mFragmentManager = getSupportFragmentManager();
+        FragmentManager mFragmentManager = getFragmentManager();
 
 		if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -147,7 +147,7 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 
             if (duplicateVenueId != null && duplicateVenueId.length() > 0) {
                 enableDuplicateMenu = true;
-                supportInvalidateOptionsMenu();
+                invalidateOptionsMenu();
             }
 
             mFragmentManager
@@ -193,7 +193,7 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 	}
 
 	private void SetupSearchViews() {
-		if(getSupportActionBar() != null) {
+		if(getActionBar() != null) {
 		    mSearchView.setIconified(false);
 		    mSearchView.setFocusable(true);
 		    mSearchView.requestFocusFromTouch();
@@ -364,7 +364,7 @@ public class VenueSearchActivity extends BaseSoupActivity implements
     @Override
     public void onVenueListClick(String compactVenueJson) {
         if(enableDuplicateMenu) {
-            supportInvalidateOptionsMenu();
+            invalidateOptionsMenu();
             currentSelectedCompactVenue = CompactVenue.GetCompactVenueFromJson(compactVenueJson);
         } else {
             Intent detailIntent = new Intent(this, VenueDetailActivity.class);
@@ -377,7 +377,7 @@ public class VenueSearchActivity extends BaseSoupActivity implements
 	@Override
     public boolean onVenueListLongClick(String venueId, String venueName) {
         CheckinDialogFragment checkinDialog = CheckinDialogFragment.newInstance(venueId, venueName, true);
-		checkinDialog.show(getSupportFragmentManager(), MainActivity.CHECKIN_CONFIRMATION_DIALOG);
+		checkinDialog.show(getFragmentManager(), MainActivity.CHECKIN_CONFIRMATION_DIALOG);
 		return true;
 	}
 

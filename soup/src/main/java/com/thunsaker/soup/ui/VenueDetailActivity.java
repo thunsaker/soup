@@ -1,11 +1,11 @@
 package com.thunsaker.soup.ui;
 
+import android.app.ActionBar;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.view.Window;
 
 import com.thunsaker.android.common.annotations.ForApplication;
@@ -51,12 +51,12 @@ public class VenueDetailActivity extends BaseSoupActivity {
         super.onCreate(savedInstanceState);
 
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+            requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		}
 
         setContentView(R.layout.activity_venue_detail);
 
-        ActionBar ab = getSupportActionBar();
+        ActionBar ab = getActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayUseLogoEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
@@ -69,8 +69,8 @@ public class VenueDetailActivity extends BaseSoupActivity {
             ab.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent)));
         }
 
-        setSupportProgressBarVisibility(true);
-        setSupportProgressBarIndeterminate(true);
+        setProgressBarVisibility(true);
+        setProgressBarIndeterminate(true);
 
         handleIntent(getIntent());
     }
@@ -81,11 +81,11 @@ public class VenueDetailActivity extends BaseSoupActivity {
     }
 
     public void handleIntent(Intent intent) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getFragmentManager();
         VenueDetailFragment venueDetailFragment = VenueDetailFragment.newInstance(null, -1);
 
         if (intent.hasExtra(VENUE_URL_TO_LOAD_EXTRA)) { // Venue Url - from VenueDetailActivity Receiver
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(false);
             venueDetailFragment = VenueDetailFragment.newInstance(intent.getStringExtra(VENUE_URL_TO_LOAD_EXTRA), VenueDetailFragment.VENUE_TYPE_URL);
         } else if (intent.hasExtra(VENUE_TO_LOAD_EXTRA)) { // Venue Id - from other screens (History, List, etc)
             venueDetailFragment = VenueDetailFragment.newInstance(intent.getStringExtra(VENUE_TO_LOAD_EXTRA), VenueDetailFragment.VENUE_TYPE_ID);

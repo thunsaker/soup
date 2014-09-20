@@ -1,8 +1,13 @@
 package com.thunsaker.soup.ui;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,12 +16,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -133,12 +133,12 @@ public class MainActivity extends BaseSoupActivity implements
                 R.string.drawer_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
-                getSupportActionBar().setTitle(mTitle);
+                getActionBar().setTitle(mTitle);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
+                getActionBar().setTitle(mDrawerTitle);
             }
         };
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -156,7 +156,7 @@ public class MainActivity extends BaseSoupActivity implements
                 AuthHelper.FOURSQUARE_CLIENT_ID,
                 AuthHelper.FOURSQUARE_CLIENT_SECRET,
                 AuthHelper.FOURSQUARE_CALLBACK_URL);
-        FoursquareAuthorizationActivity.mFoursquareClient = mFoursquareClient;
+
         isFoursquareConnected = PreferencesHelper
                 .getFoursquareConnected(getApplicationContext());
 
@@ -202,7 +202,7 @@ public class MainActivity extends BaseSoupActivity implements
     }
 
     private ActionBar SetupActionBar() {
-        ActionBar ab = getSupportActionBar();
+        ActionBar ab = getActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setHomeButtonEnabled(true);
         ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
@@ -311,7 +311,7 @@ public class MainActivity extends BaseSoupActivity implements
 	@Override
 	public void setTitle(CharSequence title) {
 		mTitle = title.toString();
-		getSupportActionBar().setTitle(mTitle);
+		getActionBar().setTitle(mTitle);
 	}
 
 	public void ShowWelcomeActivity() {
@@ -340,7 +340,7 @@ public class MainActivity extends BaseSoupActivity implements
 	@Override
     public boolean onVenueListLongClick(String venueId, String venueName) {
 		CheckinDialogFragment checkinDialog = CheckinDialogFragment.newInstance(venueId, venueName, false);
-		checkinDialog.show(getSupportFragmentManager(), CHECKIN_CONFIRMATION_DIALOG);
+		checkinDialog.show(getFragmentManager(), CHECKIN_CONFIRMATION_DIALOG);
 		return true;
 	}
 
@@ -394,9 +394,6 @@ public class MainActivity extends BaseSoupActivity implements
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									FoursquareAuthorizationActivity
-											.clearFoursquareUser(getActivity()
-													.getApplicationContext());
 									startActivity(new Intent(getActivity()
 											.getApplicationContext(),
 											WelcomeActivity.class));
@@ -484,7 +481,7 @@ public class MainActivity extends BaseSoupActivity implements
     }
 
 	private void selectItem(int position) {
-		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentManager fragmentManager = getFragmentManager();
 
 		switch (position) {
             case 0:
@@ -502,7 +499,7 @@ public class MainActivity extends BaseSoupActivity implements
                     mDrawerList.setItemChecked(0, true);
                 } else {
                     DialogFragment historyPreviewDialog = new HistoryUpsellDialogFragment();
-                    historyPreviewDialog.show(getSupportFragmentManager(),
+                    historyPreviewDialog.show(getFragmentManager(),
                             HISTORY_PREVIEW_DIALOG);
                 }
                 break;
@@ -523,13 +520,13 @@ public class MainActivity extends BaseSoupActivity implements
                     setTitle(mDrawerItems[position]);
                 } else {
                     DialogFragment listsPreviewDialog = new ListsUpsellDialogFragment();
-                    listsPreviewDialog.show(getSupportFragmentManager(),
+                    listsPreviewDialog.show(getFragmentManager(),
                             LISTS_PREVIEW_DIALOG);
                 }
                 break;
             case 4: // Log out
                 DialogFragment confirmationDialog = new LogOutDialogFragment();
-                confirmationDialog.show(getSupportFragmentManager(),
+                confirmationDialog.show(getFragmentManager(),
                         LOGOUT_CONFIRMATION_DIALOG);
                 break;
             case 5: // Settings

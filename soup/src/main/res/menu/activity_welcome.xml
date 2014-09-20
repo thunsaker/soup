@@ -5,11 +5,11 @@
         android:id="@+id/action_learn_more"
         android:orderInCategory="99"
         android:title="@string/action_learn_more"
-        soup:showAsAction="always"/>
+        android:showAsAction="always"/>
     <item
         android:id="@+id/action_login"
         android:orderInCategory="100"
         android:title="@string/action_login"
-        soup:showAsAction="always"/>
+        android:showAsAction="always"/>
 
 </menu>

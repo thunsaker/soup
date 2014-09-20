@@ -1,7 +1,7 @@
 package com.thunsaker.soup.adapters.lists;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,9 +22,9 @@ import java.util.Locale;
 
 public class ListsListItem implements ListsListItemBase {
 	private final Checkin checkin;
-	private final ActionBarActivity activity;
+	private final Activity activity;
 
-	public ListsListItem(LayoutInflater inflater, Checkin checkin, ActionBarActivity activity) {
+	public ListsListItem(LayoutInflater inflater, Checkin checkin, Activity activity) {
 		this.checkin = checkin;
 		this.activity = activity;
 	}
@@ -70,7 +70,7 @@ public class ListsListItem implements ListsListItemBase {
 				alertImageView.setVisibility(View.GONE);
 
 			final String venueId = checkin.venue.id;
-			final ActionBarActivity myActivity = activity;
+			final Activity myActivity = activity;
 
 			if(checkin.isPrivate) {
 				privateImageView.setVisibility(View.VISIBLE);
