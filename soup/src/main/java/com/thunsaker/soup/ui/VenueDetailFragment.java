@@ -506,6 +506,7 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
     public void OpenFoursquareApp() {
         String canonicalUrl = "";
         if (currentVenue != null
+                && currentVenue.canonicalUrl != null
                 && !currentVenue.canonicalUrl.equals("")
                 && currentVenue.canonicalUrl.length() > 0)
             canonicalUrl = currentVenue.canonicalUrl;

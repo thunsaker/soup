@@ -217,7 +217,7 @@ public class FoursquareTasks {
                             queryParams.put(FoursquarePrefs.EDIT_VENUE_URL, mModifiedVenue.url);
                     }
 
-                    if (mModifiedVenue.venueHours != null && mModifiedVenue.venueHours.timeFrames != null) {
+                    if (mModifiedVenue.venueHours != null && mModifiedVenue.venueHours.timeFrames != null && mModifiedVenue.venueHours.timeFrames.size() > 0) {
                         StringBuilder venueHours = new StringBuilder();
                         for (TimeFrame t : mModifiedVenue.venueHours.timeFrames)
                             venueHours.append(TimeFrame.createFoursquareApiString(t));
@@ -277,10 +277,10 @@ public class FoursquareTasks {
         /**
          *
          * @param theVenueId
-         * @param theSource     Either {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_EDIT_VENUE} or
+         * @param theSource     Either {@link CALLER_SOURCE_EDIT_VENUE} or
                                 {@link CALLER_SOURCE_EDIT_CATEGORIES) or
-                                {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS} or
-                                {@link com.thunsaker.soup.services.foursquare.FoursquarePrefs.CALLER_SOURCE_DETAILS_INTENT}
+                                {@link CALLER_SOURCE_DETAILS} or
+                                {@link CALLER_SOURCE_DETAILS_INTENT}
          */
         public GetVenue(String theVenueId, Integer theSource) {
             this(theVenueId, theSource, false);

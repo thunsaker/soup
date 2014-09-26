@@ -12,10 +12,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/*
- * Created by thunsaker on 8/2/13.
- */
-
 public class TimeFrame {
     public String daysString;
     public List<Integer> daysList;
@@ -58,17 +54,6 @@ public class TimeFrame {
 //
 //        setFoursquareApiString(createFoursquareApiString(this));
 //    }
-
-    public TimeFrame(String daysString, List<Integer> daysList, boolean includesToday, String openTimesString, List<String> openTime, List<String> closeTime, String foursquareApiString, boolean is24Hours, String label) {
-        this.daysString = daysString;
-        this.daysList = daysList;
-        this.includesToday = includesToday;
-        this.openTimesString = openTimesString;
-        this.openTime = openTime;
-        this.closeTime = closeTime;
-        this.is24Hours = is24Hours;
-        this.label = label;
-    }
 
 	public static List<TimeFrame> ParseVenueHourFromJson(JsonArray jsonArray,
                                                          List<TimeFrame> stringTimeFrames) {
@@ -183,9 +168,6 @@ public class TimeFrame {
             for(JsonElement jsonElement : jsonArray) {
                 String daysString = jsonElement.getAsJsonObject().get("days") != null
                         ? jsonElement.getAsJsonObject().get("days").getAsString() : "";
-    //            if(daysString != "") {
-    //                myTimeFrame.setDaysList(ConvertDaysStringToList(daysString));
-    //            }
                 StringBuilder openTimes = new StringBuilder();
                 JsonArray openTimesArray = jsonElement.getAsJsonObject().get("open") != null
                         ? jsonElement.getAsJsonObject().get("open").getAsJsonArray() : null;
@@ -242,65 +224,75 @@ public class TimeFrame {
         }
     }
 
+    /**
+     * Create a Foursquare api compatible semi-colon separated list of time frames
+     * <b>Note:</b> Midnight is represented as "0000"; not "+0000" or "+000", semicolon can be url-encoded or not
+     *
+     * @param t     {@link com.thunsaker.soup.data.api.model.TimeFrame}
+     * @return      Url encoded Foursquare time frame formatted string.
+     */
     public static String createFoursquareApiString(TimeFrame t) {
-        String StartTime = t.openTime.get(0);
-        Calendar myStartDate = Calendar.getInstance();
+        try {
+            String StartTime = t.openTime.get(0);
+            Calendar myStartDate = Calendar.getInstance();
 
-        String EndTime = t.closeTime.get(0);
-        Calendar myEndDate = Calendar.getInstance();
+            String EndTime = t.closeTime.get(0);
+            Calendar myEndDate = Calendar.getInstance();
 
-        if(t.is24Hours) {
-        	StartTime = "0000";
-        	EndTime = "0000";
-        } else {
-            if(StartTime.contains(":")) {
-                String[] startSplit = StartTime.split(":");
-                myStartDate.set(Calendar.HOUR, Integer.parseInt(startSplit[0]));
-                myStartDate.set(Calendar.MINUTE, Integer.parseInt(startSplit[1]));
-                StartTime = String.format("%s%s", startSplit[0], startSplit[1]);
+            if (t.is24Hours) {
+                StartTime = "0000";
+                EndTime = "0000";
+            } else {
+                if (StartTime.contains(":")) {
+                    String[] startSplit = StartTime.split(":");
+                    myStartDate.set(Calendar.HOUR, Integer.parseInt(startSplit[0]));
+                    myStartDate.set(Calendar.MINUTE, Integer.parseInt(startSplit[1]));
+                    StartTime = String.format("%s%s", startSplit[0], startSplit[1]);
+                }
+
+                if (EndTime.contains(":")) {
+                    String[] endSplit = EndTime.split(":");
+                    myEndDate.set(Calendar.HOUR, Integer.parseInt(endSplit[0]));
+                    myEndDate.set(Calendar.MINUTE, Integer.parseInt(endSplit[1]));
+                    EndTime = String.format("%s%s", endSplit[0], endSplit[1]);
+                }
             }
 
-            if(EndTime.contains(":")) {
-                String[] endSplit = EndTime.split(":");
-                myEndDate.set(Calendar.HOUR, Integer.parseInt(endSplit[0]));
-                myEndDate.set(Calendar.MINUTE, Integer.parseInt(endSplit[1]));
-                EndTime = String.format("%s%s", endSplit[0], endSplit[1]);
+            StartTime = StartTime.replace("+", "");
+            EndTime = EndTime.replace("+", "");
+
+            Integer apiFormattedStart = !t.is24Hours ? StartTime.length() > 0 ? Integer.parseInt(StartTime) : 0 : 0;
+            Integer apiFormattedEnd = !t.is24Hours ? EndTime.length() > 0 ? Integer.parseInt(EndTime) : 0 : 0;
+
+            StringBuilder apiStringBuilder = new StringBuilder();
+            List<Integer> days = new ArrayList<Integer>();
+            days.addAll(t.daysList);
+            String urlEncodedSemiColon = Util.Encode(";");
+
+            for (Integer day : days) {
+                apiStringBuilder.append(String.format("%s,", day));
+
+                if (t.is24Hours) {
+                    apiStringBuilder.append("0000,0000");
+                } else {
+                    apiStringBuilder
+                            .append(String
+                                    .format("%s,%s%s",
+                                            apiFormattedStart < 100 ? "00" + apiFormattedStart.toString() : apiFormattedStart < 1000 ? "0" + apiFormattedStart.toString() : apiFormattedStart.toString(),
+                                            apiFormattedEnd < apiFormattedStart && apiFormattedEnd != 0 ? "+" : "",
+                                            apiFormattedEnd == 0 ? "0000" : apiFormattedEnd < 100 ? "00" + apiFormattedEnd.toString() : apiFormattedEnd < 1000 ? "0" + apiFormattedEnd.toString() : apiFormattedEnd.toString()));
+                }
+
+                if (t.label != null && t.label.length() > 0)
+                    apiStringBuilder.append(String.format(",%s", Util.Encode(t.label)));
+
+                apiStringBuilder.append(urlEncodedSemiColon);
             }
+
+            return apiStringBuilder.toString();
+        } catch (Exception ex) {
+            return "";
         }
-
-        StartTime = StartTime.replace("+", "");
-        EndTime = EndTime.replace("+", "");
-
-        Integer apiFormattedStart = !t.is24Hours ? StartTime.length() > 0 ? Integer.parseInt(StartTime) : 0 : 0;
-        Integer apiFormattedEnd = !t.is24Hours ? EndTime.length() > 0 ? Integer.parseInt(EndTime) : 0 : 0;
-
-        StringBuilder apiStringBuilder = new StringBuilder();
-        List<Integer> days = new ArrayList<Integer>();
-        days.addAll(t.daysList);
-        String urlEncodedSemiColon = Util.Encode(";");
-//        String urlEncodedAddition = Util.Encode("+");
-        for (Integer day : days) {
-        	apiStringBuilder.append(String.format("%s,", day));
-
-			if (t.is24Hours) {
-                apiStringBuilder.append("0000,+0000");
-//				apiStringBuilder.append(String.format("0000,%s0000", urlEncodedAddition));
-			} else {
-				apiStringBuilder
-						.append(String
-								.format("%s,%s%s",
-										apiFormattedStart < 100 ? "00" + apiFormattedStart.toString() : apiFormattedStart < 1000 ? "0" + apiFormattedStart.toString() : apiFormattedStart.toString(),
-										apiFormattedEnd < apiFormattedStart ? "+" : "",
-										apiFormattedEnd < 100 ? "00" + apiFormattedEnd.toString() : apiFormattedEnd < 1000 ? "0" + apiFormattedEnd.toString() : apiFormattedEnd.toString()));
-			}
-
-            if(t.label != null && t.label.length() > 0)
-                apiStringBuilder.append(String.format(",%s", Util.Encode(t.label)));
-
-			apiStringBuilder.append(urlEncodedSemiColon);
-        }
-
-        return apiStringBuilder.toString();
     }
 
     public static List<TimeFrame> ConvertVenueHoursTimeFrameResponseListToTimeFrameList(List<GetVenueHoursResponse.VenueHoursTimeFrameResponse> timeFramesResponse) {
@@ -332,7 +324,6 @@ public class TimeFrame {
                 for (GetVenueHoursResponse.VenueHoursTimeFrameOpen openTimes : h.open) {
                     t.openTime.add(openTimes.start);
                     t.closeTime.add(openTimes.end);
-//                t.openTimesString += t.openTimesString.length() > 0 ? ", " + openTimes.renderedTime : openTimes.renderedTime;
                 }
                 list.add(t);
             }

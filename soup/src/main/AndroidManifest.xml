@@ -130,9 +130,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="8082d72aba9bada195402df55120e01f41d6e03b" />
 
         <activity
             android:name=".ui.VenueActivity"
@@ -144,7 +141,7 @@
         </activity>
         <activity
             android:name=".ui.CheckinHistoryActivity"
-            android:label="@string/title_activity_checkin_history"
+            android:label="@string/title_activity_history"
             android:parentActivityName=".ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

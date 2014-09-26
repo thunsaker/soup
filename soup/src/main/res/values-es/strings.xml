@@ -75,12 +75,12 @@
     <string name="image_description_alert">¡Alerta!</string>
     <string name="image_description_history_preview">Preestreno de Historial</string>
     <string name="image_description_lists_preview">Preestreno de Listas de Foursquare</string>
-    <string name="image_description_foursquare_list">List Icon</string>
-    <string name="image_description_private">Private</string>
+    <string name="image_description_foursquare_list">Lista</string>
+    <string name="image_description_private">Privado</string>
     <string name="image_description_foursquare_profile">Foursquare Profile Picture</string>
     <string name="image_description_list_completed">Completed Item</string>
-    <string name="image_description_list_following">Followed List</string>
-    <string name="image_description_list_photo">List Photo</string>
+    <string name="image_description_list_following">Lista seguidores</string>
+    <string name="image_description_list_photo">Foto principal de la lista</string>
 
    	<string name="search_hint">Nombre del Lugar</string>
    	<string name="search_location_label">cerca</string>
@@ -230,7 +230,7 @@
     <string name="lists_title_following">Listas Que Guardé</string>
 
     <string name="venue_list_search_footer">¿Sigues buscando? Haga una búsqueda!</string>
-    <string name="dialog_checkin_confirmation">Check-in to %s?</string>
+    <string name="dialog_checkin_confirmation">Haz Check-in a %s?</string>
 
     <string name="notification_checkin_title">Soup "Check-In" Rápido</string>
     <string name="notification_checkin_pending">Haciendo el "check-in" de Foursquare&#8230;</string>
@@ -239,42 +239,41 @@
     <string name="notification_checkin_foursquare">Ver en Foursquare</string>
     <string name="notification_checkin_retry">Inténtalo de nuevo</string>
 
-    <string name="prefs_soup_title">Settings</string>
+    <string name="prefs_soup_title">Ajústes</string>
     <string name="prefs_soup_title_summary">Soup settings</string>
     <string name="prefs_soup_category_title_general">General</string>
     <string name="prefs_soup_title_connect">Foursquare</string>
-    <string name="prefs_soup_title_connected">Connected</string>
-    <string name="prefs_soup_distance_units_title">Distance Units</string>
-    <string name="prefs_soup_distance_units_summary">Metric</string>
-    <string name="prefs_soup_distance_units_default">Metric</string>
+    <string name="prefs_soup_title_connected">Conectado</string>
+    <string name="prefs_soup_distance_units_title">Unidades de Distancía</string>
+    <string name="prefs_soup_distance_units_summary">Métrica</string>
+    <string name="prefs_soup_distance_units_default">Métrica</string>
     <string name="prefs_soup_title_push">Push Notifications (Pro)</string>
     <string name="prefs_soup_title_push_summary_on">Soup will notify you when venues you have checked into, need som Superuser love.</string>
     <string name="prefs_soup_title_push_summary_off">Push notifications to your device, when venues need more information?</string>
     <string name="prefs_soup_about_version">Build Version</string>
-    <string name="prefs_soup_about_rate_title">Rate Soup</string>
+    <string name="prefs_soup_about_rate_title">Califica Soup</string>
     <string name="prefs_soup_category_title_about">Sobre</string>
-    <string name="prefs_soup_about_rate_summary">Rate and comment in the Play Store.</string>
+    <string name="prefs_soup_about_rate_summary">Calificar y comentar en el Play Store.</string>
     <string name="venues_list_loading">Cargando Lugares…</string>
     <string name="empty_list">No Resultados :(</string>
 
     <string name="title_activity_main_map">MainMapActivity</string>
     <string name="title_activity_maps">Mapa</string>
-    <string name="error_map">Error loading map, no location.</string>
+    <string name="error_map">Error: No pudo cargar el mapa sin ubicación</string>
 
     <string name="title_activity_venue">Lugar</string>
     <string name="venue_detail_not_found">No se encuentra el lugar.</string>
     <string name="search_view_start">Busca!</string>
-    <string name="title_activity_checkin_history">History</string>
     <string name="history_title_custom">Fechas…</string>
     <string name="history_select_date_range">Elige un intervalo de fechas</string>
-    <string name="history_get_checkins">Consigue "check-in"</string>
+    <string name="history_get_checkins">Cargar los "check-ins"</string>
     <string name="action_top">Top</string>
     <string name="error_server">Error: %s</string>
     <string name="foursquare_server_status">Consulta status.foursquare.com para más info.</string>
     <string name="distance_format_template">%s m —</string>
-    <string name="dialog_category_delete_confirm">Remove category %s?</string>
+    <string name="dialog_category_delete_confirm">Sacar categoría %s?</string>
     <string name="em_dash">—</string>
-    <string name="dialog_hour_segment_delete_confirm">Are you sure you want to delete this time segment?</string>
+    <string name="dialog_hour_segment_delete_confirm">Esta seguro qué quiere suprimir este segmento?</string>
     <string name="alert_error_loading_list">Error loading list. :(</string>
     <string name="about_open_source">Open Source Licences</string>
     <!--<string name="edit_venue_cross_street_hint">C. Centro</string>-->
