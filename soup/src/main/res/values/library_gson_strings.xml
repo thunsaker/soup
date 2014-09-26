@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="define_int_gson">year;owner</string>
+    <string name="define_int_gson" translatable="false">year;owner</string>
     <string name="library_gson_author">Google Inc.</string>
     <string name="library_gson_libraryName">Gson</string>
     <string name="library_gson_libraryDescription">Gson is a Java library that can be used to convert Java Objects into their JSON representation.</string>

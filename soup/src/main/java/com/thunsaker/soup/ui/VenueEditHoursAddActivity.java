@@ -39,9 +39,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Created by thunsaker on 7/19/13.
- */
 public class VenueEditHoursAddActivity extends BaseSoupActivity
         implements TimePickerDialogHandler {
 
@@ -303,12 +300,12 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
 
                         if(updatedTimeFrame.openTime.size() == 0)
                             updatedTimeFrame.openTime.add(rawTimeOpen.replace(":", ""));
-                        else
+                        else if(updatedTimeFrame.openTime.get(i) != null)
                             updatedTimeFrame.openTime.set(i, rawTimeOpen.replace(":", ""));
 
                         if(updatedTimeFrame.closeTime.size() == 0)
                             updatedTimeFrame.closeTime.add(rawTimeClose.replace(":", ""));
-                        else
+                        else if(updatedTimeFrame.closeTime.get(i) != null)
                             updatedTimeFrame.closeTime.set(i, rawTimeClose.replace(":", ""));
 
                         String openString = updatedTimeFrame.openTime.get(i);

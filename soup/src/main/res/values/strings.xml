@@ -235,7 +235,6 @@
     <string name="title_activity_venue">Venue</string>
     <string name="venue_detail_not_found">Venue not found.</string>
     <string name="search_view_start">Search for something!</string>
-    <string name="title_activity_checkin_history">History</string>
     <string name="history_title_custom">Custom Date…</string>
     <string name="history_select_date_range">Select Date Range</string>
     <string name="history_get_checkins">Get Checkins</string>

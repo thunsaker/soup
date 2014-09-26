@@ -20,9 +20,6 @@ import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
 import javax.inject.Inject;
 
-/*
- * Created by thunsaker on 7/19/13.
- */
 public class VenueEditInfoFragment extends Fragment {
     @Inject
     @ForApplication

@@ -16,10 +16,12 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.thunsaker.android.common.annotations.ForApplication;
+import com.thunsaker.android.common.util.Util;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.adapters.VenueListAdapter;
@@ -91,7 +93,8 @@ public class VenueListFragment extends BaseSoupFragment
 //    private static GoogleMap mMap;
 
     @InjectView(R.id.swipeLayoutVenueListContainer) SwipeRefreshLayout mSwipeViewVenueListContainer;
-    @InjectView(R.id.frameLayoutEmptyVenueListMessageContainer) FrameLayout mEmptyListMessage;
+    @InjectView(R.id.textViewVenueList) TextView mEmptyListMessage;
+    @InjectView(R.id.frameLayoutEmptyVenueListMessageContainer) FrameLayout mEmptyListMessageWrapper;
 
     private int mListType;
 
@@ -303,15 +306,15 @@ public class VenueListFragment extends BaseSoupFragment
     private void hideSadMessage() {
         if(mListView != null)
             mListView.setVisibility(View.VISIBLE);
-        if(mEmptyListMessage != null)
-            mEmptyListMessage.setVisibility(View.GONE);
+        if(mEmptyListMessageWrapper != null)
+            mEmptyListMessageWrapper.setVisibility(View.GONE);
     }
 
     private void showSadMessage() {
         if(mListView != null)
             mListView.setVisibility(View.GONE);
-        if(mEmptyListMessage != null)
-            mEmptyListMessage.setVisibility(View.VISIBLE);
+        if(mEmptyListMessageWrapper != null)
+            mEmptyListMessageWrapper.setVisibility(View.VISIBLE);
     }
 
     private void enableLocationSettings() {
@@ -357,7 +360,13 @@ public class VenueListFragment extends BaseSoupFragment
     public void RefreshVenuesList(String query, String location, String duplicateId) {
         hideSadMessage();
         showProgress();
-        mBus.post(new VenueSearchEvent(query, location, duplicateId, mListType));
+        if(Util.HasInternet(mContext))
+            mBus.post(new VenueSearchEvent(query, location, duplicateId, mListType));
+        else {
+            if(mEmptyListMessage != null)
+                mEmptyListMessage.setText(R.string.alert_no_internet);
+            showSadMessage();
+        }
     }
 
     @Override
@@ -416,11 +425,14 @@ public class VenueListFragment extends BaseSoupFragment
                     else {
                         clearCurrentVenueList();
                         hideProgress();
-                        Toast.makeText(getActivity(), R.string.alert_current_location_unknown, Toast.LENGTH_SHORT).show();
+                        if(mEmptyListMessage != null)
+                            mEmptyListMessage.setText(R.string.alert_current_location_unknown);
                         showSadMessage();
                     }
                 } else {
                     enableLocationSettings();
+                    if(mEmptyListMessage != null)
+                        mEmptyListMessage.setText(R.string.alert_gps_disabled);
                     showSadMessage();
                 }
             }

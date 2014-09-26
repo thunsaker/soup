@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
@@ -51,9 +52,6 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-/*
- * Created by @thunsaker
- */
 public class MainActivity extends BaseSoupActivity implements
 		VenueListFragment.OnFragmentInteractionListener,
         ListsFragment.OnFragmentInteractionListener {
@@ -197,7 +195,7 @@ public class MainActivity extends BaseSoupActivity implements
             superuserLevel = PreferencesHelper.getFoursquareSuperuserLevel(mContext);
         }
 
-        if (superuserLevel == FoursquarePrefs.SUPERUSER.UNKNOWN)
+        if (superuserLevel == FoursquarePrefs.SUPERUSER.UNKNOWN && Util.HasInternet(mContext))
             mFoursquareTasks.new GetUserInfo(FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX).execute();
     }
 
@@ -273,12 +271,6 @@ public class MainActivity extends BaseSoupActivity implements
 			// Intent.ACTION_VIEW,
 			// MainActivity.soupProUri));
 			// return true;
-			/*
-			 * case R.id.action_licences: final LicensesDialogFragment
-			 * licencesFragment =
-			 * LicensesDialogFragment.newInstace(R.raw.licences);
-			 * licencesFragment.show(getSupportFragmentManager(), null);
-			 */
 		default:
 			return false;
 		}
@@ -317,8 +309,8 @@ public class MainActivity extends BaseSoupActivity implements
 	public void ShowWelcomeActivity() {
 		MainActivity.isFoursquareConnected = false;
 		finish();
-		Intent welcomeActivity = new Intent(getApplicationContext(),
-				WelcomeActivity.class);
+		Intent welcomeActivity =
+                new Intent(getApplicationContext(),WelcomeActivity.class);
 		startActivity(welcomeActivity);
 	}
 
@@ -452,9 +444,6 @@ public class MainActivity extends BaseSoupActivity implements
         super.onResume();
         if (Util.IsProInstalled(getApplicationContext()))
             hideAds();
-
-//        if (isFoursquareConnected)
-//            selectItem(0);
 	}
 
     @Override
@@ -564,12 +553,22 @@ public class MainActivity extends BaseSoupActivity implements
 	}
 
 	public void CheckinUser(String id, String name) {
-        mFoursquareTasks.new PostUserCheckin(id, name, "", currentLocation).execute();
-        finish();
+        if(Util.HasInternet(mContext)) {
+            mFoursquareTasks.new PostUserCheckin(id, name, "", currentLocation).execute();
+            finish();
+        } else
+            NoInternet();
 	}
 
+    private void NoInternet() {
+        Toast.makeText(mContext, R.string.alert_no_internet, Toast.LENGTH_SHORT).show();
+    }
+
     public void onEvent(VenueSearchEvent event) {
-        mFoursquareTasks.new GetClosestVenuesNew(event.searchQuery, event.searchLocation, event.duplicateVenueId, event.listType).execute();
+        if(Util.HasInternet(mContext))
+            mFoursquareTasks.new GetClosestVenuesNew(event.searchQuery, event.searchLocation, event.duplicateVenueId, event.listType).execute();
+        else
+            NoInternet();
     }
 
     public void onEvent(GetUserInfoEvent event) {

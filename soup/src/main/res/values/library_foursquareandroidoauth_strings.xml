@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="define_int_foursquareAndroidOauth">year;owner</string>
+    <string name="define_int_foursquareAndroidOauth" translatable="false">year;owner</string>
     <string name="library_foursquareAndroidOauth_author">Foursquare</string>
     <string name="library_foursquareAndroidOauth_libraryName">foursquare-android-oauth</string>
     <string name="library_foursquareAndroidOauth_libraryDescription">Single Sign-on Library for Android applications to use Foursquare app for authorization.</string>
