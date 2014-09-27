@@ -15,17 +15,17 @@
 	    android:layout_marginLeft="@dimen/activity_horizontal_margin"
 	    android:background="@drawable/now_border_gray_border"
 	    android:orientation="vertical" >
-	    
+
 	    <TextView
      		android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
 		    android:padding="10dp"
 	        android:text="@string/pro_upsell_preview_text" />
-	        
+
     </LinearLayout>
-    
-	<ImageView 
-	    	    android:layout_width="0dp" 
+
+	<ImageView
+        android:layout_width="0dp"
 	    android:layout_height="fill_parent"
 	    android:layout_weight="0.5"
 	    android:layout_gravity="center_horizontal|center"

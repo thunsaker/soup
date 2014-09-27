@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
     android:background="@color/now_background" >
@@ -14,6 +13,5 @@
 		android:background="@drawable/now_border_outline"
         android:textColor="@color/body_text"
 		android:text="@string/history_section_no_history"
-		android:textIsSelectable="false"
-        tools:ignore="UnusedAttribute" />
+		android:textIsSelectable="false" />
 </RelativeLayout>

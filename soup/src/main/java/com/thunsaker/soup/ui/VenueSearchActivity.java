@@ -17,9 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,7 +25,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.thunsaker.android.common.annotations.ForApplication;
-import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
 import com.thunsaker.soup.data.api.model.CompactVenue;
@@ -71,13 +68,6 @@ public class VenueSearchActivity extends BaseSoupActivity implements
     @InjectView(R.id.editTextSearchVenueLocation) EditText mLocation;
     @InjectView(R.id.relativeLayoutVenueSearchContainer) RelativeLayout mSearchEmptyWrapper;
 
-    // Overlay Views
-    @InjectView(R.id.frameLayoutSearchInstructionalOverlay) FrameLayout mOverlayWrapper;
-    @InjectView(R.id.imageViewSearchOverlayPickLocation) ImageView mOverlayPickLocationImage;
-    @InjectView(R.id.textViewSearchOverlayPickLocation) TextView mOverlayPickLocationText;
-    @InjectView(R.id.imageViewSearchOverlayTypeLocation) ImageView mOverlayLocationImage;
-    @InjectView(R.id.textViewSearchOverlayTypeLocation) TextView mOverlayLocationText;
-
 	SearchView mSearchView;
 	ImageButton mSearchImageButton;
 
@@ -117,7 +107,6 @@ public class VenueSearchActivity extends BaseSoupActivity implements
         handleIntent(getIntent());
 
 		SetupSearchViews();
-		ShowInstructionalOverlay(PreferencesHelper.getShownSearchOverlay(mContext));
 	}
 
 	@Override
@@ -166,30 +155,6 @@ public class VenueSearchActivity extends BaseSoupActivity implements
         } else {
             mSearchEmptyWrapper.setVisibility(View.VISIBLE);
         }
-	}
-
-	private void ShowInstructionalOverlay(boolean show) {
-		if(!show) {
-            mOverlayWrapper.setVisibility(View.VISIBLE);
-            mOverlayWrapper.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					PreferencesHelper.setShownSearchOverlay(getApplicationContext(), true);
-					ShowInstructionalOverlay(true);
-				}
-			});
-
-            mOverlayPickLocationImage.setVisibility(View.VISIBLE);
-            mOverlayPickLocationText.setVisibility(View.VISIBLE);
-			mOverlayLocationImage.setVisibility(View.VISIBLE);
-			mOverlayLocationText.setVisibility(View.VISIBLE);
-		} else {
-            mOverlayWrapper.setVisibility(View.GONE);
-			mOverlayPickLocationImage.setVisibility(View.GONE);
-			mOverlayPickLocationText.setVisibility(View.GONE);
-            mOverlayLocationImage.setVisibility(View.GONE);
-            mOverlayLocationText.setVisibility(View.GONE);
-		}
 	}
 
 	private void SetupSearchViews() {
