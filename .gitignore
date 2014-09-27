@@ -21,6 +21,7 @@ local.properties
 
 com_crashlytics_export_strings.xml
 **/crashlytics.properties
+**/crashlytics-build.properties
 google_maps_api.xml
 
 foursquareoauthlibrary/
