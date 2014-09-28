@@ -204,6 +204,8 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
     }
 
     private String GetClockStyleTimeString(String hour, String minute) {
+        hour = hour.replace("+", "");
+        minute = minute.replace("+", "");
         return GetClockStyleTimeString(Integer.parseInt(hour), Integer.parseInt(minute));
     }
 
