@@ -14,7 +14,8 @@
         android:adjustViewBounds="true"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/textViewVenueDetailFragment"
-        android:src="@drawable/bowl_gray_single_color"/>
+        android:src="@drawable/bowl_gray_single_color"
+        android:contentDescription="@string/app_name" />
     <TextView
         android:id="@+id/textViewVenueDetailFragment"
         android:layout_width="wrap_content"

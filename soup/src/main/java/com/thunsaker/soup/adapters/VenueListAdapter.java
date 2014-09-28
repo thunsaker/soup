@@ -60,7 +60,7 @@ public class VenueListAdapter extends ArrayAdapter<CompactVenue> {
                 final ImageView primaryCategoryImageView =
                         (ImageView) v.findViewById(R.id.imageViewVenueCategory);
                 List<Category> myCategories = venue.categories;
-                if (myCategories != null) {
+                if (myCategories != null && myCategories.size() > 0) {
                     final Category primaryCategory = myCategories.get(0) != null
                             ? myCategories.get(0)
                             : null;

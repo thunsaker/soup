@@ -457,34 +457,38 @@ public class VenueListFragment extends BaseSoupFragment
     public void onEvent(VenueListEvent event) {
         hideProgress();
 
-        if (event.result && event.resultList != null && event.resultList.size() > 0) {
-            hideSadMessage();
-            switch (event.resultListType) {
-                case 1: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_SEARCH}
-                    searchResultsVenueList = new ArrayList<CompactVenue>(event.resultList);
-                    searchResultsVenueListAdapter = new VenueListAdapter(mContext, searchResultsVenueList);
-                    searchResultsVenueListAdapter.notifyDataSetChanged();
-                    mListView.setAdapter(searchResultsVenueListAdapter);
-                    break;
-                case 2: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_DUPLICATE}
-                    searchDuplicateResultsVenueList = new ArrayList<CompactVenue>();
+        if (event.result) {
+            if(event.resultList != null && event.resultList.size() > 0) {
+                hideSadMessage();
+                switch (event.resultListType) {
+                    case 1: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_SEARCH}
+                        searchResultsVenueList = new ArrayList<CompactVenue>(event.resultList);
+                        searchResultsVenueListAdapter = new VenueListAdapter(mContext, searchResultsVenueList);
+                        searchResultsVenueListAdapter.notifyDataSetChanged();
+                        mListView.setAdapter(searchResultsVenueListAdapter);
+                        break;
+                    case 2: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_DUPLICATE}
+                        searchDuplicateResultsVenueList = new ArrayList<CompactVenue>();
 
-                    for (CompactVenue c : event.resultList) {
-                        String tempId = c.id.trim();
-                        if (!tempId.equals(event.resultDuplicateVenueId.trim()))
-                            searchDuplicateResultsVenueList.add(c);
-                    }
+                        for (CompactVenue c : event.resultList) {
+                            String tempId = c.id.trim();
+                            if (!tempId.equals(event.resultDuplicateVenueId.trim()))
+                                searchDuplicateResultsVenueList.add(c);
+                        }
 
-                    searchDuplicateResultsVenueListAdapter = new VenueListAdapter(mContext, searchDuplicateResultsVenueList);
-                    searchDuplicateResultsVenueListAdapter.notifyDataSetChanged();
-                    mListView.setAdapter(searchDuplicateResultsVenueListAdapter);
-                    break;
-                case 0: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_DEFAULT}
-                    currentVenueList = new ArrayList<CompactVenue>(event.resultList);
-                    currentVenueListAdapter = new VenueListAdapter(mContext, currentVenueList);
-                    currentVenueListAdapter.notifyDataSetChanged();
-                    mListView.setAdapter(currentVenueListAdapter);
-                    break;
+                        searchDuplicateResultsVenueListAdapter = new VenueListAdapter(mContext, searchDuplicateResultsVenueList);
+                        searchDuplicateResultsVenueListAdapter.notifyDataSetChanged();
+                        mListView.setAdapter(searchDuplicateResultsVenueListAdapter);
+                        break;
+                    case 0: // {@link com.thunsaker.soup.ui.VenueListFragment.VENUE_LIST_TYPE_DEFAULT}
+                        currentVenueList = new ArrayList<CompactVenue>(event.resultList);
+                        currentVenueListAdapter = new VenueListAdapter(mContext, currentVenueList);
+                        currentVenueListAdapter.notifyDataSetChanged();
+                        mListView.setAdapter(currentVenueListAdapter);
+                        break;
+                }
+            } else if (event.resultList == null || (event.resultList != null && event.resultList.size() == 0)) {
+                showSadMessage();
             }
         } else {
             if(mLocationManager == null)

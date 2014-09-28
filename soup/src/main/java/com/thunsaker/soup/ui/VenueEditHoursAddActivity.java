@@ -204,6 +204,8 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
     }
 
     private String GetClockStyleTimeString(String hour, String minute) {
+        hour = hour.replace("+", "");
+        minute = minute.replace("+", "");
         return GetClockStyleTimeString(Integer.parseInt(hour), Integer.parseInt(minute));
     }
 
@@ -289,34 +291,38 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
                 // TODO: For each time segment
                 if(mTimeSegmentContainer.getChildCount() > 0)
                     for (int i = 0; i < mTimeSegmentContainer.getChildCount(); i++) {
-                        String rawTimeOpen = ((TextView)mTimeSegmentContainer.findViewById(R.id.textViewOpenTime)).getText().toString();
-                        String rawTimeClose = ((TextView)mTimeSegmentContainer.findViewById(R.id.textViewCloseTime)).getText().toString();
+                        String rawTimeOpen = ((TextView)mTimeSegmentContainer.getChildAt(i).findViewById(R.id.textViewOpenTime)).getText().toString();
+                        String rawTimeClose = ((TextView)mTimeSegmentContainer.getChildAt(i).findViewById(R.id.textViewCloseTime)).getText().toString();
 
-                        if(updatedTimeFrame.openTime == null)
-                            updatedTimeFrame.openTime = new ArrayList<String>();
+                        // TODO: Considering telling the user if they forgot to enter one or both of the times
+                        // Skip if the user didn't set both of the time
+                        if(!rawTimeOpen.equals("–:––") || !rawTimeClose.equals("–:––")) {
+                            if (updatedTimeFrame.openTime == null)
+                                updatedTimeFrame.openTime = new ArrayList<String>();
 
-                        if(updatedTimeFrame.closeTime == null)
-                            updatedTimeFrame.closeTime = new ArrayList<String>();
+                            if (updatedTimeFrame.closeTime == null)
+                                updatedTimeFrame.closeTime = new ArrayList<String>();
 
-                        if(updatedTimeFrame.openTime.size() == 0)
-                            updatedTimeFrame.openTime.add(rawTimeOpen.replace(":", ""));
-                        else if(updatedTimeFrame.openTime.get(i) != null)
-                            updatedTimeFrame.openTime.set(i, rawTimeOpen.replace(":", ""));
+                            if (updatedTimeFrame.openTime.size() == 0)
+                                updatedTimeFrame.openTime.add(rawTimeOpen.replace(":", ""));
+                            else if (updatedTimeFrame.openTime.get(i) != null)
+                                updatedTimeFrame.openTime.set(i, rawTimeOpen.replace(":", ""));
 
-                        if(updatedTimeFrame.closeTime.size() == 0)
-                            updatedTimeFrame.closeTime.add(rawTimeClose.replace(":", ""));
-                        else if(updatedTimeFrame.closeTime.get(i) != null)
-                            updatedTimeFrame.closeTime.set(i, rawTimeClose.replace(":", ""));
+                            if (updatedTimeFrame.closeTime.size() == 0)
+                                updatedTimeFrame.closeTime.add(rawTimeClose.replace(":", ""));
+                            else if (updatedTimeFrame.closeTime.get(i) != null)
+                                updatedTimeFrame.closeTime.set(i, rawTimeClose.replace(":", ""));
 
-                        String openString = updatedTimeFrame.openTime.get(i);
-                        String closeString = updatedTimeFrame.closeTime.get(i);
+                            String openString = updatedTimeFrame.openTime.get(i);
+                            String closeString = updatedTimeFrame.closeTime.get(i);
 
-                        String newTimeString = TimeFrame.GetStringSegmentFormat(openString, closeString);
+                            String newTimeString = TimeFrame.GetStringSegmentFormat(openString, closeString);
 
-                        updatedTimeFrame.openTimesString +=
-                                updatedTimeFrame.openTimesString.length() > 0
-                                        ? ", " + newTimeString
-                                        : newTimeString;
+                            updatedTimeFrame.openTimesString +=
+                                    updatedTimeFrame.openTimesString.length() > 0
+                                            ? ", " + newTimeString
+                                            : newTimeString;
+                        }
                     }
             }
 

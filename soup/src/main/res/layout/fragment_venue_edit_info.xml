@@ -19,6 +19,7 @@
             android:layout_marginRight="@dimen/material_keyline_1"
             android:layout_marginBottom="@dimen/material_padding"
             android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
             tools:context=".Venue" >
 
             <TextView

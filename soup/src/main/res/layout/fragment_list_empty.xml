@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/now_background" >
-    
+
     <ImageView android:id="@+id/imageViewListTemp"
         android:layout_width="75dp"
         android:layout_height="75dp"
