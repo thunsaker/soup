@@ -21,14 +21,14 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '20'
+    buildToolsVersion '19.1'
 
     defaultConfig {
         applicationId "com.thunsaker.soup"
         minSdkVersion 9
         targetSdkVersion 19
-        versionCode 24
-        versionName "2.6.1.2"
+        versionCode 25
+        versionName "2.6.2"
         resConfigs "en", "es", "fr", "pt", "ru"
     }
 
@@ -76,20 +76,21 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-v4'
     }
 
+    compile 'com.android.support:support-v4:19.+'
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.google.android.gms:play-services:5.0.+'
+    compile 'com.google.android.gms:play-services:5.0.77'
 
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
     compile 'com.crashlytics.android:crashlytics:1.1.11'
 
     compile 'joda-time:joda-time:2.4'
 
-    compile 'com.jakewharton:butterknife:5.0.0'
+    compile 'com.jakewharton:butterknife:5.1.2'
     compile 'de.greenrobot:eventbus:2.2.0'
 
-    provided 'com.squareup.dagger:dagger-compiler:1.2.0'
-    compile 'com.squareup.dagger:dagger:1.2.0'
+    provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+    compile 'com.squareup.dagger:dagger:1.2.1'
     compile 'com.squareup.picasso:picasso:2.2.0'
     compile ("com.squareup.retrofit:retrofit:1.5.1") {
         exclude group: 'com.google.code.gson', module: 'gson'
