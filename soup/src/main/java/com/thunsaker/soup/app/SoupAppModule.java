@@ -1,6 +1,7 @@
 package com.thunsaker.soup.app;
 
 import android.app.NotificationManager;
+import android.app.SearchManager;
 import android.content.Context;
 import android.location.LocationManager;
 
@@ -139,5 +140,11 @@ public class SoupAppModule {
     @Singleton
     FoursquareTasks providesFoursquareTasks(@ForApplication Context myContext) {
         return new FoursquareTasks((SoupApp)myContext);
+    }
+
+    @Provides
+    @Singleton
+    SearchManager providesSearchManager(@ForApplication Context context) {
+        return (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
     }
 }

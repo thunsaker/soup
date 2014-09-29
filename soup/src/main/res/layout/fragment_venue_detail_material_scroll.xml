@@ -77,7 +77,7 @@
                             android:ellipsize="end"
                             android:text="@string/placeholder_venue_name"
                             style="@style/Theme.Soup.Text.Large"
-                            android:textIsSelectable="false"
+                            android:textIsSelectable="true"
                             tools:ignore="UnusedAttribute"/>
 
 

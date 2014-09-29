@@ -52,6 +52,9 @@ public class VenueSearchActivity extends BaseSoupActivity implements
     LocationManager mLocationManager;
 
     @Inject
+    SearchManager mSearchManager;
+
+    @Inject
     EventBus mBus;
 
     @Inject
@@ -90,10 +93,9 @@ public class VenueSearchActivity extends BaseSoupActivity implements
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
 
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		LinearLayout searchViewWrapper = (LinearLayout) ab.getCustomView();
 		mSearchView = (SearchView) searchViewWrapper.getChildAt(0);
-		mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		mSearchView.setSearchableInfo(mSearchManager.getSearchableInfo(getComponentName()));
 		mSearchView.setQueryHint(getString(R.string.search_hint));
         mSearchImageButton = (ImageButton) searchViewWrapper.getChildAt(1);
         mSearchImageButton.setOnClickListener(new OnClickListener() {

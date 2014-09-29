@@ -116,14 +116,6 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 
     @InjectView(R.id.fragmentMapWrapper) FrameLayout mMapFragmentWrapper;
 
-//    @InjectView(R.id.linearLayoutVenueCategorySecondary) LinearLayout mCategorySecondary;
-//    @InjectView(R.id.imageViewVenueCategorySecondary) ImageView mCategorySecondaryIcon;
-//    @InjectView(R.id.textViewVenueCategorySecondary) TextView mCategorySecondaryText;
-//
-//    @InjectView(R.id.linearLayoutVenueCategoryTertiary) LinearLayout mCategoryTertiary;
-//    @InjectView(R.id.imageViewVenueCategoryTertiary) ImageView mCategoryTertiaryIcon;
-//    @InjectView(R.id.textViewVenueCategoryTertiary) TextView mCategoryTertiaryText;
-
     @InjectView(R.id.fabEditWrapper) RelativeLayout mFabEdit;
 
     private static final String ARG_VENUE_ARG_TYPE = "arg_type";

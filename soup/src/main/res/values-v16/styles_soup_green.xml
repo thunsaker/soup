@@ -14,7 +14,8 @@
 
         <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.Soup_green.Widget</item>
-        <item name="android:fontFamily">sans-serif</item>
+        <!-- TODO: Replace this with Calligraphy? or just leave it out so it doesn't break copy/paste globally -->
+        <!--<item name="android:fontFamily">sans-serif</item>-->
     </style>
 
     <style name="ActionBar.Solid.Soup_green" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">

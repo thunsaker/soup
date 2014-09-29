@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
+import android.view.Menu;
 import android.view.Window;
 
 import com.thunsaker.android.common.annotations.ForApplication;
@@ -92,7 +93,7 @@ public class VenueDetailActivity extends BaseSoupActivity {
         } else if (intent.hasExtra(VenueDetailFragment.ARG_ITEM_JSON_STRING)) { // Venue JSON - From VenueListFragment
             venueDetailFragment = VenueDetailFragment.newInstance(intent.getStringExtra(VenueDetailFragment.ARG_ITEM_JSON_STRING), VenueDetailFragment.VENUE_TYPE_JSON);
         }
-//        venueDetailsSource = intent.getIntExtra(VENUE_DETAILS_SOURCE, 0);
+
         if (venueDetailFragment != null)
             fragmentManager
                     .beginTransaction()
@@ -100,33 +101,10 @@ public class VenueDetailActivity extends BaseSoupActivity {
                     .commit();
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                switch (venueDetailsSource) {
-//                    case 1: // Venue Search
-//                        NavUtils.navigateUpTo(this, new Intent(this, VenueSearchActivity.class));
-//                        break;
-//                    case 2: // List
-//                        finish();
-//                        break;
-//                    case 3:
-//                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                        finish();
-//                        break;
-//                    default:
-//
-//                        break;
-//                }
-//
-//                venueIdToLoad = "";
-//                VenueDetailFragment.currentCompactVenue = null;
-//                VenueDetailFragment.currentVenue = null;
-//                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     public void onBackPressed() {
