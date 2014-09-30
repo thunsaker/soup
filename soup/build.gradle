@@ -33,8 +33,6 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'http://download.crashlytics.com/maven' }
-
-
     }
     dependencies {
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.12.0'
