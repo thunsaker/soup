@@ -1,3 +1,34 @@
+gradle.taskGraph.whenReady { taskGraph ->
+    if(taskGraph.hasTask(':app:assembleRelease')) {
+        // Only execute when we are trying to assemble a release build
+        def pass = System.console() != null ? System.console().readPassword("\nPlease enter store passphrase: ") : ""
+        // readPassword returns a char[] so we need to wrap it into a string, because that's
+        // most likely what you need
+        pass = new String(pass)
+        // Use the pass variable here (so set signing configs here)
+        android.signingConfigs.release.storePassword = pass
+
+        def pass2 = System.console() != null ? System.console().readPassword("\nPlease enter key passphrase: ") : ""
+        // readPassword returns a char[] so we need to wrap it into a string, because that's
+        // most likely what you need
+        pass2 = new String(pass2)
+        android.signingConfigs.release.keyPassword = pass2
+    }
+}
+
+// NOTE: Temp fix for Play Services (admob) from: https://code.google.com/p/android/issues/detail?id=75080
+tasks.whenTaskAdded { theTask ->
+    def taskName = theTask.name.toString()
+    if ("testDebug".toString().equals(taskName)) {
+        /**
+         * Listen for when robolectric adds the 'testDebug' task and when it does, add the -noverify
+         * option to that task's jvmArgs.  This allows us to turn off byte code verification when
+         * running our unit tests.
+         */
+        theTask.jvmArgs('-noverify')
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -42,9 +73,9 @@ android {
 
         releaseSigning {
             storeFile file(RELEASE_STORE_FILE)
-            storePassword System.console() != null ? new String(System.console().readPassword("\nStore password: ")) : ""
+            storePassword ""
             keyAlias RELEASE_KEY_ALIAS
-            keyPassword System.console() != null ? new String(System.console().readPassword("\nKey password: ")) : ""
+            keyPassword ""
         }
     }
 
@@ -56,6 +87,7 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
             signingConfig signingConfigs.debugSigning
+            ext.enableCrashlytics = false
         }
 
         release {
