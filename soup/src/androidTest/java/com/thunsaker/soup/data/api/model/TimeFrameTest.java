@@ -1,11 +1,18 @@
 package com.thunsaker.soup.data.api.model;
 
-import android.test.InstrumentationTestCase;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 
-public class TimeFrameTest extends InstrumentationTestCase {
-    public void testCreateFoursquareApiStringHoursWithLabel() {
+@Config(emulateSdk = 18)
+@RunWith(RobolectricTestRunner.class)
+public class TimeFrameTest {
+    @Test
+    public void testCreateFoursquareApiStringHoursWithLabel() throws Exception {
         String expected = "6,1700,2100,Happy+Hour%3B";
         TimeFrame timeFrame = new TimeFrame();
         timeFrame.daysList = new ArrayList<Integer>();
@@ -18,10 +25,11 @@ public class TimeFrameTest extends InstrumentationTestCase {
 
         String actual = TimeFrame.createFoursquareApiString(timeFrame);
 
-        assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual);
     }
 
-    public void testCreateFoursquareApiStringHours24() {
+    @Test
+    public void testCreateFoursquareApiStringHours24() throws Exception {
         String expected = "1,0000,0000%3B";
         TimeFrame timeFrame = new TimeFrame();
         timeFrame.daysList = new ArrayList<Integer>();
@@ -35,10 +43,11 @@ public class TimeFrameTest extends InstrumentationTestCase {
 
         String actual = TimeFrame.createFoursquareApiString(timeFrame);
 
-        assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual);
     }
 
-    public void testCreateFoursquareApiStringHoursAfterMidnight() {
+    @Test
+    public void testCreateFoursquareApiStringHoursAfterMidnight() throws Exception {
         String expected = "4,2300,+0100,After+After+Party%3B";
         TimeFrame timeFrame = new TimeFrame();
         timeFrame.daysList = new ArrayList<Integer>();
@@ -51,6 +60,6 @@ public class TimeFrameTest extends InstrumentationTestCase {
 
         String actual = TimeFrame.createFoursquareApiString(timeFrame);
 
-        assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual);
     }
 }
