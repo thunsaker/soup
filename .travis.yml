@@ -27,4 +27,4 @@ android:
 script:
     - echo "Assembling..."
     - chmod +x ./gradlew
-    - ./gradlew soup clean test
+    - ./gradlew :soup:clean :soup:test
