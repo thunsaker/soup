@@ -1,3 +1,6 @@
 [submodule "foursquare-android-oauth"]
 	path = foursquare-android-oauth
 	url = https://github.com/thunsaker/foursquare-android-oauth.git
+[submodule "viewpagerindicator"]
+	path = viewpagerindicator
+	url = https://github.com/thunsaker/Android-ViewPagerIndicator/

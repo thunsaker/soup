@@ -1,2 +1,3 @@
-include ':foursquare-android-oauth:foursquare-oauth-library', ':Android-ViewPagerIndicator'
+include ':foursquare-android-oauth:foursquare-oauth-library', ':viewpagerindicator:library', ':sample'
 include ':soup', ':soup-pro'
+project(':sample').projectDir = new File('viewpagerindicator/sample')

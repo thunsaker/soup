@@ -1,8 +1,4 @@
 .DS_Store
-*.apk
-*.ap_
-*.dex
-*.class
 bin/
 gen/
 build/
@@ -23,5 +19,3 @@ local.properties
 com_crashlytics_export_strings.xml
 **/crashlytics.properties
 **/crashlytics-build.properties
-
-Android-ViewPagerIndicator/

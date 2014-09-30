@@ -102,7 +102,7 @@ android {
 
 dependencies {
     compile project(':foursquare-android-oauth:foursquare-oauth-library')
-    compile project(':Android-ViewPagerIndicator')
+    compile project(':viewpagerindicator:library')
 
     compile("com.doomonafireball.betterpickers:library:1.5.2") {
         exclude group: 'com.android.support', module: 'support-v4'
