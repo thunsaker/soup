@@ -1,12 +1,41 @@
+gradle.taskGraph.whenReady { taskGraph ->
+    if(taskGraph.hasTask(':soup:assembleRelease')) {
+        // Only execute when we are trying to assemble a release build
+        def pass = System.console() != null ? System.console().readPassword("\nPlease enter store passphrase: ") : ""
+        // readPassword returns a char[] so we need to wrap it into a string, because that's
+        // most likely what you need
+        pass = new String(pass)
+        // Use the pass variable here (so set signing configs here)
+        android.signingConfigs.release.storePassword = pass
+
+        def pass2 = System.console() != null ? System.console().readPassword("\nPlease enter key passphrase: ") : ""
+        // readPassword returns a char[] so we need to wrap it into a string, because that's
+        // most likely what you need
+        pass2 = new String(pass2)
+        android.signingConfigs.release.keyPassword = pass2
+    }
+}
+
+// NOTE: Temp fix for Play Services (admob) from: https://code.google.com/p/android/issues/detail?id=75080
+tasks.whenTaskAdded { theTask ->
+    def taskName = theTask.name.toString()
+    if ("testDebug".toString().equals(taskName)) {
+        /**
+         * Listen for when robolectric adds the 'testDebug' task and when it does, add the -noverify
+         * option to that task's jvmArgs.  This allows us to turn off byte code verification when
+         * running our unit tests.
+         */
+        theTask.jvmArgs('-noverify')
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
         maven { url 'http://download.crashlytics.com/maven' }
-
-
     }
     dependencies {
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.11.4'
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.12.0'
 
     }
 }
@@ -42,9 +71,9 @@ android {
 
         releaseSigning {
             storeFile file(RELEASE_STORE_FILE)
-            storePassword System.console() != null ? new String(System.console().readPassword("\nStore password: ")) : ""
+            storePassword ""
             keyAlias RELEASE_KEY_ALIAS
-            keyPassword System.console() != null ? new String(System.console().readPassword("\nKey password: ")) : ""
+            keyPassword ""
         }
     }
 
@@ -56,6 +85,7 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
             signingConfig signingConfigs.debugSigning
+            ext.enableCrashlytics = false
         }
 
         release {
@@ -69,8 +99,8 @@ android {
 }
 
 dependencies {
-    compile project(':foursquareoauthlibrary')
-    compile project(':Android-ViewPagerIndicator')
+    compile project(':foursquare-android-oauth:foursquare-oauth-library')
+    compile project(':viewpagerindicator:library')
 
     compile("com.doomonafireball.betterpickers:library:1.5.2") {
         exclude group: 'com.android.support', module: 'support-v4'
@@ -79,10 +109,10 @@ dependencies {
     compile 'com.android.support:support-v4:19.+'
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.google.android.gms:play-services:5.0.77'
+    compile 'com.google.android.gms:play-services:5.0.+'
 
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
-    compile 'com.crashlytics.android:crashlytics:1.1.11'
+    compile 'com.crashlytics.android:crashlytics:1.1.13'
 
     compile 'joda-time:joda-time:2.4'
 

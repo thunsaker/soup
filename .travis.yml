@@ -9,10 +9,10 @@ android:
     # - tools
 
     # The BuildTools version used by your project
-    - build-tools-20.0.0
+    - build-tools-19.1.0
 
     # The SDK version used to compile your project
-    - android-20
+    - android-19
 
     # Additional components
     - extra-google-google_play_services
@@ -27,4 +27,4 @@ android:
 script:
     - echo "Assembling..."
     - chmod +x ./gradlew
-    - ./gradlew soup:check soup-pro:check --daemon
+    - ./gradlew :soup:check -x crashlyticsCleanupResourcesRelease -x crashlyticsUploadStoredDeobsRelease -x crashlyticsGenerateResourcesRelease
