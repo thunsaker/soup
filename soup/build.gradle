@@ -1,5 +1,5 @@
 gradle.taskGraph.whenReady { taskGraph ->
-    if(taskGraph.hasTask(':app:assembleRelease')) {
+    if(taskGraph.hasTask(':soup:assembleRelease')) {
         // Only execute when we are trying to assemble a release build
         def pass = System.console() != null ? System.console().readPassword("\nPlease enter store passphrase: ") : ""
         // readPassword returns a char[] so we need to wrap it into a string, because that's

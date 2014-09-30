@@ -27,4 +27,4 @@ android:
 script:
     - echo "Assembling..."
     - chmod +x ./gradlew
-    - ./gradlew soup:check --info -x crashlyticsCleanupResourcesRelease
+    - ./gradlew :soup:check -x crashlyticsCleanupResourcesRelease -x crashlyticsUploadStoredDeobsRelease -x crashlyticsGenerateResourcesRelease
