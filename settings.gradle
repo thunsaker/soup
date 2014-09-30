@@ -1,1 +1,1 @@
-include ':soup', ':soup-pro', ':foursquareoauthlibrary', ':Android-ViewPagerIndicator'
+include ':soup', ':soup-pro', ':foursquare-android-oauth:foursquare-oauth-library', ':Android-ViewPagerIndicator'
