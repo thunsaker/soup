@@ -1,11 +1,18 @@
 package com.thunsaker.soup.data.api.model;
 
-import android.test.InstrumentationTestCase;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VenueTest extends InstrumentationTestCase {
+@Config(emulateSdk = 18)
+@RunWith(RobolectricTestRunner.class)
+public class VenueTest {
+    @Test
     public void testConvertCompactVenueToVenue() throws Exception {
         // Arrange
         CompactVenue compact = new CompactVenue();
@@ -44,14 +51,14 @@ public class VenueTest extends InstrumentationTestCase {
         Venue actual = Venue.ConvertCompactVenueToVenue(compact);
 
         // Assert
-        assertEquals(expected.id, actual.id);
-        assertEquals(expected.name, actual.name);
-        assertEquals(expected.location.address, actual.location.address);
-        assertEquals(expected.location.postalCode, actual.location.postalCode);
-        assertEquals(expected.contact.phone, actual.contact.phone);
-        assertNotNull(expected.categories);
-        assertEquals(expected.categories.get(0).id, actual.categories.get(0).id);
-        assertEquals(expected.categories.get(0).name, actual.categories.get(0).name);
-        assertEquals(expected.url, actual.url);
+        Assert.assertEquals(expected.id, actual.id);
+        Assert.assertEquals(expected.name, actual.name);
+        Assert.assertEquals(expected.location.address, actual.location.address);
+        Assert.assertEquals(expected.location.postalCode, actual.location.postalCode);
+        Assert.assertEquals(expected.contact.phone, actual.contact.phone);
+        Assert.assertNotNull(expected.categories);
+        Assert.assertEquals(expected.categories.get(0).id, actual.categories.get(0).id);
+        Assert.assertEquals(expected.categories.get(0).name, actual.categories.get(0).name);
+        Assert.assertEquals(expected.url, actual.url);
     }
 }

@@ -1,3 +1,21 @@
+gradle.taskGraph.whenReady { taskGraph ->
+    if(taskGraph.hasTask(':app:assembleRelease')) {
+        // Only execute when we are trying to assemble a release build
+        def pass = System.console() != null ? System.console().readPassword("\nPlease enter store passphrase: ") : ""
+        // readPassword returns a char[] so we need to wrap it into a string, because that's
+        // most likely what you need
+        pass = new String(pass)
+        // Use the pass variable here (so set signing configs here)
+        android.signingConfigs.release.storePassword = pass
+
+        def pass2 = System.console() != null ? System.console().readPassword("\nPlease enter key passphrase: ") : ""
+        // readPassword returns a char[] so we need to wrap it into a string, because that's
+        // most likely what you need
+        pass2 = new String(pass2)
+        android.signingConfigs.release.keyPassword = pass2
+    }
+}
+
 apply plugin: 'com.android.application'
 
 android {
@@ -21,9 +39,9 @@ android {
 
         releaseSigning {
             storeFile file(RELEASE_STORE_FILE)
-            storePassword System.console() != null ? new String(System.console().readPassword("\nStore password: ")) : ""
+            storePassword ""
             keyAlias RELEASE_KEY_ALIAS
-            keyPassword System.console() != null ? new String(System.console().readPassword("\nKey password: ")) : ""
+            keyPassword ""
         }
     }
 

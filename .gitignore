@@ -1,8 +1,4 @@
 .DS_Store
-*.apk
-*.ap_
-*.dex
-*.class
 bin/
 gen/
 build/
@@ -19,15 +15,7 @@ proguard/
 
 local.properties
 
+#Crashlytics Files
 com_crashlytics_export_strings.xml
 **/crashlytics.properties
 **/crashlytics-build.properties
-google_maps_api.xml
-
-foursquareoauthlibrary/
-Android-ViewPagerIndicator/
-
-AuthHelper.java
-soup/src/main/res/values/donotsave.xml
-
-soup-pro/libs/**

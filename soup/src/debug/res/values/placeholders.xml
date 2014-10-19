@@ -12,6 +12,4 @@
 
     <string name="placeholder_hours_day" translatable="false">Mon-Thu</string>
     <string name="placeholder_hours_time" translatable="false">8:00pm-10:00pm</string>
-
-    <string name="google_maps_api_key" />
 </resources>

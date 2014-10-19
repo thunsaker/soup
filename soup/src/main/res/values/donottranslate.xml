@@ -34,4 +34,6 @@
     <string name="prefs_soup_nav_drawer" translatable="false">soup_show_nav</string>
     <string name="twitter_url_base" translatable="false">https://twitter.com/%s</string>
     <string name="time_segment_empty" translatable="false">&#8211;:&#8211;&#8211;</string>
+
+    <string name="admob_id" translatable="false">ca-app-pub-1029389929968380/9641016357</string>
 </resources>
