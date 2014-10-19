@@ -1,5 +1,6 @@
 package com.thunsaker.soup.app;
 
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -10,6 +11,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class SoupApp extends DaggerApplication {
+
+    public static SoupApp from(Context context) {
+        return (SoupApp) context.getApplicationContext();
+    }
 
     @Override
     public void onCreate() {

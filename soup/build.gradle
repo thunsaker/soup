@@ -171,4 +171,5 @@ dependencies {
         exclude module: 'javax.annotation:javax.annotation-api:1.2'
     }
     androidTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r3'
+    androidTestCompile 'org.mockito:mockito-all:1.9.5'
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.thunsaker.android.common.annotations.ForActivity;
-import com.thunsaker.soup.ui.MainActivity;
 
 import javax.inject.Singleton;
 
@@ -14,10 +13,7 @@ import dagger.Provides;
 @Module(
         complete = true,
         library =  true,
-        addsTo = SoupAppModule.class,
-        injects = {
-                MainActivity.class
-        }
+        addsTo = SoupAppModule.class
 )
 public class SoupActivityModule {
     private final Activity mActivity;
