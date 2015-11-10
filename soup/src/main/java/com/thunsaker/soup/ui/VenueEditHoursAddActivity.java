@@ -19,8 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.doomonafireball.betterpickers.timepicker.TimePickerBuilder;
-import com.doomonafireball.betterpickers.timepicker.TimePickerDialogFragment.TimePickerDialogHandler;
+import com.codetroopers.betterpickers.timepicker.TimePickerBuilder;
+import com.codetroopers.betterpickers.timepicker.TimePickerDialogFragment;
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
@@ -40,7 +40,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class VenueEditHoursAddActivity extends BaseSoupActivity
-        implements TimePickerDialogHandler {
+        implements TimePickerDialogFragment.TimePickerDialogHandler {
 
     @Inject
     @ForApplication

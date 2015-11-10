@@ -15,7 +15,6 @@ import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.thunsaker.soup.services.foursquare.SwarmService;
 import com.thunsaker.soup.ui.CheckinHistoryActivity;
 import com.thunsaker.soup.ui.CheckinHistoryFragment;
-import com.thunsaker.soup.ui.FoursquareAuthorizationActivity;
 import com.thunsaker.soup.ui.FoursquareListFragment;
 import com.thunsaker.soup.ui.ListActivity;
 import com.thunsaker.soup.ui.ListsFragment;
@@ -47,7 +46,6 @@ import static android.content.Context.LOCATION_SERVICE;
         addsTo = AndroidApplicationModule.class,
         injects = {
                 SoupApp.class,
-                FoursquareAuthorizationActivity.class,
                 MainActivity.class,
                 FoursquareTasks.class,
                 VenueListFragment.class,

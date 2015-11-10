@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:state_selected="true" android:color="@color/white"/>
     <item android:state_pressed="true" android:color="@color/white"/>
-    <item app:state_current_month="false" android:color="@color/gray_light_super"/>
-    <item app:state_today="true" android:color="@color/white"/>
-    <item app:state_selectable="false" android:color="@color/cal_default_text_color_day" />
+    <!--<item app:state_current_month="false" android:color="@color/gray_light_super"/>-->
+    <!--<item app:state_today="true" android:color="@color/white"/>-->
+    <!--<item app:state_selectable="false" android:color="@color/cal_default_text_color_day" />-->
     <item android:color="@color/cal_default_text_color_day"/>
 </selector>

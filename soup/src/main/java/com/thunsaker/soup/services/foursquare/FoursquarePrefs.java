@@ -1,5 +1,9 @@
 package com.thunsaker.soup.services.foursquare;
 
+import android.content.Context;
+
+import com.thunsaker.soup.PreferencesHelper;
+
 /*
  * Created by @thunsaker
  */
@@ -130,4 +134,11 @@ public class FoursquarePrefs {
     public static final String EDIT_VENUE_HOURS = "hours";
 
     public static final String EDIT_VENUE_USER_LATLONG = "ll";
+
+	public static void clearFoursquareUser(Context myContext) {
+		PreferencesHelper.setFoursquareToken(myContext, "");
+		PreferencesHelper.setFoursquareConnected(myContext, false);
+		PreferencesHelper.setFoursquareUserId(myContext, "");
+		PreferencesHelper.setFoursquareSuperuserLevel(myContext, 0);
+	}
 }

@@ -19,12 +19,12 @@ gradle.taskGraph.whenReady { taskGraph ->
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '20'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 19
+        minSdkVersion 14
+        targetSdkVersion 23
         versionCode 3
         versionName "1.2"
     }
@@ -47,18 +47,14 @@ android {
 
     buildTypes {
         debug {
-            zipAlign true
-            debuggable true
-            runProguard false
+            minifyEnabled false
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
             signingConfig signingConfigs.debugSigning
         }
 
         release {
-            zipAlign true
-            debuggable false
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.releaseSigning
         }
@@ -66,5 +62,5 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.+'
+    compile 'com.android.support:support-v4:23.1.0'
 }

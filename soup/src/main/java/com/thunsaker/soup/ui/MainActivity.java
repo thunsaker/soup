@@ -27,13 +27,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.model.LatLng;
 import com.thunsaker.android.common.annotations.ForApplication;
-import com.thunsaker.soup.BuildConfig;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
@@ -110,8 +108,8 @@ public class MainActivity extends BaseSoupActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(!BuildConfig.DEBUG)
-            Crashlytics.start(this);
+//        if(!BuildConfig.DEBUG)
+//            Crashlytics.start(this);
 
         mBus.register(this);
 
@@ -154,7 +152,6 @@ public class MainActivity extends BaseSoupActivity implements
                 AuthHelper.FOURSQUARE_CLIENT_ID,
                 AuthHelper.FOURSQUARE_CLIENT_SECRET,
                 AuthHelper.FOURSQUARE_CALLBACK_URL);
-        FoursquareAuthorizationActivity.mFoursquareClient = mFoursquareClient;
         isFoursquareConnected = PreferencesHelper
                 .getFoursquareConnected(getApplicationContext());
 
@@ -386,7 +383,7 @@ public class MainActivity extends BaseSoupActivity implements
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									FoursquareAuthorizationActivity
+									FoursquarePrefs
 											.clearFoursquareUser(getActivity()
 													.getApplicationContext());
 									startActivity(new Intent(getActivity()

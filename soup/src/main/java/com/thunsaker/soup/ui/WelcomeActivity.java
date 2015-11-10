@@ -1,9 +1,6 @@
 package com.thunsaker.soup.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -15,9 +12,10 @@ import android.widget.Toast;
 import com.foursquare.android.nativeoauth.FoursquareOAuth;
 import com.foursquare.android.nativeoauth.model.AccessTokenResponse;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
-import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
+import com.thunsaker.soup.services.AuthHelper;
+import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 
 /*
  * Created by @thunsaker
@@ -78,21 +76,6 @@ public class WelcomeActivity extends ActionBarActivity {
         startActivityForResult(foursquareAuth, REQUEST_FOURSQUARE_AUTH);
     }
 
-    // Pop foursquare web auth
-    public void LaunchFoursquareWebAuthActivity() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeNetworkInfo != null) {
-            // Launch Foursquare Auth Activity
-            Intent foursquareAuth = new Intent(getApplicationContext(), FoursquareAuthorizationActivity.class);
-            startActivity(foursquareAuth);
-            finish();
-        } else {
-//            Crouton.makeText(this, getString(R.string.error_no_internets), Style.ALERT).show();
-            Toast.makeText(this, getString(R.string.alert_no_internet), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -138,7 +121,7 @@ public class WelcomeActivity extends ActionBarActivity {
                                 "Problem Authenticating: An unknown error occurred",
                                 Toast.LENGTH_SHORT).show();
                     }
-                    FoursquareAuthorizationActivity.clearFoursquareUser(getApplicationContext());
+                    FoursquarePrefs.clearFoursquareUser(getApplicationContext());
                 }
 
         }

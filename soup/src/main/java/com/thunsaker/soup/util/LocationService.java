@@ -1,19 +1,22 @@
 package com.thunsaker.soup.util;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.thunsaker.soup.data.LocationServiceError;
 import com.thunsaker.soup.data.events.LocationChangedEvent;
 
@@ -22,8 +25,8 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 public class LocationService extends Service implements
-        GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener{
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     @Inject
     Context mContext;
@@ -35,7 +38,7 @@ public class LocationService extends Service implements
     EventBus bus;
 
     private Binder mBinder = new LocalBinder();
-    private LocationClient mLocationClient;
+    public static GoogleApiClient mGoogleClient;
     private static float lastLatitude = 33.1264583f;
     private static float lastLongitude = -117.3106229f;
 
@@ -44,26 +47,19 @@ public class LocationService extends Service implements
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        // Google Play Services
-        mLocationClient = new LocationClient(mContext, this, this);
-//        mLocationClient = new LocationClient(this, this, this);
-        mLocationClient.connect();
-        return START_STICKY;
-    }
-
-    @Override
     public void onConnected(Bundle bundle) {
-        Location loc = mLocationClient.getLastLocation();
-        if(loc != null) {
-            bus.post(new LocationChangedEvent((float)loc.getLatitude(), (float)loc.getLongitude()));
+        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
+        if (location != null) {
+            bus.post(
+                    new LocationChangedEvent(
+                            (float) location.getLatitude(), (float) location.getLongitude()));
         }
         stopSelf();
     }
 
     @Override
-    public void onDisconnected() {
-        stopSelf();
+    public void onConnectionSuspended(int i) {
+        mGoogleClient.disconnect();
     }
 
     @Override
@@ -82,16 +78,11 @@ public class LocationService extends Service implements
         }
     }
 
-//    @Produce
-//    public LocationChangedEvent produceLocationEvent() {
-//        return new LocationChangedEvent(lastLatitude, lastLongitude);
-//    }
-
     public final LocationListener mLocationListener = new LocationListener() {
 
         @Override
         public void onLocationChanged(Location loc) {
-            bus.post(new LocationChangedEvent((float)loc.getLatitude(), (float)loc.getLongitude()));
+            bus.post(new LocationChangedEvent((float) loc.getLatitude(), (float) loc.getLongitude()));
         }
 
         @Override
@@ -116,13 +107,29 @@ public class LocationService extends Service implements
         Boolean hasLocationProvider = false;
 
         mLocationManager =
-          (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+                (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
         // Use network provider first
         LocationProvider networkProvider =
                 mLocationManager.getProvider(
                         LocationManager.NETWORK_PROVIDER);
 
+        // TODO: Address MM Permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for Activity#requestPermissions for more details.
+                return;
+            }
+        }
         Location lastKnown =
                 mLocationManager.getLastKnownLocation(
                         LocationManager.PASSIVE_PROVIDER);

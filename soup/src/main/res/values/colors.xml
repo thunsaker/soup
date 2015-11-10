@@ -40,4 +40,6 @@
     <color name="cal_default_border">#ffdadcdd</color>
     <color name="cal_default_text_color_day">#ffa7aeb4</color>
     <color name="foursquare_category_icon_gray">#ffC4C3BC</color>
+
+    <color name="transparent">#00000000</color>
 </resources>
