@@ -219,6 +219,7 @@ public class MainActivity extends BaseSoupActivity implements
                 .addTestDevice("FDC26B2E6C049E2E9ECE7C97D42A4726") // G2 - 2.3.4
                 .addTestDevice("1BF36BBC3C197AFF96AF3F9F305CAD48") // N5 - L
                 .addTestDevice("D8FE76757F1CA9B485916499EC8C13DB") // MAXX - 4.4.2
+                .addTestDevice("B8588B68EF8E1193C85527B332B413D9") // S6 - 5.1.1
                 .build();
 
         if(adView != null)

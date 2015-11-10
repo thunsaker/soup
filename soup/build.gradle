@@ -80,14 +80,19 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled false
+            buildConfigField("String", "FOURSQUARE_ID", getEnv("SOUP_FOUR_ID"));
+            buildConfigField("String", "FOURSQUARE_SECRET", getEnv("SOUP_FOUR_SECRET"));
+
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
+            minifyEnabled false
 //            signingConfig signingConfigs.debugSigning
-            ext.enableCrashlytics = false
         }
 
         release {
+            buildConfigField("String", "FOURSQUARE_ID", getEnv("SOUP_FOUR_ID"));
+            buildConfigField("String", "FOURSQUARE_SECRET", getEnv("SOUP_FOUR_SECRET"));
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
 //            signingConfig signingConfigs.releaseSigning
@@ -111,6 +116,10 @@ android {
 //    include '**/*Test.class'
 //    exclude '**/espresso/**/*.class'
 //}
+
+def getEnv(key, defVal = '') {
+    "\"${System.env.containsKey(key) ? System.env.get(key) : defVal}\""
+}
 
 dependencies {
     testCompile('junit:junit:4.11') {

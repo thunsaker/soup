@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.thunsaker.soup" >
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.thunsaker.soup" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -124,10 +125,15 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC1lS-PuXy3I-tJAnrBnygvIbS8ZuIwHxw"/>
+
         <activity
             android:name=".ui.CheckinHistoryActivity"
             android:label="@string/title_activity_history"
-            android:parentActivityName=".ui.MainActivity" >
+            android:parentActivityName=".ui.MainActivity"
+            tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.thunsaker.soup.ui.MainActivity" />
