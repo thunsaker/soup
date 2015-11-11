@@ -3,9 +3,7 @@ package com.thunsaker.soup.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,15 +49,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CheckinHistoryFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CheckinHistoryFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
 public class CheckinHistoryFragment extends BaseSoupFragment
         implements SwipeRefreshLayout.OnRefreshListener,
         AbsListView.OnItemClickListener, AbsListView.OnItemLongClickListener{
@@ -216,10 +205,10 @@ public class CheckinHistoryFragment extends BaseSoupFragment
         if(mSwipeViewCheckinContainer != null) {
             mSwipeViewCheckinContainer.setOnRefreshListener(this);
             mSwipeViewCheckinContainer.setColorScheme(
-                    R.color.soup_green,
-                    R.color.soup_blue,
-                    R.color.soup_green,
-                    R.color.soup_red);
+                    getResources().getColor(R.color.soup_green),
+                    getResources().getColor(R.color.soup_blue),
+                    getResources().getColor(R.color.soup_green),
+                    getResources().getColor(R.color.soup_red));
             mSwipeViewCheckinContainer.setRefreshing(true);
         }
 

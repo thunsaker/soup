@@ -213,10 +213,10 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
         if(mSwipeViewVenueDetailsContainer != null) {
             mSwipeViewVenueDetailsContainer.setOnRefreshListener(this);
             mSwipeViewVenueDetailsContainer.setColorScheme(
-                    R.color.soup_green,
-                    R.color.soup_blue,
-                    R.color.soup_green,
-                    R.color.soup_red);
+                    getResources().getColor(R.color.soup_green),
+                    getResources().getColor(R.color.soup_blue),
+                    getResources().getColor(R.color.soup_green),
+                    getResources().getColor(R.color.soup_red));
             mSwipeViewVenueDetailsContainer.setRefreshing(true);
         }
 

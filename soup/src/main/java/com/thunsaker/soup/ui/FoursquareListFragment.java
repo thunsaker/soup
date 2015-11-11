@@ -174,7 +174,11 @@ public class FoursquareListFragment extends BaseSoupFragment implements
 
         if(mSwipeViewFoursquareListItems != null) {
             mSwipeViewFoursquareListItems.setOnRefreshListener(this);
-            mSwipeViewFoursquareListItems.setColorScheme(R.color.foursquare_green, R.color.foursquare_orange, R.color.foursquare_green, R.color.foursquare_blue);
+            mSwipeViewFoursquareListItems.setColorScheme(
+                    getResources().getColor(R.color.foursquare_green),
+                    getResources().getColor(R.color.foursquare_orange),
+                    getResources().getColor(R.color.foursquare_green),
+                    getResources().getColor(R.color.foursquare_blue));
         }
 
         RefreshList(this);

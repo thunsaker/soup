@@ -239,10 +239,10 @@ public class VenueListFragment extends BaseSoupFragment
         if(mSwipeViewVenueListContainer != null) {
             mSwipeViewVenueListContainer.setOnRefreshListener(this);
             mSwipeViewVenueListContainer.setColorScheme(
-                    R.color.soup_green,
-                    R.color.soup_blue,
-                    R.color.soup_green,
-                    R.color.soup_red);
+                    getResources().getColor(R.color.soup_green),
+                    getResources().getColor(R.color.soup_blue),
+                    getResources().getColor(R.color.soup_green),
+                    getResources().getColor(R.color.soup_red));
             mSwipeViewVenueListContainer.setRefreshing(true);
         }
 
