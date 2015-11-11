@@ -67,7 +67,7 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_PROGRESS);
+        supportRequestWindowFeature(Window.FEATURE_PROGRESS);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 

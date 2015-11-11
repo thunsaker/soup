@@ -439,11 +439,12 @@ public class CheckinHistoryFragment extends BaseSoupFragment
         CheckinHistoryActivity.customStartDate = mStartDate;
         CheckinHistoryActivity.customEndDate = mEndDate;
 
-        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            assert getActivity() != null;
-            assert getActivity().getActionBar() != null;
-            getActivity().getActionBar().setSelectedNavigationItem(3);
-        }
+        // FIXME: 11/10/2015 - Determine if I need to call this on the custom date range
+//        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//            assert getActivity() != null;
+//            assert getActivity().getActionBar() != null;
+//            getActivity().getActionBar().setSelectedNavigationItem(3);
+//        }
 
         CloseCalendarPicker();
         RefreshData();

@@ -107,7 +107,7 @@ public class SoupAppModule {
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(FoursquarePrefs.FOURSQUARE_BASE_URL)
-                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+//                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
 
