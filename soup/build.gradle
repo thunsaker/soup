@@ -56,14 +56,15 @@ dependencies {
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'de.greenrobot:eventbus:2.2.0'
 
-    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile 'com.squareup.dagger:dagger:1.2.2'
+    provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+    compile 'com.squareup.dagger:dagger:1.2.1'
     compile 'com.squareup.picasso:picasso:2.2.0'
     compile('com.squareup.retrofit:retrofit:1.5.1') {
         exclude group: 'com.google.code.gson', module: 'gson'
     }
     compile 'com.squareup:android-times-square:1.6.4@aar'
 
-    compile 'com.tundem.aboutlibraries:library:3.0.0@aar'
-
+    compile('com.mikepenz:aboutlibraries:5.3.2@aar') {
+        transitive = true
+    }
 }
