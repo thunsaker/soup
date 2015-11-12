@@ -10,7 +10,7 @@
         android:id="@+id/textViewVenueDetailsHoursDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Theme.Soup.Text.Small"
+        android:textSize="@dimen/material_type_small"
         android:textStyle="bold"
         android:text="@string/placeholder_hours_day_short"/>
 
@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/material_padding_half"
-        style="@style/Theme.Soup.Text.Small"
+        android:layout_marginStart="@dimen/material_padding_half"
+        android:textSize="@dimen/material_type_small"
         android:text="@string/placeholder_hours_time_span_24_hour"/>
 </LinearLayout>

@@ -126,7 +126,7 @@
                 android:textIsSelectable="false"
                 android:text="@string/edit_venue_hours_24_hours"
                 android:gravity="center_vertical"
-                style="@style/Theme.Soup.Text.Small" />
+                android:textSize="@dimen/material_type_small" />
 
             <CheckBox
                 android:id="@+id/checkBox24Hours"
@@ -177,7 +177,7 @@
                 android:textIsSelectable="false"
                 android:text="@string/edit_venue_hours_add"
                 android:gravity="center_vertical"
-                style="@style/Theme.Soup.Text.Small" />
+                android:textSize="@dimen/material_type_small" />
         </RelativeLayout>
 
     </LinearLayout>

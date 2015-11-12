@@ -27,6 +27,6 @@
         android:text="@string/placeholder_category"
         android:gravity="center_vertical"
         android:layout_toRightOf="@id/category_icon"
-        style="@style/Theme.Soup.Text.Small" />
+        android:textSize="@dimen/material_type_small" />
 
 </RelativeLayout>

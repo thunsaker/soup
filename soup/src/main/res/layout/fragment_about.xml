@@ -82,7 +82,7 @@
                 android:paddingTop="@dimen/material_padding"
                 android:text="@string/about_follow_me"
                 android:textSize="@dimen/material_type_small"
-                android:textColor="@color/text_selector_red" />
+                android:textColor="@drawable/text_selector_red" />
 
             <Button
                 android:id="@+id/about_open_source"
@@ -96,7 +96,7 @@
                 android:paddingTop="@dimen/material_padding"
                 android:text="@string/about_open_source"
                 android:textSize="@dimen/material_type_small"
-                android:textColor="@color/text_selector_green" />
+                android:textColor="@drawable/text_selector_green" />
 
             <Button
                 android:id="@+id/about_other_apps"
@@ -113,7 +113,7 @@
                 android:paddingTop="@dimen/material_padding"
                 android:text="@string/about_other_apps"
                 android:textSize="@dimen/material_type_small"
-                android:textColor="@color/text_selector_blue" />
+                android:textColor="@drawable/text_selector_blue" />
 
         </LinearLayout>
     </LinearLayout>

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 23
@@ -38,9 +39,6 @@ def getEnv(key, defVal = '') {
 }
 
 dependencies {
-    testCompile('junit:junit:4.11') {
-        exclude module: 'hamcrest-core'
-    }
     compile project(':foursquare-android-oauth:foursquare-oauth-library')
     compile project(':viewpagerindicator:library')
 
@@ -67,4 +65,5 @@ dependencies {
     compile 'com.squareup:android-times-square:1.6.4@aar'
 
     compile 'com.tundem.aboutlibraries:library:3.0.0@aar'
+
 }

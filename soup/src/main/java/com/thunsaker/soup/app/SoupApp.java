@@ -15,6 +15,7 @@ public class SoupApp extends DaggerApplication {
 
     @Override
     protected List<Object> getAppModules() {
-        return Collections.<Object>singletonList(new SoupAppModule());
+        return Collections.<Object>singletonList(
+                new SoupAppModule());
     }
 }

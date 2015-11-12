@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:category="http://schemas.android.com/apk/res-auto">
+    <color name="foursquare_orange">#ffff7900</color>
+    <color name="foursquare_orange_transparent">#aaff7900</color>
+    <color name="foursquare_green">#ff8FD400</color>
+    <color name="foursquare_green_transparent">#aa8FD400</color>
+    <color name="foursquare_blue">#ff0cbadf</color>
+    <color name="foursquare_blue_transparent">#aa0cbadf</color>
+    <color name="foursquare_yellow">#ffffcb00</color>
+    <color name="foursquare_yellow_transparent">#aaffcb00</color>
+    <color name="foursquare_gray">#ffd1d4d3</color>
+
     <!--category colors-->
     <color name="category_art" category:id="4d4b7104d754a06370d81259">#ff5CCCC6</color>
     <color name="category_school" category:id="4d4b7105d754a06372d81259">#ffFF9600</color>
@@ -11,4 +21,6 @@
     <color name="category_house" category:id="4e67e38e036454776db1fb3a">#ffFFC800</color>
     <color name="category_shop" category:id="4d4b7105d754a06378d81259">#ff7E00E0</color>
     <color name="category_travel" category:id="4d4b7105d754a06379d81259">#ff0F70F4</color>
+
+    <color name="foursquare_category_icon_gray">#ffC4C3BC</color>
 </resources>
