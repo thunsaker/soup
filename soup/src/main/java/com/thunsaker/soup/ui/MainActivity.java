@@ -16,7 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -129,12 +129,12 @@ public class MainActivity extends BaseSoupActivity implements
                 R.string.drawer_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
-                getSupportActionBar().setTitle(mTitle);
+//                getSupportActionBar().setTitle(mTitle);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
+//                getSupportActionBar().setTitle(mDrawerTitle);
             }
         };
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -146,7 +146,7 @@ public class MainActivity extends BaseSoupActivity implements
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        ActionBar ab = SetupActionBar();
+        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 
         mFoursquareClient = new FoursquareClient(
                 AuthHelper.FOURSQUARE_CLIENT_ID,
@@ -159,7 +159,7 @@ public class MainActivity extends BaseSoupActivity implements
             if (Util.IsProInstalled(getApplicationContext())) {
                 hideAds();
 
-                ab.setTitle(R.string.app_name_pro);
+//                ab.setTitle(R.string.app_name_pro);
             } else {
                 showAds();
             }
@@ -194,14 +194,6 @@ public class MainActivity extends BaseSoupActivity implements
 
         if (superuserLevel == FoursquarePrefs.SUPERUSER.UNKNOWN && Util.HasInternet(mContext))
             mFoursquareTasks.new GetUserInfo(FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX).execute();
-    }
-
-    private ActionBar SetupActionBar() {
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setHomeButtonEnabled(true);
-        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
-        return ab;
     }
 
     private void showAds() {
@@ -301,7 +293,7 @@ public class MainActivity extends BaseSoupActivity implements
 	@Override
 	public void setTitle(CharSequence title) {
 		mTitle = title.toString();
-		getSupportActionBar().setTitle(mTitle);
+//		getSupportActionBar().setTitle(mTitle);
 	}
 
 	public void ShowWelcomeActivity() {

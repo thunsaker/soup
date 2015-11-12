@@ -204,7 +204,7 @@ public class CheckinHistoryFragment extends BaseSoupFragment
 
         if(mSwipeViewCheckinContainer != null) {
             mSwipeViewCheckinContainer.setOnRefreshListener(this);
-            mSwipeViewCheckinContainer.setColorScheme(
+            mSwipeViewCheckinContainer.setColorSchemeColors(
                     getResources().getColor(R.color.soup_green),
                     getResources().getColor(R.color.soup_blue),
                     getResources().getColor(R.color.soup_green),
