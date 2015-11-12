@@ -57,30 +57,19 @@ public class AboutFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-				new LibsBuilder()
-						.withLibraries("Eventbus","Dagger","Retrofit","Butterknife",
-								"gson","picasso","androidtimessquare","joda", "betterpickers",
-								"urlimageviewhelper")
-						.withAutoDetect(true)
-						.withLicenseShown(true)
-						.withVersionShown(true)
-						.withActivityTitle(getString(R.string.action_about))
-						.withActivityTheme(R.style.Theme_Soup)
-						.start(getActivity());
-
-
-//                Intent aboutIntent = new Intent(getActivity().getApplicationContext(), LibsActivity.class);
-//                aboutIntent.putExtra(Libs.BUNDLE_FIELDS, Libs.toStringArray(R.string.class.getFields()));
-//                aboutIntent.putExtra(Libs.BUNDLE_LIBS,
+                new LibsBuilder()
+                        .withLibraries("Eventbus", "Dagger", "Retrofit", "Butterknife",
+                                "gson", "picasso", "androidtimessquare", "joda", "betterpickers",
+                                "urlimageviewhelper")
+                        .withAutoDetect(true)
+                        .withLicenseShown(true)
+                        .withVersionShown(true)
+                        .withActivityTitle(getString(R.string.action_about))
+                        .withActivityTheme(R.style.Theme_Soup)
+                        .start(getActivity());
 //                        new String[]{"gson", "eventbus", "joda", "butterknife",
 //                                "dagger", "picasso", "retrofit", "androidtimessquare",
 //                                "betterpickers", "urlimageviewhelper"});
-//                aboutIntent.putExtra(Libs.BUNDLE_VERSION, true);
-//                aboutIntent.putExtra(Libs.BUNDLE_LICENSE, true);
-//                aboutIntent.putExtra(Libs.BUNDLE_TITLE, "Open Source");
-//                aboutIntent.putExtra(Libs.BUNDLE_THEME, R.style.Theme_Soup);
-//                aboutIntent.putExtra(Libs.BUNDLE_ACCENT_COLOR, "#00d04e" /*R.color.soup_green*/);
-//                startActivity(aboutIntent);
             }
         });
 
