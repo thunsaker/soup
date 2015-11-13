@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_venues"
+            android:icon="@drawable/ic_mat_map_pin"
+            android:title="@string/nav_venues"
+            android:checked="true" />
+
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/ic_mat_time"
+            android:title="@string/nav_history" />
+
+        <item
+            android:id="@+id/nav_lists"
+            android:icon="@drawable/list_placeholder_icon"
+            android:title="@string/nav_lists" />
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_mat_map"
+            android:title="@string/action_about" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_mat_delete"
+            android:title="@string/action_logout" />
+    </group>
+</menu>
