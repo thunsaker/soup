@@ -19,4 +19,11 @@
         <!--<item>Settings</item>-->
         <item>Log Out</item>
     </string-array>
+
+    <string-array name="checkin_ranges">
+        <item>@string/history_title_today</item>
+        <item>@string/history_title_last_week</item>
+        <item>@string/history_title_last_month</item>
+        <item>@string/history_title_custom</item>
+    </string-array>
 </resources>

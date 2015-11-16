@@ -51,7 +51,9 @@ import de.greenrobot.event.EventBus;
 
 public class CheckinHistoryFragment extends BaseSoupFragment
         implements SwipeRefreshLayout.OnRefreshListener,
-        AbsListView.OnItemClickListener, AbsListView.OnItemLongClickListener{
+        AbsListView.OnItemClickListener,
+        AbsListView.OnItemLongClickListener {
+
     @Inject
     @ForApplication
     Context mContext;
