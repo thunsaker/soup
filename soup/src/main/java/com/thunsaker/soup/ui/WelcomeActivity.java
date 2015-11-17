@@ -3,8 +3,8 @@ package com.thunsaker.soup.ui;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -16,6 +16,9 @@ import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /*
  * Created by @thunsaker
@@ -29,15 +32,17 @@ public class WelcomeActivity extends ActionBarActivity {
     private boolean useLogo = true;
     private boolean showHomeUp = false;
 
+    @InjectView(R.id.toolbarWelcome) Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(showHomeUp);
-        ab.setDisplayUseLogoEnabled(useLogo);
-        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
+        ButterKnife.inject(this);
+        setSupportActionBar(mToolbar);
+
+        setTitle("");
     }
 
     @Override

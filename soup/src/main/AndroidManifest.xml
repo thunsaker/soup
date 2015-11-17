@@ -50,7 +50,11 @@
             android:name=".ui.VenueDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:label="@string/title_venue_detail"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.thunsaker.soup.ui.MainActivity" />
+        </activity>
         <activity
             android:name=".ui.VenueDetailActivityReceiver"
             android:label="@string/title_venue_detail_receiver" >

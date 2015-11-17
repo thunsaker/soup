@@ -68,11 +68,6 @@ import de.greenrobot.event.EventBus;
 /*
  * Created by @thunsaker
  */
-/**
- * A fragment representing a single Venue detail screen. This fragment is either
- * contained in a {@link VenueListFragment} in two-pane mode (on tablets) or a
- * {@link com.thunsaker.soup.ui.VenueDetailActivity} on handsets.
- */
 public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefreshLayout.OnRefreshListener {
     @Inject @ForApplication
     Context mContext;
@@ -87,7 +82,6 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
     @InjectView(R.id.relativeLayoutVenueDetailsWrapper) RelativeLayout mContentWrapper;
     @InjectView(R.id.relativeLayoutVenueWrapperInner) RelativeLayout mContentWrapperInner;
 
-    @InjectView(R.id.imageViewVenueIcon) ImageView mVenueIcon;
     @InjectView(R.id.textViewVenueDetailsName) TextView mName;
 
     @InjectView(R.id.textViewVenueAddress) TextView mAddress;
@@ -116,7 +110,7 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
 
     @InjectView(R.id.fragmentMapWrapper) FrameLayout mMapFragmentWrapper;
 
-    @InjectView(R.id.fabEditWrapper) RelativeLayout mFabEdit;
+//    @InjectView(R.id.fabEditWrapper) RelativeLayout mFabEdit;
 
     private static final String ARG_VENUE_ARG_TYPE = "arg_type";
     private static final String ARG_VENUE_TO_LOAD = "venue_arg";
@@ -359,12 +353,12 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
                 if(!isPrimarySet) {
                     mCategoryList.setVisibility(View.GONE);
                     if (!imageUrl.equals("")) {
-                        mPicasso.load(imageUrl).placeholder(R.drawable.foursquare_generic_category_icon).into(mVenueIcon);
+//                        mPicasso.load(imageUrl).placeholder(R.drawable.foursquare_generic_category_icon).into(mVenueIcon);
                         mPicasso.load(imageUrl).placeholder(R.drawable.foursquare_generic_category_icon).into(mCategoryPrimaryIcon);
 
                         String name = cat.name;
                         int color = Util.GetCategoryColor(name.charAt(0), mContext);
-                        mVenueIcon.setBackgroundColor(color);
+//                        mVenueIcon.setBackgroundColor(color);
                         mCategoryPrimaryText.setText(name);
                     }
                     isPrimarySet = true;
@@ -381,8 +375,8 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
             }
         } else {
             mCategoryList.setVisibility(View.GONE);
-            mVenueIcon.setImageResource(R.drawable.foursquare_generic_category_icon);
-            mVenueIcon.setBackgroundColor(mContext.getResources().getColor(R.color.gray_light_super));
+//            mVenueIcon.setImageResource(R.drawable.foursquare_generic_category_icon);
+//            mVenueIcon.setBackgroundColor(mContext.getResources().getColor(R.color.gray_light_super));
             mCategoryPrimaryIcon.setImageResource(R.drawable.foursquare_generic_category_icon);
             mCategoryPrimaryText.setText("No categories");
         }
@@ -895,17 +889,17 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
             error = true;
         }
 
-        if(error) {
-            mFabEdit.setVisibility(View.GONE);
-            setHasOptionsMenu(false);
-            mContentWrapperInner.setVisibility(View.GONE);
-            mDetailError.setVisibility(View.VISIBLE);
-        } else {
-            mFabEdit.setVisibility(View.VISIBLE);
-            setHasOptionsMenu(true);
-            mContentWrapperInner.setVisibility(View.VISIBLE);
-            mDetailError.setVisibility(View.GONE);
-        }
+//        if(error) {
+//            mFabEdit.setVisibility(View.GONE);
+//            setHasOptionsMenu(false);
+//            mContentWrapperInner.setVisibility(View.GONE);
+//            mDetailError.setVisibility(View.VISIBLE);
+//        } else {
+//            mFabEdit.setVisibility(View.VISIBLE);
+//            setHasOptionsMenu(true);
+//            mContentWrapperInner.setVisibility(View.VISIBLE);
+//            mDetailError.setVisibility(View.GONE);
+//        }
     }
 
     public void onEvent(GetVenueHoursEvent event) {
@@ -983,8 +977,8 @@ public class VenueDetailFragment extends BaseSoupFragment implements SwipeRefres
         startActivity(mapIntent);
     }
 
-    @OnClick(R.id.fabEdit)
-    public void FabEditClick() {
-        OpenEditVenue();
-    }
+//    @OnClick(R.id.fabEdit)
+//    public void FabEditClick() {
+//        OpenEditVenue();
+//    }
 }

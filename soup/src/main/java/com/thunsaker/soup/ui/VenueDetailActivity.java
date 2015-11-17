@@ -2,10 +2,9 @@ package com.thunsaker.soup.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.Window;
 
@@ -16,6 +15,9 @@ import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /*
  * Created by @thunsaker
  */
@@ -23,15 +25,12 @@ public class VenueDetailActivity extends BaseSoupActivity {
     @Inject @ForApplication
     Context mContext;
 
-//    @Inject
-//    EventBus mBus;
-
     @Inject
     FoursquareTasks mFoursquareTasks;
 
-    public static boolean wasEdited;
+    @InjectView(R.id.toolbarVenueDetail) Toolbar mToolbar;
 
-    private boolean showHomeUp = true;
+    public static boolean wasEdited;
 
     public static final String VENUE_TO_LOAD_EXTRA = "VENUE_TO_LOAD_EXTRA";
     public static final String VENUE_URL_TO_LOAD_EXTRA = "VENUE_URL_TO_LOAD_EXTRA";
@@ -57,21 +56,10 @@ public class VenueDetailActivity extends BaseSoupActivity {
 
         setContentView(R.layout.activity_venue_detail);
 
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setDisplayUseLogoEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setTitle(null);
-        ab.setIcon(R.drawable.transparent_square);
+        ButterKnife.inject(this);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent)));
-            ab.setSplitBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent)));
-            ab.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black_super_transparent)));
-        }
-
-        setSupportProgressBarVisibility(true);
-        setSupportProgressBarIndeterminate(true);
+        setSupportActionBar(mToolbar);
+        setTitle("");
 
         handleIntent(getIntent());
     }
@@ -86,7 +74,7 @@ public class VenueDetailActivity extends BaseSoupActivity {
         VenueDetailFragment venueDetailFragment = VenueDetailFragment.newInstance(null, -1);
 
         if (intent.hasExtra(VENUE_URL_TO_LOAD_EXTRA)) { // Venue Url - from VenueDetailActivity Receiver
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             venueDetailFragment = VenueDetailFragment.newInstance(intent.getStringExtra(VENUE_URL_TO_LOAD_EXTRA), VenueDetailFragment.VENUE_TYPE_URL);
         } else if (intent.hasExtra(VENUE_TO_LOAD_EXTRA)) { // Venue Id - from other screens (History, List, etc)
             venueDetailFragment = VenueDetailFragment.newInstance(intent.getStringExtra(VENUE_TO_LOAD_EXTRA), VenueDetailFragment.VENUE_TYPE_ID);
