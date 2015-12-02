@@ -56,7 +56,6 @@
                     android:textSize="@dimen/material_type_large"
                     android:textIsSelectable="true"
                     android:layout_below="@id/fragmentMapWrapper"
-                    android:background="@drawable/layout_selector_green_white_base"
                     tools:ignore="UnusedAttribute"/>
 
                 <RelativeLayout

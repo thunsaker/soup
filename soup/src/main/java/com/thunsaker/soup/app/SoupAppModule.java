@@ -23,7 +23,6 @@ import com.thunsaker.soup.ui.MainActivity;
 import com.thunsaker.soup.ui.VenueAddCategoryActivity;
 import com.thunsaker.soup.ui.VenueDetailActivity;
 import com.thunsaker.soup.ui.VenueDetailActivityReceiver;
-import com.thunsaker.soup.ui.VenueDetailFragment;
 import com.thunsaker.soup.ui.VenueEditCategoriesActivity;
 import com.thunsaker.soup.ui.VenueEditHoursAddActivity;
 import com.thunsaker.soup.ui.VenueEditLocationFragment;
@@ -50,7 +49,7 @@ import static android.content.Context.LOCATION_SERVICE;
                 FoursquareTasks.class,
                 VenueListFragment.class,
                 VenueSearchActivity.class,
-                VenueDetailFragment.class,
+                VenueDetailActivity.class,
                 ListsFragment.class,
                 FoursquareListFragment.class,
                 ListActivity.class,
@@ -107,7 +106,7 @@ public class SoupAppModule {
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(FoursquarePrefs.FOURSQUARE_BASE_URL)
-//                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
 

@@ -104,7 +104,7 @@ public class CheckinHistoryActivity extends BaseSoupActivity
         Intent venueDetailsIntent =
                 new Intent(mContext, VenueDetailActivity.class);
         venueDetailsIntent.putExtra(
-                VenueDetailFragment.ARG_ITEM_JSON_STRING, compactVenueJson);
+                VenueDetailActivity.ARG_ITEM_JSON_STRING, compactVenueJson);
         venueDetailsIntent.putExtra(
                 VenueDetailActivity.VENUE_DETAILS_SOURCE,
                 VenueDetailActivity.VENUE_DETAIL_SOURCE_HISTORY);

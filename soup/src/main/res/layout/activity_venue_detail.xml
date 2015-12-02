@@ -17,7 +17,7 @@
             android:id="@+id/toolbarVenueDetail"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/Theme.Soup.PopupOverlay" />
+            android:theme="@style/Theme.Soup.AppBarOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 

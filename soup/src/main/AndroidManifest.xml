@@ -92,7 +92,7 @@
             android:launchMode="singleTop" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.thunsaker.soup.ui.VenueDetailActivity" />
+                android:value=".ui.VenueDetailActivity" />
         </activity>
         <activity
             android:name=".ui.VenueAddCategoryActivity"
