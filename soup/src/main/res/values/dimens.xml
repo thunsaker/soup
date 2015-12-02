@@ -15,6 +15,7 @@
     <dimen name="material_type_xlarge">45sp</dimen>
     <dimen name="material_type_large">34sp</dimen>
     <dimen name="material_type_med">24sp</dimen>
+    <dimen name="material_type_toolbar_spinner">18sp</dimen>
     <dimen name="material_type_small">16sp</dimen>
     <dimen name="material_type_micro">13sp</dimen>
     <dimen name="fab_size">56dp</dimen>

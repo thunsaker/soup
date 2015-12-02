@@ -1,20 +1,25 @@
 package com.thunsaker.soup.ui;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -34,7 +39,7 @@ public class CheckinHistoryActivity extends BaseSoupActivity
 
     @InjectView(R.id.checkinToolbar) Toolbar mToolbar;
 
-    @InjectView(R.id.checkinSpinner) Spinner mSpinner;
+//    @InjectView(R.id.checkinSpinner) Spinner mSpinner;
 
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
@@ -53,11 +58,22 @@ public class CheckinHistoryActivity extends BaseSoupActivity
         ButterKnife.inject(this);
 
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("");
 
-        SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(),
-                R.array.checkin_ranges, android.R.layout.simple_spinner_dropdown_item);
+        View spinnerContainer = LayoutInflater.from(this).inflate(R.layout.toolbar_spinner,
+                mToolbar, false);
 
+        ActionBar.LayoutParams lp =
+                new ActionBar.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+        mToolbar.addView(spinnerContainer, lp);
+
+        HistorySpinnerAdapter mSpinnerAdapter = new HistorySpinnerAdapter();
+        mSpinnerAdapter.addItems(getResources().getStringArray(R.array.checkin_ranges));
+
+        Spinner mSpinner = (Spinner) spinnerContainer.findViewById(R.id.checkinSpinner);
         mSpinner.setAdapter(mSpinnerAdapter);
         mSpinner.setOnItemSelectedListener(this);
     }
@@ -163,5 +179,72 @@ public class CheckinHistoryActivity extends BaseSoupActivity
                         CheckinHistoryFragment.newInstance(
                                 0, startDate, endDate))
                 .commit();
+    }
+
+    public class HistorySpinnerAdapter extends BaseAdapter {
+
+        private List<String> mItems = new ArrayList<>();
+
+        public void clear() {
+            mItems.clear();
+        }
+
+        @Override
+        public int getCount() {
+            return mItems.size();
+        }
+
+        @Override
+        public String getItem(int pos) {
+            return mItems.get(pos);
+        }
+
+        @Override
+        public long getItemId(int pos) {
+            return pos;
+        }
+
+        @Override
+        public View getView(int pos, View view, ViewGroup parent) {
+            if (view == null || !view.getTag().toString().equals("NON_DROPDOWN")) {
+                view = getLayoutInflater().inflate(R.layout.
+                        toolbar_spinner_item_actionbar, parent, false);
+                view.setTag("NON_DROPDOWN");
+            }
+            TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            textView.setText(getTitle(pos));
+            return view;
+        }
+
+        private String getTitle(int pos) {
+            return pos >= 0 && pos < mItems.size() ? mItems.get(pos) : "";
+        }
+
+        @Override
+        public View getDropDownView(int pos, View view, ViewGroup parent) {
+            if (view == null || !view.getTag().toString().equals("DROPDOWN")) {
+                view = getLayoutInflater().inflate(R.layout.toolbar_spinner_item_dropdown, parent, false);
+                view.setTag("DROPDOWN");
+            }
+
+            TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            textView.setText(getTitle(pos));
+
+            return view;
+        }
+
+        public void addItem(String item) {
+            mItems.add(item);
+        }
+
+        public void addItems(String[] items) {
+            for (String i : items) {
+                addItem(i);
+            }
+        }
+
+        public void addItems(List<String> items) {
+            mItems.addAll(items);
+        }
     }
 }

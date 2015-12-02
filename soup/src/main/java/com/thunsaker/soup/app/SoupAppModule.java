@@ -8,7 +8,6 @@ import android.location.LocationManager;
 import com.squareup.picasso.Picasso;
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.android.common.dagger.AndroidApplicationModule;
-import com.thunsaker.soup.BuildConfig;
 import com.thunsaker.soup.services.FoursquareService;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
@@ -106,7 +105,7 @@ public class SoupAppModule {
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(FoursquarePrefs.FOURSQUARE_BASE_URL)
-                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+//                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
 
@@ -126,7 +125,7 @@ public class SoupAppModule {
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(FoursquarePrefs.FOURSQUARE_BASE_URL)
-                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+//                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
 
