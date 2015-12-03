@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".VenueDetailActivity">
 
+    <include layout="@layout/fragment_venue_detail_material_scroll" />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_height="wrap_content"
@@ -20,8 +22,6 @@
             android:theme="@style/Theme.Soup.AppBarOverlay" />
 
     </android.support.design.widget.AppBarLayout>
-
-    <include layout="@layout/fragment_venue_detail_material_scroll" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabVenueDetail"

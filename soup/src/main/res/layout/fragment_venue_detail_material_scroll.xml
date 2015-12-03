@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    tools:context=".VenueDetailFragment">
+    tools:context=".ui.VenueDetailActivity"
+    tools:ignore="UnusedAttribute"
+    tools:showIn="@layout/activity_venue_detail">
 
     <ScrollView
         android:id="@+id/scrollViewMainVenueDetailsWrapper"
@@ -45,7 +47,6 @@
                     android:paddingRight="@dimen/material_padding"
                     android:paddingEnd="@dimen/material_padding"
                     android:paddingLeft="@dimen/material_keyline_1"
-                    android:paddingStart="@dimen/material_keyline_1"
                     android:textColor="@color/soup_green"
                     android:fontFamily="sans-serif-condensed"
                     android:gravity="center_vertical"
@@ -55,8 +56,7 @@
                     android:text="@string/placeholder_venue_name"
                     android:textSize="@dimen/material_type_large"
                     android:textIsSelectable="true"
-                    android:layout_below="@id/fragmentMapWrapper"
-                    tools:ignore="UnusedAttribute"/>
+                    android:layout_below="@id/fragmentMapWrapper" />
 
                 <RelativeLayout
                     android:id="@+id/relativeLayoutVenueDetailsWrapper"

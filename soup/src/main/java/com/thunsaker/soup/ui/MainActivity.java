@@ -122,7 +122,7 @@ public class MainActivity extends BaseSoupActivity implements
                 (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle =
                 new ActionBarDrawerToggle(this, drawer, mToolbar,
-                        R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                        R.string.drawer_open, R.string.drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 

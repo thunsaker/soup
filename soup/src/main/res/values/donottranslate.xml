@@ -19,7 +19,7 @@
     <string name="welcome_learn_more_url" translatable="false">http://support.foursquare.com/entries/422534-Becoming-a-superuser-SU</string>
 
 	<string name="edit_venue_address_hint" translatable="false">123 N Main St</string>
-    <string name="edit_venue_cross_street_hint">btw Center Ave &#38; City St</string>
+    <string name="edit_venue_cross_street_hint" translatable="false">btw Center Ave &#38; City St</string>
     <string name="edit_venue_zip_hint" translatable="false">12345</string>
 	<string name="edit_venue_phone_hint" translatable="false">415&#8211;867&#8211;5309</string>
     <string name="edit_venue_lat_lng_hint" translatable="false">0.00,0.00</string>

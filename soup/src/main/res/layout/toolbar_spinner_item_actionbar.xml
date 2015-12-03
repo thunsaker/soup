@@ -13,14 +13,10 @@
         android:drawablePadding="@dimen/material_padding"
         android:fontFamily="sans-serif"
         android:paddingLeft="@dimen/material_padding_double"
-        android:paddingStart="@dimen/material_padding_double"
         android:paddingRight="@dimen/material_padding_half"
-        android:paddingEnd="@dimen/material_padding_half"
         android:textColor="@color/white"
         android:textSize="@dimen/material_type_toolbar_spinner"
         android:textStyle="bold"
-        tools:ignore="UnusedAttributes" />
+        tools:ignore="UnusedAttribute" />
 
-    <!--android:drawableRight="@drawable/spinner_triangle"-->
-    <!--android:drawableEnd="@drawable/spinner_triangle"-->
 </LinearLayout>

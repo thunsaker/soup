@@ -12,7 +12,6 @@
         android:drawablePadding="@dimen/material_padding"
         android:gravity="center_vertical|start"
         android:paddingLeft="@dimen/material_padding_double"
-        android:paddingStart="@dimen/material_padding_double"
         android:paddingRight="@dimen/material_padding_double"
         android:paddingEnd="@dimen/material_padding_double"
         android:textColor="@color/white"
