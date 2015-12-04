@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".VenueDetailActivity">
 
-    <include layout="@layout/fragment_venue_detail_material_scroll" />
+    <include layout="@layout/content_venue_detail" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"

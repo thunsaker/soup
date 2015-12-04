@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="navigation_array_items">
-        <item>Venues</item>
-        <item>History (Pro)</item>
-        <item>Lists (Pro)</item>
-
-        <item>About</item>
-        <!--<item>Settings</item>-->
-        <item>Log Out</item>
-    </string-array>
-
-    <string-array name="navigation_array_items_pro">
-        <item>Venues</item>
-        <item>History</item>
-        <item>Lists</item>
-
-        <item>About</item>
-        <!--<item>Settings</item>-->
-        <item>Log Out</item>
-    </string-array>
-
     <string-array name="checkin_ranges">
         <item>@string/history_title_today</item>
         <item>@string/history_title_last_week</item>

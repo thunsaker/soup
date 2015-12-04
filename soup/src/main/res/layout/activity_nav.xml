@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_nav"
+        app:headerLayout="@layout/fragment_profile"
         app:menu="@menu/drawer_view"/>
 
 </android.support.v4.widget.DrawerLayout>
