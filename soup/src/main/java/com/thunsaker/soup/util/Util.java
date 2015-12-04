@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -16,14 +15,6 @@ import com.thunsaker.soup.BuildConfig;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.data.api.model.CompactVenue;
 import com.thunsaker.soup.data.api.model.Location;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,37 +40,6 @@ public class Util {
 	public static final String REGEX_GPS = "^([-+]?\\d{1,2}([.]\\d+)?),\\s*([-+]?\\d{1,3}([.]\\d+)?)$";
 
 	public static String contentType = "json/application";
-
-	public static String getHttpResponse(String url, String contentType, String accepts) {
-		return getHttpResponse(url, false, contentType, accepts);
-	}
-
-	public static String getHttpResponse(String url, Boolean isHttpPost, String contentType, String accepts) {
-		String result = "";
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(url);
-		HttpPost httpPost = new HttpPost(url);
-		HttpResponse response;
-
-		try {
-			if(isHttpPost)
-				response = httpclient.execute(httpPost);
-			else
-				response = httpclient.execute(httpGet);
-
-			HttpEntity entity = response.getEntity();
-			if (entity != null) {
-				InputStream instream = entity.getContent();
-				result = convertStreamToString(instream);
-				instream.close();
-			}
-		} catch (ClientProtocolException e) {
-			Log.e(LOG_TAG, "There was a protocol based error", e);
-		} catch (IOException e) {
-			Log.e(LOG_TAG, "There was an IO Stream related error", e);
-		}
-		return result;
-	}
 
 	private static String convertStreamToString(InputStream is) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));

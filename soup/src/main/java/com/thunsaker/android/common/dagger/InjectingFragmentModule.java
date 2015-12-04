@@ -28,7 +28,7 @@
 
 package com.thunsaker.android.common.dagger;
 
-        import java.lang.annotation.Documented;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

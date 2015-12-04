@@ -13,8 +13,9 @@ public abstract class DaggerApplication extends Application implements Injector 
     @Override
     public void onCreate() {
         super.onCreate();
+
         AndroidApplicationModule baseApplicationModule = new AndroidApplicationModule();
-        baseApplicationModule.xApplicationContext = this.getApplicationContext();
+        AndroidApplicationModule.xApplicationContext = this.getApplicationContext();
 
         List<Object> modules = new ArrayList<Object>();
         modules.add(baseApplicationModule);

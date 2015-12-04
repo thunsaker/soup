@@ -3,9 +3,7 @@ package com.thunsaker.soup.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,18 +49,11 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CheckinHistoryFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CheckinHistoryFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
 public class CheckinHistoryFragment extends BaseSoupFragment
         implements SwipeRefreshLayout.OnRefreshListener,
-        AbsListView.OnItemClickListener, AbsListView.OnItemLongClickListener{
+        AbsListView.OnItemClickListener,
+        AbsListView.OnItemLongClickListener {
+
     @Inject
     @ForApplication
     Context mContext;
@@ -215,11 +206,11 @@ public class CheckinHistoryFragment extends BaseSoupFragment
 
         if(mSwipeViewCheckinContainer != null) {
             mSwipeViewCheckinContainer.setOnRefreshListener(this);
-            mSwipeViewCheckinContainer.setColorScheme(
-                    R.color.soup_green,
-                    R.color.soup_blue,
-                    R.color.soup_green,
-                    R.color.soup_red);
+            mSwipeViewCheckinContainer.setColorSchemeColors(
+                    getResources().getColor(R.color.soup_green),
+                    getResources().getColor(R.color.soup_blue),
+                    getResources().getColor(R.color.soup_green),
+                    getResources().getColor(R.color.soup_red));
             mSwipeViewCheckinContainer.setRefreshing(true);
         }
 
@@ -439,11 +430,12 @@ public class CheckinHistoryFragment extends BaseSoupFragment
         CheckinHistoryActivity.customStartDate = mStartDate;
         CheckinHistoryActivity.customEndDate = mEndDate;
 
-        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            assert getActivity() != null;
-            assert getActivity().getActionBar() != null;
-            getActivity().getActionBar().setSelectedNavigationItem(3);
-        }
+        // FIXME: 11/10/2015 - Determine if I need to call this on the custom date range
+//        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//            assert getActivity() != null;
+//            assert getActivity().getActionBar() != null;
+//            getActivity().getActionBar().setSelectedNavigationItem(3);
+//        }
 
         CloseCalendarPicker();
         RefreshData();

@@ -6,34 +6,25 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.model.LatLng;
 import com.thunsaker.android.common.annotations.ForApplication;
-import com.thunsaker.soup.BuildConfig;
 import com.thunsaker.soup.PreferencesHelper;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
@@ -44,16 +35,17 @@ import com.thunsaker.soup.data.events.VenueSearchEvent;
 import com.thunsaker.soup.services.AuthHelper;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
-import com.thunsaker.soup.ui.settings.SettingsActivity;
-import com.thunsaker.soup.ui.settings.SettingsLegacyActivity;
 import com.thunsaker.soup.util.Util;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends BaseSoupActivity implements
-		VenueListFragment.OnFragmentInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        VenueListFragment.OnFragmentInteractionListener,
         ListsFragment.OnFragmentInteractionListener {
 
     @Inject @ForApplication
@@ -68,18 +60,11 @@ public class MainActivity extends BaseSoupActivity implements
     @Inject
     LocationManager mLocationManager;
 
-	private String[] mDrawerItems;
-	private DrawerLayout mDrawerLayout;
-	private ActionBarDrawerToggle mDrawerToggle;
-	private String mTitle;
-	private String mDrawerTitle;
-	private ListView mDrawerList;
-	final String[] fragments = { "com.thunsaker.soup.ui.VenueListFragment", // Home
-			"com.thunsaker.soup.ui.CheckinHistoryActivity", // History
-			"com.thunsaker.soup.ui.ListsFragment", // Lists
-			"com.thunsaker.soup.ui.AboutFragment", // About
-			"com.thunsaker.soup.ui.WelcomeActivity" }; // Log Out
-    //			"com.thunsaker.soup.ui.SettingsActivity" }; // Settings
+    @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+
+    @InjectView(R.id.toolbar) Toolbar mToolbar;
+
+    @InjectView(R.id.nav_view) NavigationView mNavView;
 
 	private final static Uri soupProUri = Uri.parse("market://details?id=com.thunsaker.soup.pro");
 
@@ -88,7 +73,7 @@ public class MainActivity extends BaseSoupActivity implements
 
 	public static LatLng currentLocation;
 
-	private AdView adView;
+//	private AdView adView;
 
 	protected static final String HISTORY_PREVIEW_DIALOG = "HISTORY_PREVIEW_DIALOG";
 	protected static final String LOGOUT_CONFIRMATION_DIALOG = "LOGOUT_CONFIRMATION_DIALOG";
@@ -110,64 +95,56 @@ public class MainActivity extends BaseSoupActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(!BuildConfig.DEBUG)
-            Crashlytics.start(this);
+//        if(!BuildConfig.DEBUG)
+//            Crashlytics.start(this);
 
         mBus.register(this);
 
         handleIntent(getIntent());
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_nav);
+        ButterKnife.inject(this);
 
-        mDrawerTitle = getString(R.string.app_name);
-        mTitle = getString(R.string.app_name);
+        setSupportActionBar(mToolbar);
+//        setupDrawerContent(mNavView);
 
-        mDrawerItems = Util.IsProInstalled(mContext.getApplicationContext()) ? getResources()
-                .getStringArray(R.array.navigation_array_items_pro)
-                : getResources().getStringArray(R.array.navigation_array_items);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_navigation_drawer, R.string.drawer_open,
-                R.string.drawer_close) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                getSupportActionBar().setTitle(mTitle);
-            }
+        // TODO: Think about adding a FAB.
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Search!", null).show();
+//            }
+//        });
 
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
-            }
-        };
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        DrawerLayout drawer =
+                (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle =
+                new ActionBarDrawerToggle(this, drawer, mToolbar,
+                        R.string.drawer_open, R.string.drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mDrawerItems));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        ActionBar ab = SetupActionBar();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         mFoursquareClient = new FoursquareClient(
                 AuthHelper.FOURSQUARE_CLIENT_ID,
                 AuthHelper.FOURSQUARE_CLIENT_SECRET,
                 AuthHelper.FOURSQUARE_CALLBACK_URL);
-        FoursquareAuthorizationActivity.mFoursquareClient = mFoursquareClient;
         isFoursquareConnected = PreferencesHelper
                 .getFoursquareConnected(getApplicationContext());
 
         if (isFoursquareConnected) {
             if (Util.IsProInstalled(getApplicationContext())) {
                 hideAds();
-
-                ab.setTitle(R.string.app_name_pro);
+                setTitle(R.string.app_name_pro);
             } else {
                 showAds();
             }
 
-            selectItem(0);
+            selectDrawerItem(null);
 
             checkSuperuserLevel();
 
@@ -186,6 +163,61 @@ public class MainActivity extends BaseSoupActivity implements
         }
     }
 
+    private void selectDrawerItem(MenuItem menuItem) {
+        Fragment fragment = null;
+        Class fragmentClass = VenueListFragment.class;
+
+        if (menuItem != null) {
+            switch (menuItem.getItemId()) {
+                case R.id.nav_venues:
+                    fragmentClass = VenueListFragment.class;
+                    break;
+                case R.id.nav_history:
+                    if (Util.IsProInstalled(mContext)) {
+                        startActivity(new Intent(mContext, CheckinHistoryActivity.class));
+                        menuItem.setChecked(true);
+                    } else {
+                        DialogFragment historyPreviewDialog = new HistoryUpsellDialogFragment();
+                        historyPreviewDialog.show(getSupportFragmentManager(),
+                                HISTORY_PREVIEW_DIALOG);
+                    }
+                    return;
+                case R.id.nav_lists:
+                    if (Util.IsProInstalled(getApplicationContext())) {
+                        fragmentClass = ListsFragment.class;
+                    } else {
+                        DialogFragment listsPreviewDialog = new ListsUpsellDialogFragment();
+                        listsPreviewDialog.show(getSupportFragmentManager(),
+                                LISTS_PREVIEW_DIALOG);
+                        return;
+                    }
+                    break;
+                case R.id.nav_about:
+                    fragmentClass = AboutFragment.class;
+                    break;
+                case R.id.nav_logout:
+                    DialogFragment confirmationDialog = new LogOutDialogFragment();
+                    confirmationDialog.show(getSupportFragmentManager(),
+                            LOGOUT_CONFIRMATION_DIALOG);
+                    break;
+            }
+
+            menuItem.setChecked(true);
+            setTitle(menuItem.getTitle());
+        }
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        mDrawerLayout.closeDrawers();
+    }
+
     public void checkSuperuserLevel() {
         int superuserLevel = FoursquarePrefs.SUPERUSER.UNKNOWN;
         try {
@@ -199,88 +231,79 @@ public class MainActivity extends BaseSoupActivity implements
             mFoursquareTasks.new GetUserInfo(FoursquarePrefs.FOURSQUARE_USER_SELF_SUFFIX).execute();
     }
 
-    private ActionBar SetupActionBar() {
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setHomeButtonEnabled(true);
-        ab.setIcon(getResources().getDrawable(R.drawable.ic_launcher_white));
-        return ab;
-    }
-
     private void showAds() {
-        adView = new AdView(this);
-        adView.setAdSize(AdSize.BANNER);
-        adView.setAdUnitId(getString(R.string.admob_id));
-        LinearLayout adLayout = (LinearLayout)findViewById(R.id.adViewLayoutWrapper);
-        adLayout.addView(adView);
-
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("2B0F45ECB7E319BC2500CD6AFF1353CC") // N7 - 4.4.4
-                .addTestDevice("D50AF454D0BF794B6A38811EEA1F21EE") // GS3 - 4.3
-                .addTestDevice("6287716BED76BCE3BB981DD19AA858E1") // GS3 - 4.1
-                .addTestDevice("FDC26B2E6C049E2E9ECE7C97D42A4726") // G2 - 2.3.4
-                .addTestDevice("1BF36BBC3C197AFF96AF3F9F305CAD48") // N5 - L
-                .addTestDevice("D8FE76757F1CA9B485916499EC8C13DB") // MAXX - 4.4.2
-                .build();
-
-        if(adView != null)
-            adView.loadAd(adRequest);
+//        adView = new AdView(this);
+//        adView.setAdSize(AdSize.BANNER);
+//        adView.setAdUnitId(getString(R.string.admob_id));
+//        LinearLayout adLayout = (LinearLayout)findViewById(R.id.adViewLayoutWrapper);
+//        adLayout.addView(adView);
+//
+//        AdRequest adRequest = new AdRequest.Builder()
+//                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+//                .addTestDevice("2B0F45ECB7E319BC2500CD6AFF1353CC") // N7 - 4.4.4
+//                .addTestDevice("D50AF454D0BF794B6A38811EEA1F21EE") // GS3 - 4.3
+//                .addTestDevice("6287716BED76BCE3BB981DD19AA858E1") // GS3 - 4.1
+//                .addTestDevice("FDC26B2E6C049E2E9ECE7C97D42A4726") // G2 - 2.3.4
+//                .addTestDevice("1BF36BBC3C197AFF96AF3F9F305CAD48") // N5 - L
+//                .addTestDevice("D8FE76757F1CA9B485916499EC8C13DB") // MAXX - 4.4.2
+//                .addTestDevice("B8588B68EF8E1193C85527B332B413D9") // S6 - 5.1.1
+//                .build();
+//
+//        if(adView != null)
+//            adView.loadAd(adRequest);
     }
 
     private void hideAds() {
-        LinearLayout adLayout = (LinearLayout) findViewById(R.id.adViewLayoutWrapper);
-        adLayout.setVisibility(View.GONE);
-
-        if (adView != null)
-            adView.destroy();
+//        LinearLayout adLayout = (LinearLayout) findViewById(R.id.adViewLayoutWrapper);
+//        adLayout.setVisibility(View.GONE);
+//
+//        if (adView != null)
+//            adView.destroy();
     }
 
     private void ShowNavDrawer(boolean show) {
 		if(!show) {
-			mDrawerLayout.openDrawer(mDrawerList);
+			mDrawerLayout.openDrawer(GravityCompat.START);
 			PreferencesHelper.setShownNavDrawer(getApplicationContext(), true);
 		}
 	}
 
-	@Override
+    @Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		mDrawerToggle.syncState();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
-			return true;
-		}
-
 		switch (item.getItemId()) {
-		case R.id.action_search:
-			Intent searchActivity = new Intent(getApplicationContext(), VenueSearchActivity.class);
-			startActivity(searchActivity);
-			return true;
-			// case R.id.action_go_pro:
-			// startActivity(new Intent(
-			// Intent.ACTION_VIEW,
-			// MainActivity.soupProUri));
-			// return true;
-		default:
-			return false;
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.action_search:
+                Intent searchActivity = new Intent(getApplicationContext(), VenueSearchActivity.class);
+                startActivity(searchActivity);
+                return true;
+            default:
+                return false;
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main_menu, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
 
 	@Override
 	protected void onNewIntent(Intent intent) {
@@ -298,12 +321,6 @@ public class MainActivity extends BaseSoupActivity implements
 
         if (!checkinVenueId.equals("") && !checkinVenueName.equals(""))
             CheckinUser(checkinVenueId, checkinVenueName);
-	}
-
-	@Override
-	public void setTitle(CharSequence title) {
-		mTitle = title.toString();
-		getSupportActionBar().setTitle(mTitle);
 	}
 
 	public void ShowWelcomeActivity() {
@@ -324,7 +341,7 @@ public class MainActivity extends BaseSoupActivity implements
 	@Override
 	public void onVenueListClick(String compactVenueJson) {
 		Intent detailIntent = new Intent(this, VenueDetailActivity.class);
-		detailIntent.putExtra(VenueDetailFragment.ARG_ITEM_JSON_STRING, compactVenueJson);
+		detailIntent.putExtra(VenueDetailActivity.ARG_ITEM_JSON_STRING, compactVenueJson);
 		detailIntent.putExtra(VenueDetailActivity.VENUE_DETAILS_SOURCE, VenueDetailActivity.VENUE_DETAIL_SOURCE_MAIN);
 		startActivity(detailIntent);
 	}
@@ -335,6 +352,12 @@ public class MainActivity extends BaseSoupActivity implements
 		checkinDialog.show(getSupportFragmentManager(), CHECKIN_CONFIRMATION_DIALOG);
 		return true;
 	}
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        selectDrawerItem(item);
+        return true;
+    }
 
     public static class HistoryUpsellDialogFragment extends DialogFragment {
 		@Override
@@ -386,7 +409,7 @@ public class MainActivity extends BaseSoupActivity implements
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									FoursquareAuthorizationActivity
+									FoursquarePrefs
 											.clearFoursquareUser(getActivity()
 													.getApplicationContext());
 									startActivity(new Intent(getActivity()
@@ -450,107 +473,19 @@ public class MainActivity extends BaseSoupActivity implements
     public void onPause() {
         mLocationManager = null;
 
-        if (adView != null) {
-            adView.pause();
-        }
+//        if (adView != null) {
+//            adView.pause();
+//        }
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        if (adView != null) {
-            hideAds();
-        }
+//        if (adView != null) {
+//            hideAds();
+//        }
         super.onDestroy();
     }
-
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
-        }
-    }
-
-	private void selectItem(int position) {
-		FragmentManager fragmentManager = getSupportFragmentManager();
-
-		switch (position) {
-            case 0:
-                // Venue List (VenueListFragment)
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.content_frame, VenueListFragment.newInstance(VenueListFragment.VENUE_LIST_TYPE_DEFAULT))
-                        .commit();
-                mDrawerList.setItemChecked(position, true);
-                setTitle(getString(R.string.app_name));
-                break;
-            case 1: // History
-                if (Util.IsProInstalled(mContext)) {
-                    startActivity(new Intent(mContext, CheckinHistoryActivity.class));
-                    mDrawerList.setItemChecked(0, true);
-                } else {
-                    DialogFragment historyPreviewDialog = new HistoryUpsellDialogFragment();
-                    historyPreviewDialog.show(getSupportFragmentManager(),
-                            HISTORY_PREVIEW_DIALOG);
-                }
-                break;
-            case 2: // Lists
-                // TODO: Change my upsell dialog. Thinking, show the history page,
-                // but don't let them interact with anything, or show the old dialog
-                // as a fragment instead of a dialog
-                if (Util.IsProInstalled(getApplicationContext())) {
-                    fragmentManager
-                            .beginTransaction()
-                            .replace(
-                                    R.id.content_frame,
-                                    Fragment.instantiate(MainActivity.this,
-                                            fragments[position])
-                            ).commit();
-
-                    mDrawerList.setItemChecked(position, true);
-                    setTitle(mDrawerItems[position]);
-                } else {
-                    DialogFragment listsPreviewDialog = new ListsUpsellDialogFragment();
-                    listsPreviewDialog.show(getSupportFragmentManager(),
-                            LISTS_PREVIEW_DIALOG);
-                }
-                break;
-            case 4: // Log out
-                DialogFragment confirmationDialog = new LogOutDialogFragment();
-                confirmationDialog.show(getSupportFragmentManager(),
-                        LOGOUT_CONFIRMATION_DIALOG);
-                break;
-            case 5: // Settings
-                Intent settingsIntent;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD)
-                    settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                else
-                    settingsIntent = new Intent(getApplicationContext(), SettingsLegacyActivity.class);
-
-                if (Util.IsProInstalled(getApplicationContext())) {
-                    settingsIntent.putExtra(SettingsActivity.EXTRA_IS_PRO, Util.IsProInstalled(getApplicationContext()));
-                }
-                startActivity(settingsIntent);
-
-                mDrawerList.setItemChecked(0, true);
-                break;
-            default: // About and others
-                fragmentManager
-                        .beginTransaction()
-                        .replace(
-                                R.id.content_frame,
-                                Fragment.instantiate(MainActivity.this,
-                                        fragments[position])
-                        ).commit();
-
-                mDrawerList.setItemChecked(position, true);
-                setTitle(mDrawerItems[position]);
-                break;
-        }
-
-		mDrawerLayout.closeDrawer(mDrawerList);
-	}
 
 	public void CheckinUser(String id, String name) {
         if(Util.HasInternet(mContext)) {
@@ -563,6 +498,7 @@ public class MainActivity extends BaseSoupActivity implements
     private void NoInternet() {
         Toast.makeText(mContext, R.string.alert_no_internet, Toast.LENGTH_SHORT).show();
     }
+
 
     public void onEvent(VenueSearchEvent event) {
         if(Util.HasInternet(mContext))

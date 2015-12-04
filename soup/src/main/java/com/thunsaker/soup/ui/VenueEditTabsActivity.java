@@ -67,7 +67,7 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_PROGRESS);
+        supportRequestWindowFeature(Window.FEATURE_PROGRESS);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -85,8 +85,8 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
 
         level = PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext());
 
-        if(getIntent().hasExtra(VenueDetailFragment.VENUE_EDIT_EXTRA)) {
-            originalVenue = Venue.GetVenueFromJson(getIntent().getExtras().get(VenueDetailFragment.VENUE_EDIT_EXTRA).toString());
+        if(getIntent().hasExtra(VenueDetailActivity.VENUE_EDIT_EXTRA)) {
+            originalVenue = Venue.GetVenueFromJson(getIntent().getExtras().get(VenueDetailActivity.VENUE_EDIT_EXTRA).toString());
         }
 
         if(mBus != null && !mBus.isRegistered(this))
@@ -325,7 +325,7 @@ public class VenueEditTabsActivity extends BaseSoupActivity {
                                     		getActivity().getApplicationContext(),
                                             VenueEditTabsActivity.class);
                             editVenueIntent.putExtra(
-                                    VenueDetailFragment.VENUE_EDIT_EXTRA, originalVenue.toString());
+                                    VenueDetailActivity.VENUE_EDIT_EXTRA, originalVenue.toString());
                             editVenueIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                             VenueEditTabsActivity.originalVenue = new Venue(originalVenue);
                             startActivity(editVenueIntent);

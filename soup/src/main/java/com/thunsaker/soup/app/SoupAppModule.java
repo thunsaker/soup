@@ -8,14 +8,12 @@ import android.location.LocationManager;
 import com.squareup.picasso.Picasso;
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.android.common.dagger.AndroidApplicationModule;
-import com.thunsaker.soup.BuildConfig;
 import com.thunsaker.soup.services.FoursquareService;
 import com.thunsaker.soup.services.foursquare.FoursquarePrefs;
 import com.thunsaker.soup.services.foursquare.FoursquareTasks;
 import com.thunsaker.soup.services.foursquare.SwarmService;
 import com.thunsaker.soup.ui.CheckinHistoryActivity;
 import com.thunsaker.soup.ui.CheckinHistoryFragment;
-import com.thunsaker.soup.ui.FoursquareAuthorizationActivity;
 import com.thunsaker.soup.ui.FoursquareListFragment;
 import com.thunsaker.soup.ui.ListActivity;
 import com.thunsaker.soup.ui.ListsFragment;
@@ -24,7 +22,6 @@ import com.thunsaker.soup.ui.MainActivity;
 import com.thunsaker.soup.ui.VenueAddCategoryActivity;
 import com.thunsaker.soup.ui.VenueDetailActivity;
 import com.thunsaker.soup.ui.VenueDetailActivityReceiver;
-import com.thunsaker.soup.ui.VenueDetailFragment;
 import com.thunsaker.soup.ui.VenueEditCategoriesActivity;
 import com.thunsaker.soup.ui.VenueEditHoursAddActivity;
 import com.thunsaker.soup.ui.VenueEditLocationFragment;
@@ -47,12 +44,11 @@ import static android.content.Context.LOCATION_SERVICE;
         addsTo = AndroidApplicationModule.class,
         injects = {
                 SoupApp.class,
-                FoursquareAuthorizationActivity.class,
                 MainActivity.class,
                 FoursquareTasks.class,
                 VenueListFragment.class,
                 VenueSearchActivity.class,
-                VenueDetailFragment.class,
+                VenueDetailActivity.class,
                 ListsFragment.class,
                 FoursquareListFragment.class,
                 ListActivity.class,
@@ -109,7 +105,7 @@ public class SoupAppModule {
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(FoursquarePrefs.FOURSQUARE_BASE_URL)
-                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+//                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
 
@@ -129,7 +125,7 @@ public class SoupAppModule {
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(FoursquarePrefs.FOURSQUARE_BASE_URL)
-                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+//                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
 

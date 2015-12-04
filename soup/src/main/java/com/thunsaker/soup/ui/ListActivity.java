@@ -107,7 +107,7 @@ public class ListActivity extends BaseSoupActivity
 	@Override
 	public void onItemSelected(String compactVenueJson) {
 		Intent detailIntent = new Intent(this, VenueDetailActivity.class);
-		detailIntent.putExtra(VenueDetailFragment.ARG_ITEM_JSON_STRING,compactVenueJson);
+		detailIntent.putExtra(VenueDetailActivity.ARG_ITEM_JSON_STRING,compactVenueJson);
 		detailIntent.putExtra(VenueDetailActivity.VENUE_DETAILS_SOURCE, VenueDetailActivity.VENUE_DETAIL_SOURCE_LIST);
 		startActivity(detailIntent);
 	}

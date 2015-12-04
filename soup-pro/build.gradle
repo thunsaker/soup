@@ -1,70 +1,30 @@
-gradle.taskGraph.whenReady { taskGraph ->
-    if(taskGraph.hasTask(':app:assembleRelease')) {
-        // Only execute when we are trying to assemble a release build
-        def pass = System.console() != null ? System.console().readPassword("\nPlease enter store passphrase: ") : ""
-        // readPassword returns a char[] so we need to wrap it into a string, because that's
-        // most likely what you need
-        pass = new String(pass)
-        // Use the pass variable here (so set signing configs here)
-        android.signingConfigs.release.storePassword = pass
-
-        def pass2 = System.console() != null ? System.console().readPassword("\nPlease enter key passphrase: ") : ""
-        // readPassword returns a char[] so we need to wrap it into a string, because that's
-        // most likely what you need
-        pass2 = new String(pass2)
-        android.signingConfigs.release.keyPassword = pass2
-    }
-}
-
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '20'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 19
+        minSdkVersion 14
+        targetSdkVersion 23
         versionCode 3
         versionName "1.2"
     }
 
-    signingConfigs {
-        debugSigning {
-            storeFile file(DEBUG_STORE_FILE)
-            storePassword "android"
-            keyAlias "androiddebugkey"
-            keyPassword "android"
-        }
-
-        releaseSigning {
-            storeFile file(RELEASE_STORE_FILE)
-            storePassword ""
-            keyAlias RELEASE_KEY_ALIAS
-            keyPassword ""
-        }
-    }
-
     buildTypes {
         debug {
-            zipAlign true
-            debuggable true
-            runProguard false
+            minifyEnabled false
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
-            signingConfig signingConfigs.debugSigning
         }
 
         release {
-            zipAlign true
-            debuggable false
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            signingConfig signingConfigs.releaseSigning
         }
     }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.+'
+    compile 'com.android.support:support-v4:23.1.0'
 }

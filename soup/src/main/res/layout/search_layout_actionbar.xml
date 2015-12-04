@@ -15,27 +15,6 @@
         android:layout_weight="0.15"
         android:layout_height="fill_parent"
         android:src="@drawable/ic_action_search_holo_dark"
-        style="@style/ActionButton"
+        style="?android:attr/actionButtonStyle"
         android:contentDescription="@string/image_description_search" />
 </LinearLayout>
-
-
-<!-- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <com.actionbarsherlock.widget.SearchView
-        android:id="@+id/searchViewSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:gravity="fill_horizontal"
-        android:layout_alignParentLeft="true" />
-    <ImageButton
-        android:id="@+id/imageButtonSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_toRightOf="@id/searchViewSearch"
-        android:src="@drawable/ic_action_search_holo_dark"
-        style="@style/Widget.Sherlock.ActionButton"
-        android:layout_alignParentRight="true"
-        android:contentDescription="@string/image_description_search" />
-</RelativeLayout> -->

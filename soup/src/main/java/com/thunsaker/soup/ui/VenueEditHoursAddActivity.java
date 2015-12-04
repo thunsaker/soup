@@ -19,8 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.doomonafireball.betterpickers.timepicker.TimePickerBuilder;
-import com.doomonafireball.betterpickers.timepicker.TimePickerDialogFragment.TimePickerDialogHandler;
+import com.codetroopers.betterpickers.timepicker.TimePickerBuilder;
+import com.codetroopers.betterpickers.timepicker.TimePickerDialogFragment;
 import com.thunsaker.android.common.annotations.ForApplication;
 import com.thunsaker.soup.R;
 import com.thunsaker.soup.app.BaseSoupActivity;
@@ -40,7 +40,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class VenueEditHoursAddActivity extends BaseSoupActivity
-        implements TimePickerDialogHandler {
+        implements TimePickerDialogFragment.TimePickerDialogHandler {
 
     @Inject
     @ForApplication
@@ -359,8 +359,9 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
     public void openStartTimePicker(int segment) {
         TimePickerBuilder openBuilder = new TimePickerBuilder()
                 .setReference(TIME_PICKER_OPEN + segment)
-                .setFragmentManager(getSupportFragmentManager())
-                .setStyleResId(R.style.BetterPickerTimeTheme);
+                .setFragmentManager(getSupportFragmentManager());
+        // TODO: 11/11/2015 Restore theme if default isn't great
+//                .setStyleResId(R.style.BetterPickerTimeTheme);
 //                .setStyleResId(com.doomonafireball.betterpickers.R.style.BetterPickersDialogFragment);
         openBuilder.show();
     }
@@ -368,8 +369,9 @@ public class VenueEditHoursAddActivity extends BaseSoupActivity
     public void openEndTimePicker(int segment) {
         TimePickerBuilder closeBuilder = new TimePickerBuilder()
                 .setReference(TIME_PICKER_CLOSE + segment)
-                .setFragmentManager(getSupportFragmentManager())
-                .setStyleResId(R.style.BetterPickerTimeTheme);
+                .setFragmentManager(getSupportFragmentManager());
+        // TODO: 11/11/2015 Restore theme if default isn't great
+//                .setStyleResId(R.style.BetterPickerTimeTheme);
 //                .setStyleResId(com.doomonafireball.betterpickers.R.style.BetterPickersDialogFragment);
         closeBuilder.show();
     }

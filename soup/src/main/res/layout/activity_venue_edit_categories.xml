@@ -57,11 +57,11 @@
                     android:paddingTop="@dimen/material_padding_double"
                     android:paddingBottom="@dimen/material_padding_double"
                     android:paddingLeft="@dimen/material_keyline_2"
+                    android:textSize="@dimen/material_type_small"
                     android:textIsSelectable="false"
                     android:text="@string/placeholder_category"
                     android:textStyle="bold"
-                    android:gravity="center_vertical"
-                    style="@style/Theme.Soup.Text.Small" />
+                    android:gravity="center_vertical" />
             </RelativeLayout>
 
             <ImageView
@@ -108,9 +108,9 @@
                     android:paddingBottom="@dimen/material_padding_double"
                     android:paddingLeft="@dimen/material_keyline_2"
                     android:textIsSelectable="false"
+                    android:textSize="@dimen/material_type_small"
                     android:text="@string/placeholder_category"
-                    android:gravity="center_vertical"
-                    style="@style/Theme.Soup.Text.Small" />
+                    android:gravity="center_vertical" />
             </RelativeLayout>
 
             <ImageView
@@ -159,7 +159,7 @@
                     android:textIsSelectable="false"
                     android:text="@string/placeholder_category"
                     android:gravity="center_vertical"
-                    style="@style/Theme.Soup.Text.Small" />
+                    android:textSize="@dimen/material_type_small" />
             </RelativeLayout>
 
             <ImageView
@@ -205,6 +205,6 @@
             android:textIsSelectable="false"
             android:text="@string/edit_category_add"
             android:gravity="center_vertical"
-            style="@style/Theme.Soup.Text.Small" />
+            android:textSize="@dimen/material_type_small" />
     </RelativeLayout>
 </RelativeLayout>

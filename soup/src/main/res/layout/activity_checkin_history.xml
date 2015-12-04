@@ -1,7 +1,21 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.thunsaker.soup.ui.CheckinHistoryActivity"
-    tools:ignore="MergeRootFrame" />
+<LinearLayout android:id="@+id/checkinHistoryWrapper"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.thunsaker.soup.ui.CheckinHistoryActivity"
+              tools:ignore="MergeRootFrame">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/checkinToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/Theme.Soup.AppBarOverlay"
+        android:background="?attr/colorPrimary" />
+
+    <FrameLayout
+        android:id="@+id/checkinHistoryContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

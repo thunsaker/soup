@@ -118,11 +118,11 @@ public class ListsFragment extends BaseSoupFragment
         ButterKnife.inject(this, view);
         if(mSwipeViewListsContainer != null) {
             mSwipeViewListsContainer.setOnRefreshListener(this);
-            mSwipeViewListsContainer.setColorScheme(
-                    R.color.soup_green,
-                    R.color.soup_blue,
-                    R.color.soup_green,
-                    R.color.soup_red);
+            mSwipeViewListsContainer.setColorSchemeColors(
+					getResources().getColor(R.color.soup_green),
+					getResources().getColor(R.color.soup_blue),
+					getResources().getColor(R.color.soup_green),
+					getResources().getColor(R.color.soup_red));
         }
 
         RefreshLists(this);

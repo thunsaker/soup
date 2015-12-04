@@ -65,7 +65,7 @@ public class VenueEditInfoFragment extends Fragment {
                           R.id.linearLayoutEditVenueInfoSuperuserSection);
 
         if(VenueEditTabsActivity.originalVenue == null) {
-            VenueEditTabsActivity.originalVenue = VenueDetailFragment.currentVenue;
+            VenueEditTabsActivity.originalVenue = VenueDetailActivity.currentVenue;
         }
 
         LoadForm();

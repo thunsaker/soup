@@ -116,14 +116,14 @@ public class VenueEditCategoriesActivity extends BaseSoupActivity {
 
         level = PreferencesHelper.getFoursquareSuperuserLevel(getApplicationContext());
 
-        if (getIntent().hasExtra(VenueDetailFragment.VENUE_EDIT_EXTRA)) {
+        if (getIntent().hasExtra(VenueDetailActivity.VENUE_EDIT_EXTRA)) {
             currentVenue =
                     Venue.GetVenueFromJson(
-                            getIntent().getExtras().get(VenueDetailFragment.VENUE_EDIT_EXTRA).toString());
+                            getIntent().getExtras().get(VenueDetailActivity.VENUE_EDIT_EXTRA).toString());
         }
 
-        if (VenueDetailFragment.currentVenue != null) {
-            currentVenue = VenueDetailFragment.currentVenue;
+        if (VenueDetailActivity.currentVenue != null) {
+            currentVenue = VenueDetailActivity.currentVenue;
             originalCategories = new ArrayList<Category>();
             if (currentVenue.categories != null && currentVenue.categories.size() > 0)
                 originalCategories.addAll(currentVenue.categories);

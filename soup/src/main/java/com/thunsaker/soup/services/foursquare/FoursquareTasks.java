@@ -286,7 +286,7 @@ public class FoursquareTasks {
             this(theVenueId, theSource, false);
         }
 
-        public GetVenue(String theVenueId, Integer theSource, Boolean withHours) {
+        public GetVenue(String theVenueId, Integer theSource, boolean withHours) {
             myVenueId = theVenueId;
             mySource = theSource;
             this.withHours = withHours;
@@ -325,9 +325,6 @@ public class FoursquareTasks {
                 if(myVenueId != null && myVenueId.length() > 0) {
                     GetVenueResponse response = mFoursquareService.getVenue(myVenueId, myAccessToken);
 
-                    if(withHours)
-                        new GetVenueHours(myVenueId, mySource).execute();
-
                     if (response != null) {
                         if (response.meta.code == 200 && response.response.venue != null) {
                             resultVenue = FoursquareVenueResponse.ConvertFoursquareVenueResponseToVenue(response.response.venue);
@@ -357,10 +354,10 @@ public class FoursquareTasks {
                     mySource = 2;
 
                 if(result != null) {
-                    mBus.post(new GetVenueEvent(true, "", result, 2));
+                    mBus.post(new GetVenueEvent(true, "", result, 2, withHours));
                 } else {
                     Toast.makeText(mContext, R.string.alert_error_loading_details, Toast.LENGTH_SHORT).show();
-                    mBus.post(new GetVenueEvent(false, "", null, mySource));
+                    mBus.post(new GetVenueEvent(false, "", null, mySource, withHours));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

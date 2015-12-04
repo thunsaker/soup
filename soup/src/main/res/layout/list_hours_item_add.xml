@@ -28,5 +28,5 @@
         android:text="@string/edit_venue_hours_add"
         android:textColor="@drawable/text_dark_gray_white_selector"
         android:gravity="center_vertical"
-        style="@style/Theme.Soup.Text.Small" />
+        android:textSize="@dimen/material_type_small" />
 </RelativeLayout>
